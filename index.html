@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مؤقت بومودورو الاحترافي</title>
+    <style>
+        :root {
+            --bg: #020617;
+            --panel: rgba(15, 23, 42, 0.88);
+            --panel-strong: rgba(15, 23, 42, 0.98);
+            --text: #f8fafc;
+            --muted: #94a3b8;
+            --line: rgba(148, 163, 184, 0.18);
+            --primary: #38bdf8;
+            --primary-strong: #0ea5e9;
+            --accent: #34d399;
+            --warm: #fb923c;
+            --danger: #f87171;
+            --shadow: 0 24px 80px rgba(2, 6, 23, 0.45);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text);
+            background:
+                radial-gradient(circle at top left, rgba(56, 189, 248, 0.2), transparent 22%),
+                radial-gradient(circle at right top, rgba(52, 211, 153, 0.12), transparent 18%),
+                linear-gradient(135deg, #020617, #0f172a 45%, #111827);
+            padding: 24px;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image: linear-gradient(rgba(148, 163, 184, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(148, 163, 184, 0.05) 1px, transparent 1px);
+            background-size: 42px 42px;
+            pointer-events: none;
+            opacity: 0.2;
+        }
+
+        .app-shell {
+            position: relative;
+            z-index: 1;
+            max-width: 1180px;
+            margin: 0 auto;
+            display: grid;
+            gap: 20px;
+        }
+
+        .hero {
+            padding: 28px;
+            border-radius: 28px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.96), rgba(30, 41, 59, 0.84));
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+        }
+
+        .hero-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: end;
+            gap: 18px;
+            flex-wrap: wrap;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: rgba(56, 189, 248, 0.15);
+            color: #bae6fd;
+            font-size: 0.9rem;
+            border: 1px solid rgba(125, 211, 252, 0.28);
+        }
+
+        h1 {
+            font-size: clamp(1.8rem, 3vw, 2.4rem);
+            margin: 14px 0 8px;
+        }
+
+        .subtitle {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.7;
+            max-width: 760px;
+        }
+
+        .hero-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 14px;
+            margin-top: 22px;
+        }
+
+        .metric {
+            padding: 16px;
+            border-radius: 22px;
+            background: rgba(15, 23, 42, 0.9);
+            border: 1px solid var(--line);
+        }
+
+        .metric-label {
+            display: block;
+            font-size: 0.88rem;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .metric-value {
+            font-size: 1.3rem;
+            font-weight: 800;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: minmax(0, 1.15fr) minmax(300px, 0.85fr);
+            gap: 20px;
+        }
+
+        .panel {
+            border-radius: 26px;
+            background: var(--panel);
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+            padding: 22px;
+            backdrop-filter: blur(12px);
+        }
+
+        .panel h2 {
+            margin: 0 0 8px;
+            font-size: 1.2rem;
+        }
+
+        .panel p {
+            margin-top: 0;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .timer-shell {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .timer-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 999px;
+            padding: 8px 12px;
+            background: rgba(52, 211, 153, 0.12);
+            color: #dcfce7;
+            border: 1px solid rgba(74, 222, 128, 0.2);
+            font-size: 0.9rem;
+        }
+
+        .timer-display {
+            text-align: center;
+            font-size: clamp(3rem, 7vw, 4.8rem);
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            font-variant-numeric: tabular-nums;
+            margin: 10px 0 4px;
+        }
+
+        .timer-subtitle {
+            text-align: center;
+            color: var(--muted);
+            min-height: 1.5rem;
+            font-size: 0.98rem;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 12px;
+            border-radius: 999px;
+            background: rgba(30, 41, 59, 0.95);
+            overflow: hidden;
+            border: 1px solid rgba(148, 163, 184, 0.15);
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transition: width 0.8s ease;
+        }
+
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 6px;
+        }
+
+        .btn {
+            border: 0;
+            border-radius: 14px;
+            padding: 12px 18px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+            color: #0f172a;
+            box-shadow: 0 16px 34px rgba(56, 189, 248, 0.25);
+        }
+
+        .btn-secondary {
+            background: rgba(56, 189, 248, 0.14);
+            color: #e0f2fe;
+            border: 1px solid rgba(125, 211, 252, 0.2);
+        }
+
+        .btn-warning {
+            background: rgba(251, 146, 60, 0.18);
+            color: #ffedd5;
+            border: 1px solid rgba(251, 146, 60, 0.22);
+        }
+
+        .btn-danger {
+            background: rgba(248, 113, 113, 0.18);
+            color: #fee2e2;
+            border: 1px solid rgba(248, 113, 113, 0.2);
+        }
+
+        .grid-two {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+        }
+
+        .glass-card {
+            padding: 18px;
+            border-radius: 22px;
+            background: rgba(15, 23, 42, 0.88);
+            border: 1px solid var(--line);
+        }
+
+        .glass-card h3 {
+            margin: 0 0 12px;
+            font-size: 1rem;
+        }
+
+        .input-group {
+            margin-bottom: 14px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+            color: var(--muted);
+        }
+
+        input,
+        select {
+            width: 100%;
+            border-radius: 14px;
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            background: rgba(2, 6, 23, 0.8);
+            color: var(--text);
+            padding: 12px 14px;
+            font-size: 0.98rem;
+        }
+
+        input:focus,
+        select:focus {
+            outline: 2px solid rgba(56, 189, 248, 0.3);
+            border-color: rgba(56, 189, 248, 0.55);
+        }
+
+        .full-width-btn {
+            width: 100%;
+            margin-top: 4px;
+        }
+
+        .schedule-list {
+            display: grid;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .schedule-item {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            align-items: flex-start;
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: rgba(2, 6, 23, 0.82);
+            border: 1px solid rgba(148, 163, 184, 0.12);
+        }
+
+        .schedule-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex: 1;
+        }
+
+        .schedule-title {
+            font-weight: 700;
+        }
+
+        .schedule-time {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .schedule-actions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .btn-sm {
+            border: 0;
+            border-radius: 999px;
+            padding: 8px 12px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-action-primary {
+            background: rgba(56, 189, 248, 0.14);
+            color: #e0f2fe;
+            border: 1px solid rgba(125, 211, 252, 0.2);
+        }
+
+        .btn-action-danger {
+            background: rgba(248, 113, 113, 0.12);
+            color: #fee2e2;
+            border: 1px solid rgba(248, 113, 113, 0.22);
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 96px;
+            padding: 8px 10px;
+            border-radius: 999px;
+            font-size: 0.88rem;
+            font-weight: 700;
+        }
+
+        .pill-focus {
+            background: rgba(56, 189, 248, 0.15);
+            color: #bae6fd;
+        }
+
+        .pill-break {
+            background: rgba(251, 146, 60, 0.16);
+            color: #ffedd5;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 22px 16px;
+            color: var(--muted);
+            border: 1px dashed rgba(148, 163, 184, 0.2);
+            border-radius: 16px;
+            background: rgba(2, 6, 23, 0.45);
+        }
+
+        .audio-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+            margin-top: 14px;
+        }
+
+        .audio-tile {
+            padding: 16px;
+            border-radius: 18px;
+            background: rgba(2, 6, 23, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.12);
+        }
+
+        .audio-tile label {
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 12px;
+        }
+
+        .audio-note {
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .auto-toggle-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 14px 16px;
+            border-radius: 18px;
+            background: rgba(2, 6, 23, 0.8);
+            border: 1px solid rgba(148, 163, 184, 0.12);
+            margin-top: 12px;
+        }
+
+        .auto-toggle-row label {
+            color: var(--text);
+            margin-bottom: 0;
+            font-weight: 700;
+        }
+
+        .toggle-switch {
+            width: 52px;
+            height: 28px;
+            appearance: none;
+            border-radius: 999px;
+            background: rgba(148, 163, 184, 0.28);
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .toggle-switch::after {
+            content: "";
+            position: absolute;
+            width: 22px;
+            height: 22px;
+            top: 3px;
+            left: 3px;
+            border-radius: 50%;
+            background: #fff;
+            transition: transform 0.2s ease;
+        }
+
+        .toggle-switch:checked {
+            background: rgba(52, 211, 153, 0.8);
+        }
+
+        .toggle-switch:checked::after {
+            transform: translateX(24px);
+        }
+
+        .setting-help {
+            margin: 10px 0 0;
+            color: var(--muted);
+            font-size: 0.92rem;
+        }
+
+        .footer-note {
+            color: var(--muted);
+            text-align: center;
+            font-size: 0.9rem;
+            padding-bottom: 8px;
+        }
+
+        @media (max-width: 940px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            body {
+                padding: 16px;
+            }
+
+            .hero,
+            .panel {
+                padding: 18px;
+            }
+
+            .grid-two,
+            .audio-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .timer-display {
+                font-size: 2.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-shell">
+        <section class="hero">
+            <div class="hero-top">
+                <div>
+                    <span class="eyebrow">⏱️ بومودورو احترافي</span>
+                    <h1>مؤقت تركيز عصري مع إدارة المهام والاستراحة الذكية</h1>
+                    <p class="subtitle">واجهة حديثة وسهلة القراءة لإدارة جلسات التركيز، إضافة المهام، وضبط الضوضاء الخلفية بطريقة احترافية ومريحة.</p>
+                </div>
+                <div class="badge">🎯 جاهز للاستخدام الفوري</div>
+            </div>
+
+            <div class="hero-metrics">
+                <div class="metric">
+                    <span class="metric-label">النمط الحالي</span>
+                    <span class="metric-value" id="mode-label">وقت التركيز</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">المهمة النشطة</span>
+                    <span class="metric-value" id="current-task-label">جلسة تركيز مبدئية</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">عدد الجلسات</span>
+                    <span class="metric-value" id="schedule-count">1</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-label">المدة الكلية المخططة</span>
+                    <span class="metric-value" id="total-duration">25 دقيقة</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="dashboard">
+            <div class="panel timer-shell">
+                <div class="timer-topbar">
+                    <div>
+                        <h2 id="timer-status">🎯 وقت التركيز</h2>
+                        <p style="margin: 0; color: var(--muted);">تبدو المهام أكثر ترتيبًا مع مؤقت واضح وبسيط.</p>
+                    </div>
+                    <span class="badge" id="session-badge">جلسة نشطة</span>
+                </div>
+
+                <div>
+                    <div class="timer-display" id="time-display">25:00</div>
+                    <div class="timer-subtitle" id="current-task-notice">ابدأ متى شئت لتفعيل الجلسة الحالية.</div>
+                </div>
+
+                <div>
+                    <div class="progress-track" aria-hidden="true">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                </div>
+
+                <div class="button-row">
+                    <button class="btn btn-primary" id="start-btn" type="button">بدء</button>
+                    <button class="btn btn-secondary" id="skip-btn" type="button">تخطي</button>
+                    <button class="btn btn-warning" id="reset-btn" type="button">إعادة ضبط</button>
+                </div>
+
+                <div class="grid-two">
+                    <div class="glass-card">
+                        <h3>💡 نصيحة يومية</h3>
+                        <p>استخدم 25 دقيقة تركيز كاملة، ثم 5 دقائق استراحة قصيرة ليبقى ذهنك واضحًا ومنتجًا.</p>
+                    </div>
+                    <div class="glass-card">
+                        <h3>🎧 بيئة صوتية</h3>
+                        <p>يمكنك تفعيل الضوضاء الخلفية لإبقاء التركيز هادئًا ومنع التشتيت.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2>🎧 أصوات التركيز والدراسة</h2>
+                <p>اختر خلفية صوتية مريحة تساعدك على التركيز، القراءة، أو المراجعة بدون تشتيت.</p>
+
+                <div class="audio-grid">
+                    <div class="audio-tile">
+                        <label for="brown-volume">🟫 ضوضاء بنية</label>
+                        <input id="brown-volume" type="range" min="0" max="1" step="0.05" value="0">
+                    </div>
+                    <div class="audio-tile">
+                        <label for="green-volume">🟩 ضوضاء خضراء</label>
+                        <input id="green-volume" type="range" min="0" max="1" step="0.05" value="0">
+                    </div>
+                    <div class="audio-tile">
+                        <label for="rain-volume">☔ مطر هادئ</label>
+                        <input id="rain-volume" type="range" min="0" max="1" step="0.05" value="0">
+                    </div>
+                    <div class="audio-tile">
+                        <label for="cafe-volume">☕ ضوضاء مقهى</label>
+                        <input id="cafe-volume" type="range" min="0" max="1" step="0.05" value="0">
+                    </div>
+                    <div class="audio-tile">
+                        <label for="wind-volume">🌬️ رياح ناعمة</label>
+                        <input id="wind-volume" type="range" min="0" max="1" step="0.05" value="0">
+                    </div>
+                </div>
+                <p class="audio-note">* اضغط على أي زر تشغيل لتفعيل الصوت تلقائيًا. يمكنك مزج أكثر من صوت في نفس الوقت.</p>
+            </div>
+        </section>
+
+        <section class="dashboard">
+            <div class="panel">
+                <h2>📝 إضافة مهمة</h2>
+                <p>خصص وقتًا ومجموعة جلسات لكل مهمة لتكون الخطة واضحة.</p>
+
+                <div class="input-group">
+                    <label for="task-name">اسم المهمة</label>
+                    <input id="task-name" type="text" placeholder="مثال: رياضيات، واجب عربي، كتابة مشروع">
+                </div>
+
+                <div class="grid-two">
+                    <div class="input-group">
+                        <label for="task-duration">مدة الجلسة (دقيقة)</label>
+                        <input id="task-duration" type="number" min="1" value="25">
+                    </div>
+                    <div class="input-group">
+                        <label for="task-count">عدد الجولات</label>
+                        <input id="task-count" type="number" min="1" value="1">
+                    </div>
+                </div>
+
+                <button class="btn btn-primary full-width-btn" id="add-task-btn" type="button">إضافة المهمة</button>
+            </div>
+
+            <div class="panel">
+                <h2>☕ جدولة استراحة</h2>
+                <p>أضف استراحات قصيرة أو طويلة يدويًا، أو فعّل الاستراحة التلقائية.</p>
+
+                <div class="input-group">
+                    <label for="break-type">نوع الاستراحة</label>
+                    <select id="break-type">
+                        <option value="استراحة قصيرة">استراحة قصيرة</option>
+                        <option value="استراحة طويلة">استراحة طويلة</option>
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label for="break-duration">المدة (دقيقة)</label>
+                    <input id="break-duration" type="number" min="1" value="5">
+                </div>
+
+                <button class="btn btn-warning full-width-btn" id="add-break-btn" type="button">إضافة الاستراحة</button>
+
+                <div class="auto-toggle-row">
+                    <label for="auto-break-toggle">تفعيل الاستراحة التلقائية</label>
+                    <input id="auto-break-toggle" class="toggle-switch" type="checkbox">
+                </div>
+
+                <div class="settings-grid">
+                    <div class="input-group">
+                        <label for="short-break-duration">مدة الاستراحة القصيرة</label>
+                        <input id="short-break-duration" type="number" min="1" value="5">
+                    </div>
+                    <div class="input-group">
+                        <label for="long-break-duration">مدة الاستراحة الطويلة</label>
+                        <input id="long-break-duration" type="number" min="1" value="15">
+                    </div>
+                    <div class="input-group">
+                        <label for="long-break-every">استراحة طويلة كل X جلسات</label>
+                        <input id="long-break-every" type="number" min="1" value="3">
+                    </div>
+                </div>
+
+                <p class="setting-help">عند تفعيلها، ستتحول أي جلسة تركيز تلقائيًا إلى استراحة قصيرة، ثم إلى استراحة طويلة كل عدد الجلسات الذي تختاره.</p>
+            </div>
+        </section>
+
+        <section class="panel">
+            <h2>📋 جدول العمل الحالي</h2>
+            <p>تتابع الجلسات والمهام بطريقة مرتبة وسهلة المتابعة.</p>
+            <div id="schedule-list" class="schedule-list"></div>
+        </section>
+
+        <p class="footer-note">تم تحديث الواجهة لتكون أكثر احترافية، بصرية، وسهلة الاستخدام.</p>
+    </div>
+
+    <script>
+        const timeDisplay = document.getElementById('time-display');
+        const timerStatus = document.getElementById('timer-status');
+        const currentTaskNotice = document.getElementById('current-task-notice');
+        const progressBar = document.getElementById('progress-bar');
+        const modeLabel = document.getElementById('mode-label');
+        const currentTaskLabel = document.getElementById('current-task-label');
+        const scheduleCount = document.getElementById('schedule-count');
+        const totalDuration = document.getElementById('total-duration');
+        const sessionBadge = document.getElementById('session-badge');
+        const startBtn = document.getElementById('start-btn');
+        const skipBtn = document.getElementById('skip-btn');
+        const resetBtn = document.getElementById('reset-btn');
+        const scheduleList = document.getElementById('schedule-list');
+        const brownRange = document.getElementById('brown-volume');
+        const greenRange = document.getElementById('green-volume');
+        const rainRange = document.getElementById('rain-volume');
+        const cafeRange = document.getElementById('cafe-volume');
+        const windRange = document.getElementById('wind-volume');
+
+        let timerId = null;
+        let isRunning = false;
+        let remaining = 25 * 60;
+        let currentSession = null;
+        let currentIndex = 0;
+        let schedule = [];
+
+        let audioCtx = null;
+        let noiseNodes = { brown: null, green: null, rain: null, cafe: null, wind: null };
+        let gainNodes = { brown: null, green: null, rain: null, cafe: null, wind: null };
+        let autoBreakEnabled = false;
+        let shortBreakDuration = 5;
+        let longBreakDuration = 15;
+        let longBreakEvery = 3;
+
+        function makeSession(title, duration, type, auto = false) {
+            return {
+                id: `${type}-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+                title,
+                duration: Number(duration),
+                type,
+                auto
+            };
+        }
+
+        function formatTime(seconds) {
+            const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
+            const secs = String(seconds % 60).padStart(2, '0');
+            return `${mins}:${secs}`;
+        }
+
+        function getAutoBreakTitle(type) {
+            return type === 'long' ? 'استراحة طويلة تلقائية' : 'استراحة قصيرة تلقائية';
+        }
+
+        function getAutoBreakDuration(type) {
+            return type === 'long' ? longBreakDuration : shortBreakDuration;
+        }
+
+        function removeAutoBreaks() {
+            schedule = schedule.filter((item) => !item.auto);
+        }
+
+        function rebuildAutoSchedule() {
+            const previousCurrentId = currentSession?.id;
+            const currentIndexToKeep = currentIndex;
+
+            removeAutoBreaks();
+
+            const rebuilt = [];
+            let focusCount = 0;
+
+            for (let i = 0; i < schedule.length; i++) {
+                const item = schedule[i];
+                rebuilt.push(item);
+
+                if (item.type === 'task') {
+                    focusCount += 1;
+                    const nextItem = schedule[i + 1];
+                    const shouldAddAutoBreak = !nextItem || nextItem.type !== 'break';
+
+                    if (shouldAddAutoBreak) {
+                        const breakType = focusCount % longBreakEvery === 0 ? 'long' : 'short';
+                        rebuilt.push(makeSession(getAutoBreakTitle(breakType), getAutoBreakDuration(breakType), 'break', true));
+                    }
+                }
+            }
+
+            schedule = rebuilt;
+
+            if (previousCurrentId) {
+                const nextIndex = schedule.findIndex((item) => item.id === previousCurrentId);
+                currentIndex = nextIndex === -1 ? 0 : nextIndex;
+            } else {
+                currentIndex = Math.min(currentIndexToKeep, Math.max(schedule.length - 1, 0));
+            }
+
+            currentSession = schedule[currentIndex] || null;
+
+            if (currentSession) {
+                remaining = currentSession.duration * 60;
+            }
+        }
+
+        function applyAutoBreakMode() {
+            clearInterval(timerId);
+            isRunning = false;
+            startBtn.textContent = 'بدء';
+            startBtn.className = 'btn btn-primary';
+
+            if (autoBreakEnabled) {
+                rebuildAutoSchedule();
+                currentTaskNotice.textContent = `تم تفعيل الاستراحة التلقائية: ${shortBreakDuration} دقيقة قصيرة، ${longBreakDuration} دقيقة طويلة كل ${longBreakEvery} جلسات.`;
+            } else {
+                removeAutoBreaks();
+                currentSession = schedule[currentIndex] || null;
+                if (currentSession) {
+                    remaining = currentSession.duration * 60;
+                }
+                currentTaskNotice.textContent = 'تم إيقاف الاستراحة التلقائية.';
+            }
+
+            renderSchedule();
+            updateDisplay();
+        }
+
+        function syncAutoBreakSettings() {
+            shortBreakDuration = Math.max(1, Number(document.getElementById('short-break-duration').value) || 5);
+            longBreakDuration = Math.max(1, Number(document.getElementById('long-break-duration').value) || 15);
+            longBreakEvery = Math.max(1, Number(document.getElementById('long-break-every').value) || 3);
+
+            document.getElementById('short-break-duration').value = String(shortBreakDuration);
+            document.getElementById('long-break-duration').value = String(longBreakDuration);
+            document.getElementById('long-break-every').value = String(longBreakEvery);
+
+            if (autoBreakEnabled) {
+                rebuildAutoSchedule();
+            }
+        }
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function fillNoiseBuffer(type, output) {
+            const bufferSize = output.length;
+            let lastOut = 0;
+
+            for (let i = 0; i < bufferSize; i++) {
+                const white = Math.random() * 2 - 1;
+
+                if (type === 'brown') {
+                    output[i] = (lastOut + (0.02 * white)) / 1.02;
+                    lastOut = output[i];
+                    output[i] *= 3.5;
+                } else if (type === 'green') {
+                    output[i] = (lastOut + (0.07 * white)) / 1.07;
+                    lastOut = output[i];
+                    output[i] *= 2.5;
+                } else if (type === 'rain') {
+                    const drip = Math.random() < 0.02 ? (Math.random() - 0.5) * 0.9 : 0;
+                    output[i] = (white * 0.035) + drip;
+                } else if (type === 'cafe') {
+                    output[i] = (lastOut + (0.05 * white)) / 1.05;
+                    lastOut = output[i];
+                    output[i] *= 2.8;
+                } else if (type === 'wind') {
+                    output[i] = (lastOut + (0.015 * white)) / 1.015;
+                    lastOut = output[i];
+                    output[i] *= 1.8;
+                }
+            }
+        }
+
+        function createNoiseNode(type) {
+            const bufferSize = 2 * audioCtx.sampleRate;
+            const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const output = noiseBuffer.getChannelData(0);
+            fillNoiseBuffer(type, output);
+
+            const bufferSource = audioCtx.createBufferSource();
+            bufferSource.buffer = noiseBuffer;
+            bufferSource.loop = true;
+
+            const gainNode = audioCtx.createGain();
+            gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
+
+            if (type === 'rain' || type === 'cafe' || type === 'wind') {
+                const filter = audioCtx.createBiquadFilter();
+                if (type === 'rain') {
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(1600, audioCtx.currentTime);
+                } else if (type === 'cafe') {
+                    filter.type = 'bandpass';
+                    filter.frequency.setValueAtTime(980, audioCtx.currentTime);
+                    filter.Q.setValueAtTime(0.8, audioCtx.currentTime);
+                } else {
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(480, audioCtx.currentTime);
+                }
+                bufferSource.connect(filter);
+                filter.connect(gainNode);
+            } else {
+                bufferSource.connect(gainNode);
+            }
+
+            gainNode.connect(audioCtx.destination);
+            bufferSource.start();
+
+            noiseNodes[type] = bufferSource;
+            gainNodes[type] = gainNode;
+        }
+
+        function handleNoiseVolume(type, value) {
+            try {
+                initAudio();
+                if (!noiseNodes[type]) {
+                    createNoiseNode(type);
+                }
+                gainNodes[type].gain.setTargetAtTime(Number(value) * 0.3, audioCtx.currentTime, 0.1);
+            } catch (error) {
+                console.error('Audio error:', error);
+            }
+        }
+
+        function playAlarmTone() {
+            try {
+                initAudio();
+                const oscillator = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                oscillator.type = 'triangle';
+                oscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
+                gain.gain.setValueAtTime(0.28, audioCtx.currentTime);
+                oscillator.connect(gain);
+                gain.connect(audioCtx.destination);
+                oscillator.start();
+                oscillator.stop(audioCtx.currentTime + 1.1);
+            } catch (error) {
+                console.error('Alarm error:', error);
+            }
+        }
+
+        function playBellTone() {
+            try {
+                initAudio();
+                const oscillator = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                const now = audioCtx.currentTime;
+
+                oscillator.type = 'sine';
+                oscillator.frequency.setValueAtTime(880, now);
+                oscillator.frequency.exponentialRampToValueAtTime(1320, now + 0.16);
+                gain.gain.setValueAtTime(0.06, now);
+                gain.gain.exponentialRampToValueAtTime(0.18, now + 0.05);
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
+
+                oscillator.connect(gain);
+                gain.connect(audioCtx.destination);
+                oscillator.start(now);
+                oscillator.stop(now + 0.5);
+            } catch (error) {
+                console.error('Bell error:', error);
+            }
+        }
+
+        function updateProgress() {
+            if (!currentSession) {
+                progressBar.style.width = '0%';
+                return;
+            }
+            const total = currentSession.duration * 60;
+            const percent = Math.max(0, Math.min(100, ((total - remaining) / total) * 100));
+            progressBar.style.width = `${percent}%`;
+        }
+
+        function renderSchedule() {
+            const total = schedule.reduce((sum, entry) => sum + entry.duration, 0);
+            scheduleCount.textContent = String(schedule.length);
+            totalDuration.textContent = `${total} دقيقة`;
+
+            if (!schedule.length) {
+                scheduleList.innerHTML = '<div class="empty-state">أضف مهمة أو استراحة لبدء التخطيط.</div>';
+                return;
+            }
+
+            scheduleList.innerHTML = schedule.map((item, index) => `
+                <div class="schedule-item">
+                    <div class="schedule-meta">
+                        <span class="schedule-title">${item.title}</span>
+                        <span class="schedule-time">${item.duration} دقيقة • ${index === currentIndex ? 'نشطة' : 'في الصف'}</span>
+                    </div>
+                    <div class="schedule-actions">
+                        <span class="pill ${item.type === 'break' ? 'pill-break' : 'pill-focus'}">${item.type === 'break' ? 'استراحة' : 'تركيز'}</span>
+                        ${item.type === 'task' ? `<button class="btn-sm btn-action-primary" type="button" onclick="startTask(${index})">ابدأ</button>` : ''}
+                        <button class="btn-sm btn-action-danger" type="button" onclick="deleteItem(${index})">حذف</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateSessionUI() {
+            if (!currentSession) {
+                currentTaskLabel.textContent = 'لا توجد جلسة';
+                modeLabel.textContent = 'انتظار';
+                timerStatus.textContent = '🛋️ جاهز للتركيز';
+                currentTaskNotice.textContent = 'أضف مهمة أو استراحة للبدء.';
+                sessionBadge.textContent = 'جاهز';
+                return;
+            }
+
+            currentTaskLabel.textContent = currentSession.title;
+            modeLabel.textContent = currentSession.type === 'break' ? 'استراحة' : 'وقت التركيز';
+            timerStatus.textContent = currentSession.type === 'break' ? '☕ استراحة' : '🎯 وقت التركيز';
+            currentTaskNotice.textContent = `جلسة ${currentSession.duration} دقيقة • التقدم الحالي محفوظ.`;
+            sessionBadge.textContent = isRunning ? 'جاري التنفيذ' : 'معلّق';
+        }
+
+        function updateDisplay() {
+            timeDisplay.textContent = formatTime(remaining);
+            updateProgress();
+            updateSessionUI();
+        }
+
+        function startNextSession() {
+            if (!schedule.length) {
+                currentSession = null;
+                remaining = 25 * 60;
+                updateDisplay();
+                return;
+            }
+
+            if (currentIndex < schedule.length - 1) {
+                currentIndex += 1;
+            } else {
+                currentIndex = 0;
+            }
+
+            currentSession = schedule[currentIndex];
+            remaining = currentSession.duration * 60;
+            updateDisplay();
+
+            if (autoBreakEnabled) {
+                startTimer();
+            }
+        }
+
+        function setCurrentSession(index) {
+            if (!schedule[index]) {
+                return;
+            }
+
+            currentIndex = index;
+            currentSession = schedule[index];
+            remaining = currentSession.duration * 60;
+            clearInterval(timerId);
+            isRunning = false;
+            startBtn.textContent = 'بدء';
+            startBtn.className = 'btn btn-primary';
+            updateDisplay();
+        }
+
+        function startTask(index) {
+            if (!schedule[index] || schedule[index].type !== 'task') {
+                return;
+            }
+
+            setCurrentSession(index);
+            currentTaskNotice.textContent = `تم تحميل مهمة ${schedule[index].title} للبدء.`;
+        }
+
+        function deleteItem(index) {
+            if (!schedule[index]) {
+                return;
+            }
+
+            const wasCurrent = index === currentIndex;
+            schedule.splice(index, 1);
+
+            if (autoBreakEnabled) {
+                rebuildAutoSchedule();
+                renderSchedule();
+                updateDisplay();
+                return;
+            }
+
+            if (schedule.length === 0) {
+                currentSession = null;
+                currentIndex = 0;
+                remaining = 25 * 60;
+            } else if (wasCurrent) {
+                currentIndex = Math.min(index, schedule.length - 1);
+                currentSession = schedule[currentIndex];
+                remaining = currentSession.duration * 60;
+            } else if (index < currentIndex) {
+                currentIndex -= 1;
+                currentSession = schedule[currentIndex];
+            }
+
+            clearInterval(timerId);
+            isRunning = false;
+            startBtn.textContent = 'بدء';
+            startBtn.className = 'btn btn-primary';
+            renderSchedule();
+            updateDisplay();
+        }
+
+        function startTimer() {
+            if (!currentSession) {
+                currentTaskNotice.textContent = 'أضف مهمة أو استراحة قبل بدء المؤقت.';
+                return;
+            }
+            if (isRunning) {
+                pauseTimer();
+                return;
+            }
+            initAudio();
+            isRunning = true;
+            startBtn.textContent = 'إيقاف';
+            startBtn.className = 'btn btn-secondary';
+            timerId = setInterval(() => {
+                remaining -= 1;
+                updateDisplay();
+
+                if (remaining <= 0) {
+                    clearInterval(timerId);
+                    isRunning = false;
+                    startBtn.textContent = 'بدء';
+                    startBtn.className = 'btn btn-primary';
+                    playAlarmTone();
+                    playBellTone();
+                    currentTaskNotice.textContent = '✅ انتهت الجلسة. يمكنك تخطيها أو إعادة ضبطها.';
+
+                    if (autoBreakEnabled) {
+                        startNextSession();
+                        return;
+                    }
+
+                    if (currentIndex < schedule.length - 1) {
+                        currentIndex += 1;
+                        currentSession = schedule[currentIndex];
+                        remaining = currentSession.duration * 60;
+                    } else {
+                        currentSession = null;
+                        remaining = 0;
+                    }
+
+                    updateDisplay();
+                }
+            }, 1000);
+        }
+
+        function pauseTimer() {
+            clearInterval(timerId);
+            isRunning = false;
+            startBtn.textContent = 'استمرار';
+            startBtn.className = 'btn btn-primary';
+            updateDisplay();
+        }
+
+        function resetTimer() {
+            clearInterval(timerId);
+            isRunning = false;
+            startBtn.textContent = 'بدء';
+            startBtn.className = 'btn btn-primary';
+
+            if (currentSession) {
+                remaining = currentSession.duration * 60;
+            } else {
+                remaining = 25 * 60;
+            }
+
+            updateDisplay();
+        }
+
+        function skipSession() {
+            clearInterval(timerId);
+            isRunning = false;
+            startBtn.textContent = 'بدء';
+            startBtn.className = 'btn btn-primary';
+
+            if (schedule.length === 0) {
+                currentSession = null;
+                remaining = 25 * 60;
+                updateDisplay();
+                return;
+            }
+
+            currentIndex = (currentIndex + 1) % schedule.length;
+            currentSession = schedule[currentIndex];
+            remaining = currentSession.duration * 60;
+            updateDisplay();
+        }
+
+        function addTask() {
+            const title = document.getElementById('task-name').value.trim();
+            const duration = Number(document.getElementById('task-duration').value);
+            const rounds = Number(document.getElementById('task-count').value);
+
+            if (!title || !duration || !rounds) {
+                currentTaskNotice.textContent = 'يرجى تعبئة اسم المهمة ومدة الجلسة وعدد الجولات.';
+                return;
+            }
+
+            for (let i = 0; i < rounds; i++) {
+                schedule.push(makeSession(title, duration, 'task'));
+            }
+
+            if (autoBreakEnabled) {
+                rebuildAutoSchedule();
+            }
+
+            if (!currentSession) {
+                currentIndex = 0;
+                currentSession = schedule[currentIndex];
+                remaining = currentSession.duration * 60;
+            }
+
+            renderSchedule();
+            updateDisplay();
+            document.getElementById('task-name').value = '';
+            currentTaskNotice.textContent = `تمت إضافة ${rounds} جلسة ل: ${title}`;
+        }
+
+        function addBreak() {
+            const type = document.getElementById('break-type').value;
+            const duration = Number(document.getElementById('break-duration').value);
+
+            if (!duration) {
+                currentTaskNotice.textContent = 'يرجى إدخال مدة الاستراحة.';
+                return;
+            }
+
+            schedule.push(makeSession(type, duration, 'break'));
+            if (!currentSession) {
+                currentIndex = 0;
+                currentSession = schedule[currentIndex];
+                remaining = currentSession.duration * 60;
+            }
+
+            renderSchedule();
+            updateDisplay();
+            currentTaskNotice.textContent = `تمت إضافة ${type} لمدة ${duration} دقيقة.`;
+        }
+
+        document.getElementById('add-task-btn').addEventListener('click', addTask);
+        document.getElementById('add-break-btn').addEventListener('click', addBreak);
+        startBtn.addEventListener('click', startTimer);
+        skipBtn.addEventListener('click', skipSession);
+        resetBtn.addEventListener('click', resetTimer);
+        brownRange.addEventListener('input', (event) => handleNoiseVolume('brown', event.target.value));
+        greenRange.addEventListener('input', (event) => handleNoiseVolume('green', event.target.value));
+        rainRange.addEventListener('input', (event) => handleNoiseVolume('rain', event.target.value));
+        cafeRange.addEventListener('input', (event) => handleNoiseVolume('cafe', event.target.value));
+        windRange.addEventListener('input', (event) => handleNoiseVolume('wind', event.target.value));
+
+        document.getElementById('auto-break-toggle').addEventListener('change', (event) => {
+            autoBreakEnabled = event.target.checked;
+            applyAutoBreakMode();
+        });
+
+        document.getElementById('short-break-duration').addEventListener('change', syncAutoBreakSettings);
+        document.getElementById('long-break-duration').addEventListener('change', syncAutoBreakSettings);
+        document.getElementById('long-break-every').addEventListener('change', syncAutoBreakSettings);
+
+        schedule.push(makeSession('جلسة تركيز مبدئية', 25, 'task'));
+        currentSession = schedule[0];
+        currentIndex = 0;
+        renderSchedule();
+        updateDisplay();
+    </script>
+</body>
+</html>
