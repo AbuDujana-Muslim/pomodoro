@@ -3,167 +3,264 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مؤقت التركيز الأكاديمي السحابي ⏱️</title>
+    <title>Pomodoro MR | منصة التركيز  ⏱️</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
     <style>
-        /* سمة المكتبة الأكاديمية الدافئة - Warm Academic Study */
+        /* نظام الألوان الحماسية والنيون المستقبلي */
         :root {
-            --bg-color: #1a120b; 
-            --panel-bg: #2c1e11; 
-            --text-main: #f5f2eb; 
-            --text-muted: #bd9a7a; 
-            --accent-gold: #d4af37; 
-            --accent-hover: #aa8c2c;
-            --success-color: #2e7d32;
-            --danger-color: #c62828;
-            --shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            --bg-dark: #05070b;
+            --panel-glass: rgba(15, 22, 36, 0.7);
+            --text-neon: #f0f5fa;
+            --text-dim: #8a9cb2;
+            
+            /* ألوان الإضاءة المتوهجة */
+            --neon-blue: #00f3ff;
+            --neon-purple: #9d4edd;
+            --neon-gold: #ffb703;
+            --neon-green: #39ff14;
+            --neon-red: #ff1744;
+            
+            --glass-border: 1px solid rgba(0, 243, 255, 0.2);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Tajawal', sans-serif;
         }
 
+        /* خلفية حركية مذهلة تبعث على النشاط */
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            background: linear-gradient(135deg, #05070b, #0f1123, #05070b);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text-neon);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             padding: 20px;
+            overflow-x: hidden;
+            flex-direction: column;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .container {
             width: 100%;
-            max-width: 950px;
+            max-width: 1000px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 25px;
+            flex: 1;
         }
 
-        /* اللوحات */
-        .panel {
-            background-color: var(--panel-bg);
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(212, 175, 55, 0.1);
-        }
-
-        h1, h2, h3 {
-            color: var(--accent-gold);
-            margin-bottom: 15px;
+        /* اسم الموقع في صدارة الصفحة بتأثير نيون متوهج وحماسي */
+        .site-header {
             text-align: center;
+            margin-bottom: 5px;
+            margin-top: 10px;
         }
 
-        /* الجزء العلوي: الملف الشخصي والمؤقت في صف واحد */
-        .main-grid {
+        .site-header h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: 2px;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple), var(--neon-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(0, 243, 255, 0.4));
+            margin: 0;
+        }
+
+        /* ألواح زجاجية بارزة للأمام مع توهج خلفي حماسي */
+        .panel {
+            background: var(--panel-glass);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-radius: 20px;
+            padding: 30px;
+            border: var(--glass-border);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 
+                        0 0 30px rgba(0, 243, 255, 0.03),
+                        inset 0 0 15px rgba(255, 255, 255, 0.02);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
+        }
+
+        /* خط نيون جمالي علوي لكل لوحة لزيادة الحداثة */
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 20px;
+            right: 20px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), var(--neon-purple), transparent);
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .panel:hover {
+            transform: translateY(-4px) scale(1.005);
+            border-color: rgba(0, 243, 255, 0.4);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 
+                        0 0 40px rgba(0, 243, 255, 0.15);
+        }
+
+        h2, h3 {
+            color: var(--neon-gold);
+            text-shadow: 0 0 12px rgba(255, 183, 3, 0.4);
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        /* تقسيم السطر السفلي: يمين جدول الترتيب، يسار لوحة الاسم مصغرة */
+        .bottom-layout {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 25px;
+            align-items: stretch;
         }
 
-        @media (max-width: 768px) {
-            .main-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* نموذج الدخول والمعلومات */
-        .profile-section {
+        .profile-inline-section {
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             gap: 15px;
-            text-align: center;
+            padding: 20px;
         }
 
         .input-group {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             width: 100%;
-            max-width: 350px;
-            margin-bottom: 5px;
         }
 
         input {
             flex: 1;
             padding: 12px;
-            border-radius: 6px;
-            border: 1px solid var(--text-muted);
-            background: #110a05;
-            color: var(--text-main);
+            border-radius: 10px;
+            border: 1px solid rgba(138, 156, 178, 0.3);
+            background: rgba(5, 7, 11, 0.8);
+            color: var(--text-neon);
             outline: none;
-            font-size: 1rem;
+            font-size: 0.95rem;
             text-align: center;
+            transition: all 0.3s ease;
         }
 
+        input:focus {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+            background: #05070b;
+        }
+
+        /* أزرار النيون المشعة */
         button {
-            padding: 10px 20px;
-            border-radius: 6px;
+            padding: 12px 24px;
+            border-radius: 10px;
             border: none;
-            background-color: var(--accent-gold);
-            color: #1a120b;
+            background: linear-gradient(135deg, var(--neon-gold), #e6a100);
+            color: #05070b;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.3s;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(255, 183, 3, 0.3);
         }
 
         button:hover {
-            background-color: var(--accent-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(255, 183, 3, 0.6);
         }
 
         .badge-display {
-            font-size: 1.3rem;
+            font-size: 1.1rem;
             font-weight: bold;
-            color: var(--text-muted);
-            margin-top: 10px;
+            color: var(--neon-blue);
+            text-shadow: 0 0 15px rgba(0, 243, 255, 0.6);
+            background: rgba(0, 243, 255, 0.05);
+            padding: 6px 15px;
+            border-radius: 30px;
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            margin-top: 5px;
+            width: 100%;
+            text-align: center;
         }
 
-        /* أزرار اختيار نوع الجلسة */
+        /* أزرار أوضاع الجلسات المتوهجة */
         .session-modes {
             display: flex;
             justify-content: center;
             gap: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
         }
 
         .mode-btn {
-            background: rgba(189, 154, 122, 0.1);
-            color: var(--text-muted);
-            border: 1px solid var(--text-muted);
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-dim);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: none;
+            padding: 10px 18px;
+            font-size: 0.9rem;
         }
 
         .mode-btn.active {
-            background-color: var(--accent-gold);
-            color: #1a120b;
-            border-color: var(--accent-gold);
+            background: linear-gradient(135deg, var(--neon-blue), #00b4d8);
+            color: #05070b;
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
         }
 
         .current-task-title {
-            font-size: 1.2rem;
-            color: var(--accent-gold);
+            font-size: 1.5rem;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.2);
             margin-top: 5px;
-            font-weight: bold;
+            font-weight: 600;
             min-height: 28px;
         }
 
+        /* شاشة العداد الأكبر لتشمل المساحة كاملة */
         .timer-display {
-            font-size: 4.5rem;
-            font-weight: bold;
-            color: var(--text-main);
-            margin: 10px 0;
-            font-family: monospace;
+            font-size: calc(5rem + 3vw);
+            font-weight: 900;
+            color: var(--text-neon);
+            margin: 15px 0;
+            font-family: 'Courier New', Courier, monospace;
             text-align: center;
+            text-shadow: 0 0 35px rgba(0, 243, 255, 0.4), 0 0 70px rgba(157, 78, 221, 0.2);
+            letter-spacing: 2px;
         }
 
         .session-counter {
-            color: var(--text-muted);
-            font-size: 1rem;
-            margin-bottom: 15px;
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+        }
+
+        /* تنسيق عنصر العبارات المحفزة التفاعلي */
+        .motivation-container {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--neon-gold);
+            text-shadow: 0 0 10px rgba(255, 183, 3, 0.3);
+            margin-bottom: 20px;
+            min-height: 35px;
+            transition: all 0.5s ease-in-out;
+            padding: 0 15px;
         }
 
         .controls {
@@ -172,62 +269,121 @@
             gap: 15px;
         }
 
-        /* تخصيص الجلسات الحر */
-        .custom-timer-section {
-            background: rgba(17, 10, 5, 0.4);
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            border: 1px dashed rgba(189, 154, 122, 0.3);
+        /* تنسيقات اللوحة المدمجة للمهام والتحكم */
+        .merged-todo-section .input-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            align-items: center;
         }
 
-        /* قائمة المهام */
-        .todo-input-group {
+        .merged-todo-section .inputs-flex {
             display: flex;
             gap: 10px;
-            margin-bottom: 15px;
+            flex: 1;
+            min-width: 200px;
         }
 
-        .todo-list {
-            list-style: none;
-            text-align: right;
-            max-height: 200px;
-            overflow-y: auto;
+        .merged-todo-section button.add-btn {
+            background: linear-gradient(135deg, var(--neon-green), #22c55e);
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.3);
         }
 
-        .todo-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px;
-            border-bottom: 1px solid rgba(189, 154, 122, 0.1);
+        .merged-todo-section button.add-btn:hover {
+            box-shadow: 0 0 25px rgba(57, 255, 20, 0.6);
         }
 
-        .todo-item.completed span {
-            text-decoration: line-through;
-            color: var(--text-muted);
+        /* جداول متجاوبة وموحدة النمط */
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
         }
 
-        /* لوحة الصدارة المشتركة */
-        .leaderboard-table {
+        .custom-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 15px;
             text-align: right;
+            min-width: 400px;
         }
 
-        .leaderboard-table th, .leaderboard-table td {
-            padding: 12px;
-            border-bottom: 1px solid rgba(189, 154, 122, 0.2);
+        .custom-table th, .custom-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .leaderboard-table th {
-            color: var(--accent-gold);
+        .custom-table th {
+            color: var(--neon-gold);
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .custom-table td {
+            font-size: 0.95rem;
+        }
+
+        /* نمط الجلسة النشطة حالياً داخل الجدول */
+        .task-row.active-task {
+            background-color: rgba(57, 255, 20, 0.08);
+            border-right: 4px solid var(--neon-green);
+        }
+
+        /* نمط خاص بصفوف المهام المكتملة */
+        .task-row.completed td.task-name {
+            text-decoration: line-through;
+            color: var(--text-dim);
+            opacity: 0.5;
         }
 
         .current-user-row {
-            background-color: rgba(212, 175, 55, 0.15);
+            background-color: rgba(0, 243, 255, 0.06);
+            border-left: 4px solid var(--neon-blue);
             font-weight: bold;
+            box-shadow: inset 0 0 15px rgba(0, 243, 255, 0.1);
+        }
+
+        /* شريط حقوق النشر والملكية الفكرية السفلي */
+        .site-footer {
+            margin-top: 40px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            letter-spacing: 0.5px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 15px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .site-footer span.copyright-name {
+            color: var(--neon-blue);
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+        }
+
+        /* استعلامات الوسائط لتوافق الأجهزة المحمولة */
+        @media (max-width: 850px) {
+            .bottom-layout {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .panel {
+                padding: 20px;
+            }
+
+            .site-header h1 {
+                font-size: 2.3rem;
+            }
+            
+            button, input {
+                width: 100%;
+            }
+            
+            .input-group, .merged-todo-section .input-row, .merged-todo-section .inputs-flex {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -235,96 +391,168 @@
 
 <div class="container">
 
-    <div class="main-grid">
+    <div class="site-header">
+        <h1>Pomodoro MR</h1>
+    </div>
+
+    <div class="panel" style="text-align: center; width: 100%;">
+        <div class="session-modes">
+            <button class="mode-btn active" id="pomodoroMode" onclick="setMode('pomodoro')">دورة تركيز ⏱️</button>
+            <button class="mode-btn" id="shortBreakMode" onclick="setMode('short')">استراحة ☕</button>
+            <button class="mode-btn" id="longBreakMode" onclick="setMode('long')">شحن طاقة 🚶‍♂️</button>
+        </div>
         
-        <div class="panel profile-section">
-            <h3>الملف الشخصي السحابي 👤</h3>
-            <div id="loginForm" class="input-group">
-                <input type="text" id="usernameInput" placeholder="اكتب اسمك الفريد للانضمام..." />
-                <button onclick="registerUser()">دخول</button>
-            </div>
-            <div id="userInfo" style="display: none;">
-                <h4 style="font-size: 1.2rem; margin-bottom: 5px;">مرحباً، <span id="displayUsername">المستخدم</span> 👋</h4>
-                <p>مجموع ساعات التركيز: <span id="displayHours" style="color: var(--accent-gold); font-weight: bold;">0</span> ساعة</p>
-            </div>
-            <div class="badge-display" id="badgeDisplay">🌱 بداية الرحلة</div>
+        <div class="current-task-title" id="currentTaskDisplay">🎯 أضف مهمة للبدء التلقائي</div>
+        <div class="timer-display" id="timer">25:00</div>
+        
+        <div class="motivation-container" id="motivationDisplay">🔥 ركّز الآن، البدايات تصنع الفارق العظيم!</div>
+        
+        <div class="session-counter">الـجـلـسـات الـمـكـتـمـلـة الـيـوم: <span id="sessionCountDisplay" style="color: var(--neon-purple); font-weight: bold; text-shadow: 0 0 10px var(--neon-purple);">0</span> 💎</div>
+        
+        <div class="controls">
+            <button onclick="toggleTimer()" id="startBtn" style="background: linear-gradient(135deg, var(--neon-blue), #00b4d8); box-shadow: 0 0 15px rgba(0, 243, 255, 0.3); padding: 14px 35px; font-size: 1.05rem;">ابدأ الجلسة 🚀</button>
+            <button onclick="resetTimer()" style="background: var(--neon-red); color: white; box-shadow: 0 0 15px rgba(255,23,68,0.3); padding: 14px 25px;">تصفير 🔄</button>
         </div>
-
-        <div class="panel" style="text-align: center;">
-            <div class="session-modes">
-                <button class="mode-btn active" id="pomodoroMode" onclick="setMode('pomodoro')">تركيز ⏱️</button>
-                <button class="mode-btn" id="shortBreakMode" onclick="setMode('short')">استراحة قصيرة ☕</button>
-                <button class="mode-btn" id="longBreakMode" onclick="setMode('long')">استراحة طويلة 🚶‍♂️</button>
-            </div>
-            
-            <div class="current-task-title" id="currentTaskDisplay">مستعد لبدء الإنجاز 🎯</div>
-            
-            <div class="timer-display" id="timer">25:00</div>
-            
-            <div class="session-counter">الـجـلـسـات الـمـكـتـمـلـة الـيـوم: <span id="sessionCountDisplay" style="color: var(--accent-gold); font-weight: bold;">0</span> 💎</div>
-            
-            <div class="controls">
-                <button onclick="toggleTimer()" id="startBtn">ابدأ التركيز 🚀</button>
-                <button onclick="resetTimer()" style="background-color: var(--danger-color); color: white;">إعادة تعيين 🔄</button>
-            </div>
-
-            <div class="custom-timer-section">
-                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 10px;">خصّص جلستك القادمة بحريّة ⚙️</p>
-                <div style="display: flex; gap: 8px;">
-                    <input type="text" id="customTaskInput" placeholder="تسمية الجلسة (مثال: دراسة فيزياء)" style="flex: 2; padding: 8px;" />
-                    <input type="number" id="customMinutesInput" placeholder="الدقائق" min="1" max="180" style="flex: 1; padding: 8px;" />
-                    <button onclick="applyCustomSettings()" style="padding: 8px 12px; font-size: 0.9rem; background-color: var(--text-muted); color: #1a120b;">تطبيق</button>
-                </div>
-            </div>
-        </div>
-
     </div>
 
-    <div class="panel">
-        <h3>قائمة المهام اليومية 📋</h3>
-        <div class="todo-input-group">
-            <input type="text" id="todoInput" placeholder="أضف مهمة دراسية جديدة للتركيز عليها..." />
-            <button onclick="addTodo()" style="background-color: var(--success-color); color: white;">إضافة</button>
+    <div class="panel merged-todo-section">
+        <h3>قائمة المهام والعمليات اليومية 📋</h3>
+        <div class="input-row">
+            <input type="text" id="todoInput" placeholder="عنوان الهدف اليومي..." style="flex: 2; min-width: 250px;" />
+            <div class="inputs-flex">
+                <input type="number" id="todoMinutesInput" placeholder="الدقائق" min="1" max="180" />
+                <input type="number" id="todoRoundsInput" placeholder="الجولات" min="1" max="10" />
+            </div>
+            <button onclick="addTodo()" class="add-btn">إضافة </button>
         </div>
-        <ul class="todo-list" id="todoList">
-            </ul>
+
+        <div class="table-wrapper">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th>اسم المهمة</th>
+                        <th>الدقائق</th>
+                        <th>الجولات المتبقية</th>
+                        <th style="text-align: center;">التحكم</th>
+                    </tr>
+                </thead>
+                <tbody id="todoTableBody">
+                    </tbody>
+            </table>
+        </div>
     </div>
 
-    <div class="panel">
-        <h3>لوحة صدارة مجتمع التركيز الحي 🏆</h3>
-        <p style="color: var(--text-muted); font-size: 0.9rem; text-align: center; margin-bottom: 10px;">هذه اللوحة حية وتجمع زملائك ومنافسيك في الدراسة مباشرة!</p>
-        <table class="leaderboard-table">
-            <thead>
-                <tr>
-                    <th>الترتيب</th>
-                    <th>المستخدم</th>
-                    <th>مجموع الساعات</th>
-                    <th>الدرع المستحق</th>
-                </tr>
-            </thead>
-            <tbody id="leaderboardBody">
-                <tr><td colspan="4" style="text-align:center; color:var(--text-muted);">جاري الاتصال بالسحاب وجلب البيانات الحية...</td></tr>
-            </tbody>
-        </table>
+    <div class="bottom-layout">
+        
+        <div class="panel">
+            <h3>ترتيب المسجلين 🏆</h3>
+            <div class="table-wrapper">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>المرتبة</th>
+                            <th>المسجل</th>
+                            <th>ساعات الالتزام</th>
+                            <th>الدرع المحصّل</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <tr><td colspan="4" style="text-align:center; color:var(--text-dim);">جاري مزامنة المنظومة سحابياً...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="panel profile-inline-section">
+            <h3 style="font-size: 1.1rem; margin-bottom: 10px;">تسجيل الاسم (اختياري) 👤</h3>
+            <div id="loginForm" class="input-group" style="flex-direction: column; gap: 10px;">
+                <input type="text" id="usernameInput" placeholder="اسمك ..." style="width: 100%;" />
+                <button onclick="registerUser()" style="width: 100%; padding: 10px;">حفظ  </button>
+            </div>
+            <div id="userInfo" style="display: none; text-align: center; width: 100%;">
+                <h4 style="font-size: 1rem; margin-bottom: 6px;">السحابة: <span id="displayUsername" style="color: var(--neon-blue);">المخدم</span> ⚡</h4>
+                <p style="font-size: 0.85rem; color: var(--text-dim);">المنجز: <span id="displayHours" style="color: var(--neon-gold); font-weight: bold;">0</span> ساعة</p>
+            </div>
+            <div class="badge-display" id="badgeDisplay">🌱 ابدأ الرحلة معنا</div>
+        </div>
+
     </div>
 
 </div>
 
+<footer class="site-footer">
+    <p>&copy; 2026 جميع الحقوق محفوظة    | تم التطوير بواسطة  <span class="copyright-name">Mahmoud Rabaa</span> 🛡️🚀</p>
+</footer>
+
 <script>
-    // 🔗 رابط قاعدة بيانات Firebase الخاصة بك
     const FIREBASE_URL = "https://pomodoro-mr-default-rtdb.firebaseio.com";
+
+    // مصفوفة تحتوي على 50 عبارة محفزة تفاعلية وعميقة لمخاطبة المستخدم
+    const motivationPhrases = [
+        "لا تستسلم أبدًا، تذكر هدفك الأساسي جيداً! 🎯",
+        "الألم مؤقت، لكن مجد الوصول دائم! 🏆",
+        "كل ثانية تقضيها هنا هي استثمار في مستقبلك! ⚡",
+        "القمة تتسع للجميع، ولكنها لا تستقبل إلا المثابرين! ⛰️",
+        "الانضباط هو الجسر الذي يربط بين أهدافك وإنجازاتك! 🌉",
+        "إذا تعبت تعلم أن ترتاح، لا أن تنسحب! ☕",
+        "أنت لست هنا لتكون عادياً، أنت هنا لتترك بصمة! 🛡️",
+        "النجاح يُبنى في دقائق الصمت والتركيز المطلق! 🤫",
+        "تحدّ صخب العالم الخارجي وهدوءك الداخلي هو السلاح! ⚔️",
+        "العقبات هي تلك الأشياء المرعبة التي تراها عندما ترفع عينيك عن هدفك! 👀",
+        "لا تنظر إلى الخلف، أنت لا تسير في ذلك الاتجاه! 🚶‍♂️",
+        "كل جولة تنهيها تقربك خطوة عملاقة نحو القمة! 💎",
+        "اصنع من عقلك حصناً لا تخترقه المشتتات! 🏰",
+        "التميز ليس عملاً عابراً، بل هو عادة وانضباط يومي! 🔥",
+        "تذكر دائماً لماذا بدأت هذه الرحلة! 🧠",
+        "الجهد المبذول خلف الكواليس سيصنع فارقاً تراه العيون قريباً! 🎬",
+        "لا تنتظر الظروف المثالية، خذ هذه اللحظة واجعلها مثالية! ✨",
+        "كل إنجاز عظيم بدأ بقرار شجاع بالمحاولة والاستمرار! 🚀",
+        "ثق بقدراتك، فالعقل يصدق ما تصر على فعله! 🧬",
+        "اجعل شغفك أقوى من أعذارك اليومية! 🛑",
+        "طريق الألف ميل يبدأ بجلسة تركيز واحدة ناجحة! 📈",
+        "ركّز على التقدم المستمر وليس الكمال الزائف! ⚙️",
+        "الناجحون لا يملكون وقتاً للندم، يملكون وقتاً للعمل فقط! ⏱️",
+        "كن أنت الشخص الذي يلهم الآخرين للنهوض والالتزام!🌟",
+        "أنت أقوى من أي ملهيات تحاول سرقة وقتك وثوانيك! 🔒",
+        "عندما تريد الاستسلام، فكر في روعة الشعور عند النهاية! 🎉",
+        "الاستمرارية الذكية تتفوق دائماً على الحماس المؤقت! 🔄",
+        "ضع كامل ثقلك في هذه الجلسة، فالأهداف الكبرى تستحق! 💪",
+        "لا تتنازل عما تريد البارحة من أجل إغراء الكسل اليوم! 🌊",
+        "أنت تبني مساراً متميزاً، لا تسمح لشيء بقطع حبل أفكارك! 🧵",
+        "استمر بالتقدم، فحتى الخطوات الصغيرة تصنع فارقاً بالمدى البعيد! 👣",
+        "النجاح الحقيقي هو أن تفعل ما يجب فعله عندما يجب فعله! 🧭",
+        "أنت مهندس مستقبلك، فاحرص على بناء الأساسات بقوة وذكاء! 🧱",
+        "اجعل من هذه الدقائق فرصة لإثبات ذاتك وقدراتك العميقة! 🔮",
+        "قاوم رغبة التصفح العشوائي، فالوقت لا ينتظر أحداً! ⏳",
+        "عقلك قادر على استيعاب المستحيل إذا منحت نفسك دقيقة تركيز! 🌀",
+        "الإنتاجية العالية هي نتيجة الالتزام الواعي بالخطة! 🗺️",
+        "اجعل اسمك يلمع دائماً في صدارة الملتزمين! 🥇",
+        "لا تسمح ليومك أن يمضي دون تحقيق انتصار واحد على الأقل! 🏳️",
+        "كل فكرة عظيمة تحتاج إلى عقل هادئ وجلسة تركيز عميقة لترى النور! 💡",
+        "أنت لا تضيع الوقت هنا، أنت تصنع قيمتك الحقيقية! 💰",
+        "ابتعد عن السطحية، الغوص بالعمق هو سر المبدعين! 🌊",
+        "الكسل يعطي راحة مؤقتة تتبعها حسرة، والعمل يعطي تعباً تتبعه رفعة! 🏔️",
+        "حافظ على طاقتك متقدة، الجلسة القادمة تحمل إنجازاً جديداً! 🔋",
+        "لا تدع يومك يسير عشوائياً، أنت قائد دفة السفينة! 🧭",
+        "تحكم في تركيزك، تتحكم في مصيرك ونتائجك! 🎛️",
+        "أنت على بعد خطوات قليلة من إنهاء هذا الهدف بنجاح ساحق! 🏁",
+        "المستقبل ينتمي لأولئك الذين يلتزمون بأهدافهم في العلن والخفاء! 🌌",
+        "تجاوز حدودك السابقة واصنع لنفسك معايير جديدة ومستحيلة! 📈",
+        "انتهت العبارة السابقة، وبدأ وقتك الذهبي لتثبت حضورك الآن! ⚡"
+    ];
 
     let timerInterval;
     let totalMinutesFocused = 0;
     let completedSessionsCount = parseInt(localStorage.getItem('completedSessionsCount')) || 0;
     let currentUsername = localStorage.getItem('cloudUsername') || '';
     
-    // إعدادات التوقيتات القياسية والخصاصة
     let currentMode = 'pomodoro'; 
     let modeDurations = { pomodoro: 25, short: 5, long: 15 };
     let timeLeft = modeDurations[currentMode] * 60; 
     let isRunning = false;
-    let currentCustomMinutes = 0; // لحفظ دقائق الجلسة المخصصة إن وجدت
+    
+    let currentTaskIndex = -1; 
+    let pomodoroSessionCounter = 0; 
 
     window.onload = function() {
         if (currentUsername) {
@@ -334,33 +562,26 @@
         setInterval(fetchLeaderboard, 10000); 
         loadTodos();
         document.getElementById('sessionCountDisplay').innerText = completedSessionsCount;
+        autoSelectFirstTask(); 
+        
+        // تشغيل محرك تبديل العبارات التحفيزية كل 10 ثوانٍ (10000 مللي ثانية)
+        startMotivationEngine();
     };
 
-    // تطبيق الإعدادات المخصصة وحرية اختيار الوقت والاسم
-    function applyCustomSettings() {
-        const taskName = document.getElementById('customTaskInput').value.trim();
-        const customMin = parseInt(document.getElementById('customMinutesInput').value);
-
-        if (taskName) {
-            document.getElementById('currentTaskDisplay').innerText = `التركيز الحالي: ${taskName}`;
-        } else {
-            document.getElementById('currentTaskDisplay').innerText = "التركيز الحالي: جلسة مخصصة 🎯";
-        }
-
-        if (!isNaN(customMin) && customMin > 0) {
-            clearInterval(timerInterval);
-            isRunning = false;
-            currentCustomMinutes = customMin; // حفظ القيمة لحساب الإنجاز لاحقاً
-            timeLeft = customMin * 60;
-            updateTimerDisplay();
-            document.getElementById('startBtn').innerText = 'ابدأ الجلسة المخصصة 🚀';
-            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
-        } else {
-            alert("يرجى إدخال عدد دقائق صحيح لتهيئة المؤقت الحر! ⏱️");
-        }
+    function startMotivationEngine() {
+        const motivationDisplay = document.getElementById('motivationDisplay');
+        setInterval(() => {
+            // اختيار عبارة عشوائية من المصفوفة لضمان التجديد التلقائي
+            const randomIndex = Math.floor(Math.random() * motivationPhrases.length);
+            // تطبيق تأثير تلاشي ناعم أثناء التغيير
+            motivationDisplay.style.opacity = 0;
+            setTimeout(() => {
+                motivationDisplay.innerText = motivationPhrases[randomIndex];
+                motivationDisplay.style.opacity = 1;
+            }, 200);
+        }, 10000);
     }
 
-    // التسجيل والدخول السحابي
     function registerUser() {
         const input = document.getElementById('usernameInput').value.trim();
         if (input) {
@@ -371,7 +592,7 @@
     }
 
     function fetchUserData() {
-        if (!FIREBASE_URL) return;
+        if (!FIREBASE_URL || !currentUsername) return;
         fetch(`${FIREBASE_URL}/users/${currentUsername}.json`)
         .then(res => res.json())
         .then(data => {
@@ -394,7 +615,7 @@
     }
 
     function saveProgressToCloud(minutes) {
-        if (!FIREBASE_URL) return;
+        if (!FIREBASE_URL || !currentUsername) return;
         fetch(`${FIREBASE_URL}/users/${currentUsername}.json`, {
             method: 'PUT',
             body: JSON.stringify({ minutes: minutes })
@@ -403,7 +624,6 @@
         });
     }
 
-    // حساب الأوسمة والدروع
     function getBadge(hours) {
         if (hours >= 1 && hours < 3) return "🛡️ الدرع البرونزي";
         if (hours >= 3 && hours < 5) return "⚔️ الدرع الفضي";
@@ -426,7 +646,7 @@
             tbody.innerHTML = '';
 
             if (!usersData) {
-                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">لا يوجد مستخدمون مسجلون حالياً. كن الأول!</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-dim);">لا مسجلين حاليا . كن المسجل الأول!</td></tr>';
                 return;
             }
 
@@ -458,19 +678,22 @@
         });
     }
 
-    // التحكم بالمؤقتات والجلسات
     function setMode(mode) {
         clearInterval(timerInterval);
         isRunning = false;
         currentMode = mode;
-        currentCustomMinutes = 0; // إعادة ضبط المؤقت الحر عند اختيار وضع جاهز
         timeLeft = modeDurations[currentMode] * 60;
         updateTimerDisplay();
-        document.getElementById('startBtn').innerText = 'ابدأ الجلسة 🚀';
+        document.getElementById('startBtn').innerText = 'تفعيل المنظومة 🚀';
         
-        if(mode === 'pomodoro') document.getElementById('currentTaskDisplay').innerText = "التركيز الحالي: جلسة قياسية ⏱️";
-        if(mode === 'short') document.getElementById('currentTaskDisplay').innerText = "الاستراحة الحالية: التقاط أنفاس سريع ☕";
-        if(mode === 'long') document.getElementById('currentTaskDisplay').innerText = "الاستراحة الحالية: استراحة طويلة لشحن الطاقة 🚶‍♂️";
+        let todos = JSON.parse(localStorage.getItem('todos')) || [];
+        if(mode === 'pomodoro' && todos[currentTaskIndex]) {
+            document.getElementById('currentTaskDisplay').innerText = `التركيز الحالي: ${todos[currentTaskIndex].text} 🎯`;
+        } else if(mode === 'short') {
+            document.getElementById('currentTaskDisplay').innerText = "الاستراحة الحالية: التقاط الأنفاس التلقائي ☕";
+        } else if(mode === 'long') {
+            document.getElementById('currentTaskDisplay').innerText = "الاستراحة الحالية: شحن الخلايا الشامل (3 دورات مكتملة) 🚶‍♂️";
+        }
 
         document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
         if (mode === 'pomodoro') document.getElementById('pomodoroMode').classList.add('active');
@@ -479,18 +702,19 @@
     }
 
     function toggleTimer() {
-        if (!currentUsername && (currentMode === 'pomodoro' || currentCustomMinutes > 0)) {
-            alert("من فضلك اكتب اسمك واضغط دخول أولاً لكي يتم احتساب ساعاتك وجلساتك في السحاب! 👤");
-            return;
-        }
-
         if (isRunning) {
             clearInterval(timerInterval);
             document.getElementById('startBtn').innerText = 'استئناف 🚀';
             isRunning = false;
         } else {
+            let todos = JSON.parse(localStorage.getItem('todos')) || [];
+            if (todos.length === 0 && currentMode === 'pomodoro') {
+                alert("يرجى إضافة مهمة واحدة على الأقل إلى الجدول لتشغيل العداد تلقائياً! 🎯");
+                return;
+            }
+            
             isRunning = true;
-            document.getElementById('startBtn').innerText = 'إيقاف مؤقت ⏸️';
+            document.getElementById('startBtn').innerText = 'تعليق مؤقت ⏸️';
             timerInterval = setInterval(() => {
                 timeLeft--;
                 updateTimerDisplay();
@@ -498,35 +722,78 @@
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
                     isRunning = false;
-                    document.getElementById('startBtn').innerText = 'ابدأ التركيز 🚀';
+                    document.getElementById('startBtn').innerText = 'ابدأ الجلسة 🚀';
 
-                    // التحقق مما إذا كانت الجلسة المنتهية تركيز قياسي أو مخصص بحرية
-                    if (currentMode === 'pomodoro' || currentCustomMinutes > 0) {
-                        let minutesAdded = currentCustomMinutes > 0 ? currentCustomMinutes : modeDurations.pomodoro;
-                        
-                        totalMinutesFocused += minutesAdded;
-                        saveProgressToCloud(totalMinutesFocused);
-                        
-                        // زيادة عداد الجلسات المكتملة
-                        completedSessionsCount++;
-                        localStorage.setItem('completedSessionsCount', completedSessionsCount);
-                        document.getElementById('sessionCountDisplay').innerText = completedSessionsCount;
-
-                        alert(`عمل رائع ممتاز ومثالي! اكتملت الجلسة بنجاح وعُدّلت إحصاءاتك السحابية الحية! 🎉🏆`);
-                        showProfile();
-                        updateBadge();
-                    } else {
-                        alert('انتهت الاستراحة! حان وقت العودة للتركيز والدراسة بنشاط وحماس. 💪✨');
-                    }
-                    setMode('pomodoro');
+                    handleSessionCompletion();
                 }
             }, 1000);
         }
     }
 
+    function handleSessionCompletion() {
+        let todos = JSON.parse(localStorage.getItem('todos')) || [];
+
+        if (currentMode === 'pomodoro') {
+            pomodoroSessionCounter++; 
+            completedSessionsCount++;
+            localStorage.setItem('completedSessionsCount', completedSessionsCount);
+            document.getElementById('sessionCountDisplay').innerText = completedSessionsCount;
+
+            if (currentUsername) {
+                if (todos[currentTaskIndex]) {
+                    totalMinutesFocused += parseInt(todos[currentTaskIndex].minutes);
+                } else {
+                    totalMinutesFocused += modeDurations.pomodoro;
+                }
+                saveProgressToCloud(totalMinutesFocused);
+                showProfile();
+                updateBadge();
+            }
+
+            if (todos[currentTaskIndex]) {
+                todos[currentTaskIndex].rounds--;
+                if (todos[currentTaskIndex].rounds <= 0) {
+                    todos[currentTaskIndex].completed = true;
+                    alert(`أنهيت تماماً مهمة: [ ${todos[currentTaskIndex].text} ] 🎉 سيتم الانتقال للمهمة التالية.`);
+                } else {
+                    alert(`اكتملت جولة التركيز بنجاح! متبقي ${todos[currentTaskIndex].rounds} جولات لهذه المهمة. 🔥`);
+                }
+                localStorage.setItem('todos', JSON.stringify(todos));
+                renderTodos();
+            }
+
+            if (pomodoroSessionCounter >= 3) {
+                pomodoroSessionCounter = 0; 
+                setMode('long');
+            } else {
+                setMode('short');
+            }
+            
+            toggleTimer();
+
+        } else {
+            alert('انتهت الاستراحة التلقائية! العودة إلى التركيز والإنتاجية الآن. ⚡');
+            autoSelectFirstTask();
+            
+            todos = JSON.parse(localStorage.getItem('todos')) || [];
+            if (todos.length > 0 && currentTaskIndex < todos.length) {
+                setMode('pomodoro');
+                toggleTimer(); 
+            } else {
+                document.getElementById('currentTaskDisplay').innerText = "🏁 تهانينا! لقد أنهيت جميع المهام المضافة بالقائمة!";
+                resetTimer();
+            }
+        }
+    }
+
     function resetTimer() {
         clearInterval(timerInterval);
-        timeLeft = (currentCustomMinutes > 0 ? currentCustomMinutes : modeDurations[currentMode]) * 60;
+        let todos = JSON.parse(localStorage.getItem('todos')) || [];
+        if (currentMode === 'pomodoro' && todos[currentTaskIndex]) {
+            timeLeft = todos[currentTaskIndex].minutes * 60;
+        } else {
+            timeLeft = modeDurations[currentMode] * 60;
+        }
         isRunning = false;
         document.getElementById('startBtn').innerText = 'ابدأ الجلسة 🚀';
         updateTimerDisplay();
@@ -539,15 +806,64 @@
             `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
     }
 
-    // إدارة قائمة المهام الموضعية
     function addTodo() {
         const todoInput = document.getElementById('todoInput');
+        const minutesInput = document.getElementById('todoMinutesInput');
+        const roundsInput = document.getElementById('todoRoundsInput');
+        
         const text = todoInput.value.trim();
+        const mins = parseInt(minutesInput.value) || 25;
+        const rounds = parseInt(roundsInput.value) || 1;
+
         if (text) {
             let todos = JSON.parse(localStorage.getItem('todos')) || [];
-            todos.push({ text: text, completed: false });
+            todos.push({ text: text, minutes: mins, rounds: rounds, completed: false });
             localStorage.setItem('todos', JSON.stringify(todos));
+            
             todoInput.value = '';
+            minutesInput.value = '';
+            roundsInput.value = '';
+            
+            renderTodos();
+            
+            if (todos.length === 1 || currentTaskIndex === -1) {
+                autoSelectFirstTask();
+            }
+        }
+    }
+
+    function autoSelectFirstTask() {
+        let todos = JSON.parse(localStorage.getItem('todos')) || [];
+        let found = false;
+        
+        for (let i = 0; i < todos.length; i++) {
+            if (!todos[i].completed) {
+                currentTaskIndex = i;
+                timeLeft = todos[i].minutes * 60;
+                document.getElementById('currentTaskDisplay').innerText = `التركيز الحالي: ${todos[i].text} 🎯`;
+                updateTimerDisplay();
+                found = true;
+                break;
+            }
+        }
+        
+        if (!found) {
+            currentTaskIndex = -1;
+        }
+        renderTodos();
+    }
+
+    function selectTask(index) {
+        let todos = JSON.parse(localStorage.getItem('todos')) || [];
+        if (todos[index] && !todos[index].completed) {
+            currentTaskIndex = index;
+            clearInterval(timerInterval);
+            isRunning = false;
+            timeLeft = todos[index].minutes * 60;
+            document.getElementById('currentTaskDisplay').innerText = `التركيز الحالي: ${todos[index].text} 🎯`;
+            updateTimerDisplay();
+            document.getElementById('startBtn').innerText = 'ابدأ الجلسة 🚀';
+            setMode('pomodoro');
             renderTodos();
         }
     }
@@ -556,29 +872,52 @@
         let todos = JSON.parse(localStorage.getItem('todos')) || [];
         todos[index].completed = !todos[index].completed;
         localStorage.setItem('todos', JSON.stringify(todos));
-        renderTodos();
+        autoSelectFirstTask();
     }
 
     function deleteTodo(index) {
         let todos = JSON.parse(localStorage.getItem('todos')) || [];
         todos.splice(index, 1);
         localStorage.setItem('todos', JSON.stringify(todos));
-        renderTodos();
+        
+        if (currentTaskIndex === index) {
+            clearInterval(timerInterval);
+            isRunning = false;
+            document.getElementById('startBtn').innerText = 'ابدأ الجلسة 🚀';
+        }
+        
+        autoSelectFirstTask();
     }
 
     function renderTodos() {
-        const list = document.getElementById('todoList');
-        list.innerHTML = '';
+        const tbody = document.getElementById('todoTableBody');
+        tbody.innerHTML = '';
         let todos = JSON.parse(localStorage.getItem('todos')) || [];
 
+        if (todos.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-dim);">لا توجد مهام مضافة حالياً. أضف هدفاً جديداً بالأعلى لتشغيل العداد تلقائياً! 🎯</td></tr>';
+            document.getElementById('currentTaskDisplay').innerText = "🎯 أضف مهمة للبدء التلقائي";
+            return;
+        }
+
         todos.forEach((todo, index) => {
-            const li = document.createElement('li');
-            li.className = `todo-item ${todo.completed ? 'completed' : ''}`;
-            li.innerHTML = `
-                <span onclick="toggleTodo(${index})" style="cursor:pointer; flex:1;">🔹 ${todo.text}</span>
-                <button onclick="deleteTodo(${index})" style="background-color:var(--danger-color); padding:4px 10px; font-size:0.8rem; color:white;">حذف</button>
+            const row = document.createElement('tr');
+            row.className = `task-row ${todo.completed ? 'completed' : ''} ${index === currentTaskIndex && !todo.completed ? 'active-task' : ''}`;
+            row.style.cursor = todo.completed ? 'default' : 'pointer';
+            
+            row.onclick = () => { if(!todo.completed) selectTask(index); };
+
+            row.innerHTML = `
+                <td class="task-name" style="text-align: right; color: var(--text-neon);">
+                    <span onclick="event.stopPropagation(); toggleTodo(${index});" style="margin-left: 10px; cursor: pointer;">${todo.completed ? '✅' : '⚡'}</span>${todo.text}
+                </td>
+                <td style="color: var(--neon-blue); font-weight: 500;">${todo.minutes} دقيقة</td>
+                <td style="color: var(--neon-purple); font-weight: 500;">${todo.rounds} جولات</td>
+                <td style="text-align: center;" onclick="event.stopPropagation();">
+                    <button onclick="deleteTodo(${index})" style="background:var(--neon-red); padding:5px 12px; font-size:0.8rem; color:white; box-shadow:none;">حذف</button>
+                </td>
             `;
-            list.appendChild(li);
+            tbody.appendChild(row);
         });
     }
 
