@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>مؤقت التركيز الأكاديمي ⏱️</title>
+    <title>مؤقت التركيز الأكاديمي السحابي ⏱️</title>
     <style>
         /* سمة المكتبة الأكاديمية الدافئة - Warm Academic Study */
         :root {
-            --bg-color: #1a120b; /* بني خشبي داكن جداً مريح للعين */
-            --panel-bg: #2c1e11; /* لون ألواح خشبي متناسق */
-            --text-main: #f5f2eb; /* أبيض عاجي مريح للقراءة */
-            --text-muted: #bd9a7a; /* لون ورق عتيق ناعم */
-            --accent-gold: #d4af37; /* لمسات ذهبية للأزرار الهامة */
+            --bg-color: #1a120b; 
+            --panel-bg: #2c1e11; 
+            --text-main: #f5f2eb; 
+            --text-muted: #bd9a7a; 
+            --accent-gold: #d4af37; 
             --accent-hover: #aa8c2c;
+            --success-color: #2e7d32;
+            --danger-color: #c62828;
             --shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
         }
 
@@ -35,51 +37,68 @@
 
         .container {
             width: 100%;
-            max-width: 900px;
+            max-width: 950px;
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
 
-        /* اللوحات الأساسية */
+        /* اللوحات */
         .panel {
             background-color: var(--panel-bg);
             border-radius: 12px;
             padding: 25px;
             box-shadow: var(--shadow);
             border: 1px solid rgba(212, 175, 55, 0.1);
-            text-align: center;
         }
 
         h1, h2, h3 {
             color: var(--accent-gold);
             margin-bottom: 15px;
+            text-align: center;
         }
 
-        /* لوحة تسجيل الدخول والملف الشخصي */
+        /* الجزء العلوي: الملف الشخصي والمؤقت في صف واحد */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* نموذج الدخول والمعلومات */
         .profile-section {
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            flex-wrap: wrap;
             gap: 15px;
+            text-align: center;
         }
 
         .input-group {
             display: flex;
             gap: 10px;
             width: 100%;
-            max-width: 400px;
+            max-width: 350px;
+            margin-bottom: 5px;
         }
 
         input {
             flex: 1;
-            padding: 10px;
+            padding: 12px;
             border-radius: 6px;
             border: 1px solid var(--text-muted);
             background: #110a05;
             color: var(--text-main);
             outline: none;
+            font-size: 1rem;
+            text-align: center;
         }
 
         button {
@@ -98,27 +117,95 @@
         }
 
         .badge-display {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: bold;
             color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            margin-top: 10px;
         }
 
-        /* مؤقت التركيز */
+        /* أزرار اختيار نوع الجلسة */
+        .session-modes {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .mode-btn {
+            background: rgba(189, 154, 122, 0.1);
+            color: var(--text-muted);
+            border: 1px solid var(--text-muted);
+        }
+
+        .mode-btn.active {
+            background-color: var(--accent-gold);
+            color: #1a120b;
+            border-color: var(--accent-gold);
+        }
+
+        .current-task-title {
+            font-size: 1.2rem;
+            color: var(--accent-gold);
+            margin-top: 5px;
+            font-weight: bold;
+            min-height: 28px;
+        }
+
         .timer-display {
-            font-size: 5rem;
+            font-size: 4.5rem;
             font-weight: bold;
             color: var(--text-main);
-            margin: 20px 0;
+            margin: 10px 0;
             font-family: monospace;
+            text-align: center;
+        }
+
+        .session-counter {
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 15px;
         }
 
         .controls {
             display: flex;
             justify-content: center;
             gap: 15px;
+        }
+
+        /* تخصيص الجلسات الحر */
+        .custom-timer-section {
+            background: rgba(17, 10, 5, 0.4);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px dashed rgba(189, 154, 122, 0.3);
+        }
+
+        /* قائمة المهام */
+        .todo-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .todo-list {
+            list-style: none;
+            text-align: right;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .todo-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid rgba(189, 154, 122, 0.1);
+        }
+
+        .todo-item.completed span {
+            text-decoration: line-through;
+            color: var(--text-muted);
         }
 
         /* لوحة الصدارة المشتركة */
@@ -148,90 +235,175 @@
 
 <div class="container">
 
-    <div class="panel profile-section" id="profilePanel">
-        <div id="loginForm" class="input-group">
-            <input type="text" id="usernameInput" placeholder="اكتب اسمك للانضمام للمكتبة..." />
-            <button onclick="registerUser()">دخول</button>
+    <div class="main-grid">
+        
+        <div class="panel profile-section">
+            <h3>الملف الشخصي السحابي 👤</h3>
+            <div id="loginForm" class="input-group">
+                <input type="text" id="usernameInput" placeholder="اكتب اسمك الفريد للانضمام..." />
+                <button onclick="registerUser()">دخول</button>
+            </div>
+            <div id="userInfo" style="display: none;">
+                <h4 style="font-size: 1.2rem; margin-bottom: 5px;">مرحباً، <span id="displayUsername">المستخدم</span> 👋</h4>
+                <p>مجموع ساعات التركيز: <span id="displayHours" style="color: var(--accent-gold); font-weight: bold;">0</span> ساعة</p>
+            </div>
+            <div class="badge-display" id="badgeDisplay">🌱 بداية الرحلة</div>
         </div>
-        <div id="userInfo" style="display: none; text-align: right;">
-            <h3>مرحباً، <span id="displayUsername">المستخدم</span> 👋</h3>
-            <p>مجموع ساعات التركيز: <span id="displayHours" style="color: var(--accent-gold);">0</span> ساعة</p>
+
+        <div class="panel" style="text-align: center;">
+            <div class="session-modes">
+                <button class="mode-btn active" id="pomodoroMode" onclick="setMode('pomodoro')">تركيز ⏱️</button>
+                <button class="mode-btn" id="shortBreakMode" onclick="setMode('short')">استراحة قصيرة ☕</button>
+                <button class="mode-btn" id="longBreakMode" onclick="setMode('long')">استراحة طويلة 🚶‍♂️</button>
+            </div>
+            
+            <div class="current-task-title" id="currentTaskDisplay">مستعد لبدء الإنجاز 🎯</div>
+            
+            <div class="timer-display" id="timer">25:00</div>
+            
+            <div class="session-counter">الـجـلـسـات الـمـكـتـمـلـة الـيـوم: <span id="sessionCountDisplay" style="color: var(--accent-gold); font-weight: bold;">0</span> 💎</div>
+            
+            <div class="controls">
+                <button onclick="toggleTimer()" id="startBtn">ابدأ التركيز 🚀</button>
+                <button onclick="resetTimer()" style="background-color: var(--danger-color); color: white;">إعادة تعيين 🔄</button>
+            </div>
+
+            <div class="custom-timer-section">
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 10px;">خصّص جلستك القادمة بحريّة ⚙️</p>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" id="customTaskInput" placeholder="تسمية الجلسة (مثال: دراسة فيزياء)" style="flex: 2; padding: 8px;" />
+                    <input type="number" id="customMinutesInput" placeholder="الدقائق" min="1" max="180" style="flex: 1; padding: 8px;" />
+                    <button onclick="applyCustomSettings()" style="padding: 8px 12px; font-size: 0.9rem; background-color: var(--text-muted); color: #1a120b;">تطبيق</button>
+                </div>
+            </div>
         </div>
-        <div class="badge-display" id="badgeDisplay">🛡️ لا يوجد درع حالياً</div>
+
     </div>
 
     <div class="panel">
-        <h2>مؤقت التركيز الأكاديمي ⏱️</h2>
-        <p style="color: var(--text-muted);">اضغط ابدأ واجمع الساعات لتطوير درعك ومنافسة زملائك</p>
-        <div class="timer-display" id="timer">25:00</div>
-        <div class="controls">
-            <button onclick="toggleTimer()" id="startBtn">ابدأ التركيز 🚀</button>
-            <button onclick="resetTimer()" style="background-color: #8b0000; color: white;">إعادة تعيين 🔄</button>
+        <h3>قائمة المهام اليومية 📋</h3>
+        <div class="todo-input-group">
+            <input type="text" id="todoInput" placeholder="أضف مهمة دراسية جديدة للتركيز عليها..." />
+            <button onclick="addTodo()" style="background-color: var(--success-color); color: white;">إضافة</button>
         </div>
+        <ul class="todo-list" id="todoList">
+            </ul>
     </div>
 
     <div class="panel">
-        <h3>لوحة صدارة مجتمع التركيز 🏆</h3>
-        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 10px;">كن في الصدارة وأشعل الحماس في نفوس بقية زملائك في الدراسة!</p>
+        <h3>لوحة صدارة مجتمع التركيز الحي 🏆</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; text-align: center; margin-bottom: 10px;">هذه اللوحة حية وتجمع زملائك ومنافسيك في الدراسة مباشرة!</p>
         <table class="leaderboard-table">
             <thead>
                 <tr>
                     <th>الترتيب</th>
-                    <th>المستحدم</th>
+                    <th>المستخدم</th>
                     <th>مجموع الساعات</th>
                     <th>الدرع المستحق</th>
                 </tr>
             </thead>
             <tbody id="leaderboardBody">
-                </tbody>
+                <tr><td colspan="4" style="text-align:center; color:var(--text-muted);">جاري الاتصال بالسحاب وجلب البيانات الحية...</td></tr>
+            </tbody>
         </table>
     </div>
 
 </div>
 
 <script>
-    // الإعدادات الأساسية
+    // 🔗 رابط قاعدة بيانات Firebase الخاصة بك
+    const FIREBASE_URL = "https://pomodoro-mr-default-rtdb.firebaseio.com";
+
     let timerInterval;
-    let totalMinutesFocused = parseFloat(localStorage.getItem('totalMinutesFocused')) || 0;
-    let currentUsername = localStorage.getItem('currentUsername') || '';
-    let timeLeft = 25 * 60; // 25 دقيقة للتجربة السريعة (يمكنك تعديلها)
+    let totalMinutesFocused = 0;
+    let completedSessionsCount = parseInt(localStorage.getItem('completedSessionsCount')) || 0;
+    let currentUsername = localStorage.getItem('cloudUsername') || '';
+    
+    // إعدادات التوقيتات القياسية والخصاصة
+    let currentMode = 'pomodoro'; 
+    let modeDurations = { pomodoro: 25, short: 5, long: 15 };
+    let timeLeft = modeDurations[currentMode] * 60; 
     let isRunning = false;
+    let currentCustomMinutes = 0; // لحفظ دقائق الجلسة المخصصة إن وجدت
 
-    // قائمة مستخدمين وهميين في لوحة الصدارة لمحاكاة "الشبكة المشتركة والتنافس"
-    let mockUsers = [
-        { username: "أحمد الملتزم", hours: 6.5, badge: "⚔️ الدرع الفضي" },
-        { username: "سارة متفوقة", hours: 4.2, badge: "⚔️ الدرع الفضي" },
-        { username: "خالد التكتيكي", hours: 2.1, badge: "🛡️ الدرع البرونزي" }
-    ];
-
-    // تشغيل التهيئة عند تحميل الصفحة
     window.onload = function() {
         if (currentUsername) {
-            showProfile();
+            fetchUserData();
         }
-        updateBadge();
-        renderLeaderboard();
+        fetchLeaderboard();
+        setInterval(fetchLeaderboard, 10000); 
+        loadTodos();
+        document.getElementById('sessionCountDisplay').innerText = completedSessionsCount;
     };
 
+    // تطبيق الإعدادات المخصصة وحرية اختيار الوقت والاسم
+    function applyCustomSettings() {
+        const taskName = document.getElementById('customTaskInput').value.trim();
+        const customMin = parseInt(document.getElementById('customMinutesInput').value);
+
+        if (taskName) {
+            document.getElementById('currentTaskDisplay').innerText = `التركيز الحالي: ${taskName}`;
+        } else {
+            document.getElementById('currentTaskDisplay').innerText = "التركيز الحالي: جلسة مخصصة 🎯";
+        }
+
+        if (!isNaN(customMin) && customMin > 0) {
+            clearInterval(timerInterval);
+            isRunning = false;
+            currentCustomMinutes = customMin; // حفظ القيمة لحساب الإنجاز لاحقاً
+            timeLeft = customMin * 60;
+            updateTimerDisplay();
+            document.getElementById('startBtn').innerText = 'ابدأ الجلسة المخصصة 🚀';
+            document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+        } else {
+            alert("يرجى إدخال عدد دقائق صحيح لتهيئة المؤقت الحر! ⏱️");
+        }
+    }
+
+    // التسجيل والدخول السحابي
     function registerUser() {
         const input = document.getElementById('usernameInput').value.trim();
         if (input) {
-            currentUsername = input;
-            localStorage.setItem('currentUsername', currentUsername);
-            showProfile();
-            renderLeaderboard();
+            currentUsername = input.replace(/[.#$\[\]]/g, ""); 
+            localStorage.setItem('cloudUsername', currentUsername);
+            fetchUserData();
         }
+    }
+
+    function fetchUserData() {
+        if (!FIREBASE_URL) return;
+        fetch(`${FIREBASE_URL}/users/${currentUsername}.json`)
+        .then(res => res.json())
+        .then(data => {
+            if (data) {
+                totalMinutesFocused = data.minutes || 0;
+            } else {
+                saveProgressToCloud(0);
+            }
+            showProfile();
+            updateBadge();
+            fetchLeaderboard();
+        });
     }
 
     function showProfile() {
         document.getElementById('loginForm').style.display = 'none';
         document.getElementById('userInfo').style.display = 'block';
         document.getElementById('displayUsername').innerText = currentUsername;
-        // عرض الساعات كعدد طبيعي مبسط
         document.getElementById('displayHours').innerText = Math.floor(totalMinutesFocused / 60);
     }
 
-    // دالة تحديد نوع الدرع بناءً على شروطك الذكية
+    function saveProgressToCloud(minutes) {
+        if (!FIREBASE_URL) return;
+        fetch(`${FIREBASE_URL}/users/${currentUsername}.json`, {
+            method: 'PUT',
+            body: JSON.stringify({ minutes: minutes })
+        }).then(() => {
+            fetchLeaderboard();
+        });
+    }
+
+    // حساب الأوسمة والدروع
     function getBadge(hours) {
         if (hours >= 1 && hours < 3) return "🛡️ الدرع البرونزي";
         if (hours >= 3 && hours < 5) return "⚔️ الدرع الفضي";
@@ -242,49 +414,79 @@
 
     function updateBadge() {
         let currentHours = totalMinutesFocused / 60;
-        let badge = getBadge(currentHours);
-        document.getElementById('badgeDisplay').innerText = badge;
+        document.getElementById('badgeDisplay').innerText = getBadge(currentHours);
     }
 
-    // تحديث وعرض لوحة الصدارة التنافسية
-    function renderLeaderboard() {
-        const tbody = document.getElementById('leaderboardBody');
-        tbody.innerHTML = '';
+    function fetchLeaderboard() {
+        if (!FIREBASE_URL) return;
+        fetch(`${FIREBASE_URL}/users.json`)
+        .then(res => res.json())
+        .then(usersData => {
+            const tbody = document.getElementById('leaderboardBody');
+            tbody.innerHTML = '';
 
-        let currentHours = totalMinutesFocused / 60;
-        let allUsers = [...mockUsers];
+            if (!usersData) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">لا يوجد مستخدمون مسجلون حالياً. كن الأول!</td></tr>';
+                return;
+            }
 
-        if (currentUsername) {
-            allUsers.push({
-                username: currentUsername + " (أنت)",
-                hours: parseFloat(currentHours.toFixed(1)),
-                badge: getBadge(currentHours),
-                isCurrent: true
+            let allUsers = [];
+            for (let name in usersData) {
+                let hours = (usersData[name].minutes || 0) / 60;
+                allUsers.push({
+                    username: name,
+                    hours: hours,
+                    badge: getBadge(hours),
+                    isCurrent: name === currentUsername
+                });
+            }
+
+            allUsers.sort((a, b) => b.hours - a.hours);
+
+            allUsers.forEach((user, index) => {
+                const row = document.createElement('tr');
+                if (user.isCurrent) row.className = 'current-user-row';
+
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${user.username} ${user.isCurrent ? "(أنت)" : ""}</td>
+                    <td>${Math.floor(user.hours)} ساعة</td>
+                    <td>${user.badge}</td>
+                `;
+                tbody.appendChild(row);
             });
-        }
-
-        // ترتيب المستخدمين تنازلياً من الأعلى تركيزاً إلى الأقل
-        allUsers.sort((a, b) => b.hours - a.hours);
-
-        allUsers.forEach((user, index) => {
-            const row = document.createElement('tr');
-            if (user.isCurrent) row.className = 'current-user-row';
-
-            row.innerHTML = `
-                <td>${index + 1}</td>
-                <td>${user.username}</td>
-                <td>${Math.floor(user.hours)} ساعة</td>
-                <td>${user.badge}</td>
-            `;
-            tbody.appendChild(row);
         });
     }
 
-    // إدارة العداد
+    // التحكم بالمؤقتات والجلسات
+    function setMode(mode) {
+        clearInterval(timerInterval);
+        isRunning = false;
+        currentMode = mode;
+        currentCustomMinutes = 0; // إعادة ضبط المؤقت الحر عند اختيار وضع جاهز
+        timeLeft = modeDurations[currentMode] * 60;
+        updateTimerDisplay();
+        document.getElementById('startBtn').innerText = 'ابدأ الجلسة 🚀';
+        
+        if(mode === 'pomodoro') document.getElementById('currentTaskDisplay').innerText = "التركيز الحالي: جلسة قياسية ⏱️";
+        if(mode === 'short') document.getElementById('currentTaskDisplay').innerText = "الاستراحة الحالية: التقاط أنفاس سريع ☕";
+        if(mode === 'long') document.getElementById('currentTaskDisplay').innerText = "الاستراحة الحالية: استراحة طويلة لشحن الطاقة 🚶‍♂️";
+
+        document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+        if (mode === 'pomodoro') document.getElementById('pomodoroMode').classList.add('active');
+        if (mode === 'short') document.getElementById('shortBreakMode').classList.add('active');
+        if (mode === 'long') document.getElementById('longBreakMode').classList.add('active');
+    }
+
     function toggleTimer() {
+        if (!currentUsername && (currentMode === 'pomodoro' || currentCustomMinutes > 0)) {
+            alert("من فضلك اكتب اسمك واضغط دخول أولاً لكي يتم احتساب ساعاتك وجلساتك في السحاب! 👤");
+            return;
+        }
+
         if (isRunning) {
             clearInterval(timerInterval);
-            document.getElementById('startBtn').innerText = 'استئناف التركيز 🚀';
+            document.getElementById('startBtn').innerText = 'استئناف 🚀';
             isRunning = false;
         } else {
             isRunning = true;
@@ -295,19 +497,28 @@
 
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
-                    // عند انتهاء الـ 25 دقيقة بنجاح، تُضاف دقائق التركيز تلقائياً
-                    totalMinutesFocused += 25; 
-                    localStorage.setItem('totalMinutesFocused', totalMinutesFocused);
-                    
-                    alert('أحسنت صنعاً يا بطل! تم إنهاء جلسة التركيز بنجاح وإضافة الإنجاز لقاعدة البيانات. 🎉');
-                    
-                    timeLeft = 25 * 60;
                     isRunning = false;
                     document.getElementById('startBtn').innerText = 'ابدأ التركيز 🚀';
-                    
-                    if (currentUsername) showProfile();
-                    updateBadge();
-                    renderLeaderboard();
+
+                    // التحقق مما إذا كانت الجلسة المنتهية تركيز قياسي أو مخصص بحرية
+                    if (currentMode === 'pomodoro' || currentCustomMinutes > 0) {
+                        let minutesAdded = currentCustomMinutes > 0 ? currentCustomMinutes : modeDurations.pomodoro;
+                        
+                        totalMinutesFocused += minutesAdded;
+                        saveProgressToCloud(totalMinutesFocused);
+                        
+                        // زيادة عداد الجلسات المكتملة
+                        completedSessionsCount++;
+                        localStorage.setItem('completedSessionsCount', completedSessionsCount);
+                        document.getElementById('sessionCountDisplay').innerText = completedSessionsCount;
+
+                        alert(`عمل رائع ممتاز ومثالي! اكتملت الجلسة بنجاح وعُدّلت إحصاءاتك السحابية الحية! 🎉🏆`);
+                        showProfile();
+                        updateBadge();
+                    } else {
+                        alert('انتهت الاستراحة! حان وقت العودة للتركيز والدراسة بنشاط وحماس. 💪✨');
+                    }
+                    setMode('pomodoro');
                 }
             }, 1000);
         }
@@ -315,9 +526,9 @@
 
     function resetTimer() {
         clearInterval(timerInterval);
-        timeLeft = 25 * 60;
+        timeLeft = (currentCustomMinutes > 0 ? currentCustomMinutes : modeDurations[currentMode]) * 60;
         isRunning = false;
-        document.getElementById('startBtn').innerText = 'ابدأ التركيز 🚀';
+        document.getElementById('startBtn').innerText = 'ابدأ الجلسة 🚀';
         updateTimerDisplay();
     }
 
@@ -326,6 +537,53 @@
         let seconds = timeLeft % 60;
         document.getElementById('timer').innerText = 
             `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    }
+
+    // إدارة قائمة المهام الموضعية
+    function addTodo() {
+        const todoInput = document.getElementById('todoInput');
+        const text = todoInput.value.trim();
+        if (text) {
+            let todos = JSON.parse(localStorage.getItem('todos')) || [];
+            todos.push({ text: text, completed: false });
+            localStorage.setItem('todos', JSON.stringify(todos));
+            todoInput.value = '';
+            renderTodos();
+        }
+    }
+
+    function toggleTodo(index) {
+        let todos = JSON.parse(localStorage.getItem('todos')) || [];
+        todos[index].completed = !todos[index].completed;
+        localStorage.setItem('todos', JSON.stringify(todos));
+        renderTodos();
+    }
+
+    function deleteTodo(index) {
+        let todos = JSON.parse(localStorage.getItem('todos')) || [];
+        todos.splice(index, 1);
+        localStorage.setItem('todos', JSON.stringify(todos));
+        renderTodos();
+    }
+
+    function renderTodos() {
+        const list = document.getElementById('todoList');
+        list.innerHTML = '';
+        let todos = JSON.parse(localStorage.getItem('todos')) || [];
+
+        todos.forEach((todo, index) => {
+            const li = document.createElement('li');
+            li.className = `todo-item ${todo.completed ? 'completed' : ''}`;
+            li.innerHTML = `
+                <span onclick="toggleTodo(${index})" style="cursor:pointer; flex:1;">🔹 ${todo.text}</span>
+                <button onclick="deleteTodo(${index})" style="background-color:var(--danger-color); padding:4px 10px; font-size:0.8rem; color:white;">حذف</button>
+            `;
+            list.appendChild(li);
+        });
+    }
+
+    function loadTodos() {
+        renderTodos();
     }
 </script>
 </body>
