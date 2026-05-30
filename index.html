@@ -437,7 +437,7 @@
                     </tr>
                 </thead>
                 <tbody id="todoTableBody">
-                    </tbody>
+                </tbody>
             </table>
         </div>
     </div>
@@ -467,13 +467,13 @@
             <h3 style="font-size: 1.1rem; margin-bottom: 10px;">تسجيل الاسم (اختياري) 👤</h3>
             <div id="loginForm" class="input-group" style="flex-direction: column; gap: 10px;">
                 <input type="text" id="usernameInput" placeholder="اسمك ..." style="width: 100%;" />
-                <button onclick="registerUser()" style="width: 100%; padding: 10px;">حفظ  </button>
+                <button onclick="registerUser()" style="width: 100%; padding: 10px;">حفظ </button>
             </div>
             <div id="userInfo" style="display: none; text-align: center; width: 100%;">
                 <h4 style="font-size: 1rem; margin-bottom: 6px;">السحابة: <span id="displayUsername" style="color: var(--neon-blue);">المخدم</span> ⚡</h4>
                 <p style="font-size: 0.85rem; color: var(--text-dim);">المنجز: <span id="displayHours" style="color: var(--neon-gold); font-weight: bold;">0</span> ساعة</p>
             </div>
-            <div class="badge-display" id="badgeDisplay">🌱 ابدأ الرحلة معنا</div>
+            <div class="badge-display" id="badgeDisplay">🌱 بداية الرحلة </div>
         </div>
 
     </div>
@@ -487,7 +487,6 @@
 <script>
     const FIREBASE_URL = "https://pomodoro-mr-default-rtdb.firebaseio.com";
 
-    // مصفوفة تحتوي على 50 عبارة محفزة تفاعلية وعميقة لمخاطبة المستخدم
     const motivationPhrases = [
         "لا تستسلم أبدًا، تذكر هدفك الأساسي جيداً! 🎯",
         "الألم مؤقت، لكن مجد الوصول دائم! 🏆",
@@ -521,7 +520,7 @@
         "أنت تبني مساراً متميزاً، لا تسمح لشيء بقطع حبل أفكارك! 🧵",
         "استمر بالتقدم، فحتى الخطوات الصغيرة تصنع فارقاً بالمدى البعيد! 👣",
         "النجاح الحقيقي هو أن تفعل ما يجب فعله عندما يجب فعله! 🧭",
-        "أنت مهندس مستقبلك، فاحرص على بناء الأساسات بقوة وذكاء! 🧱",
+        "أنت مهندس مستقبلك, فاحرص على بناء الأساسات بقوة وذكاء! 🧱",
         "اجعل من هذه الدقائق فرصة لإثبات ذاتك وقدراتك العميقة! 🔮",
         "قاوم رغبة التصفح العشوائي، فالوقت لا ينتظر أحداً! ⏳",
         "عقلك قادر على استيعاب المستحيل إذا منحت نفسك دقيقة تركيز! 🌀",
@@ -555,25 +554,49 @@
     let pomodoroSessionCounter = 0; 
 
     window.onload = function() {
-        if (currentUsername) {
-            fetchUserData();
-        }
-        fetchLeaderboard();
-        setInterval(fetchLeaderboard, 10000); 
-        loadTodos();
-        document.getElementById('sessionCountDisplay').innerText = completedSessionsCount;
-        autoSelectFirstTask(); 
-        
-        // تشغيل محرك تبديل العبارات التحفيزية كل 10 ثوانٍ (10000 مللي ثانية)
-        startMotivationEngine();
+        // عند التحميل لأول مرة، نقوم بمسح قاعدة البيانات لحذف كافة الأسماء السابقة والبدء من جديد
+        clearFirebaseDatabase();
     };
+
+    // دالة مخصصة لمسح كافة المسجلين من Firebase وإعادة تهيئة المنظومة
+    function clearFirebaseDatabase() {
+        if (!FIREBASE_URL) return;
+        fetch(`${FIREBASE_URL}/users.json`, {
+            method: 'DELETE'
+        })
+        .then(() => {
+            // تنظيف البيانات المحلية للمتصفح الحالي أيضاً لضمان تصفير تام
+            localStorage.removeItem('cloudUsername');
+            localStorage.removeItem('todos');
+            localStorage.removeItem('completedSessionsCount');
+            currentUsername = '';
+            completedSessionsCount = 0;
+            
+            // إعادة تشغيل المزامنة وقراءة البيانات بعد الحذف
+            if (currentUsername) {
+                fetchUserData();
+            }
+            fetchLeaderboard();
+            setInterval(fetchLeaderboard, 10000); 
+            loadTodos();
+            document.getElementById('sessionCountDisplay').innerText = completedSessionsCount;
+            autoSelectFirstTask(); 
+            startMotivationEngine();
+        })
+        .catch(error => {
+            console.error("خطأ أثناء تصفير قاعدة البيانات:", error);
+            // في حال فشل الاتصال بالإنترنت، نقوم بتشغيل المنظومة محلياً كخطة بديلة
+            fetchLeaderboard();
+            setInterval(fetchLeaderboard, 10000); 
+            loadTodos();
+            startMotivationEngine();
+        });
+    }
 
     function startMotivationEngine() {
         const motivationDisplay = document.getElementById('motivationDisplay');
         setInterval(() => {
-            // اختيار عبارة عشوائية من المصفوفة لضمان التجديد التلقائي
             const randomIndex = Math.floor(Math.random() * motivationPhrases.length);
-            // تطبيق تأثير تلاشي ناعم أثناء التغيير
             motivationDisplay.style.opacity = 0;
             setTimeout(() => {
                 motivationDisplay.innerText = motivationPhrases[randomIndex];
@@ -723,7 +746,6 @@
                     clearInterval(timerInterval);
                     isRunning = false;
                     document.getElementById('startBtn').innerText = 'ابدأ الجلسة 🚀';
-
                     handleSessionCompletion();
                 }
             }, 1000);
@@ -863,16 +885,8 @@
             document.getElementById('currentTaskDisplay').innerText = `التركيز الحالي: ${todos[index].text} 🎯`;
             updateTimerDisplay();
             document.getElementById('startBtn').innerText = 'ابدأ الجلسة 🚀';
-            setMode('pomodoro');
             renderTodos();
         }
-    }
-
-    function toggleTodo(index) {
-        let todos = JSON.parse(localStorage.getItem('todos')) || [];
-        todos[index].completed = !todos[index].completed;
-        localStorage.setItem('todos', JSON.stringify(todos));
-        autoSelectFirstTask();
     }
 
     function deleteTodo(index) {
@@ -884,9 +898,21 @@
             clearInterval(timerInterval);
             isRunning = false;
             document.getElementById('startBtn').innerText = 'ابدأ الجلسة 🚀';
+            autoSelectFirstTask();
+        } else if (currentTaskIndex > index) {
+            currentTaskIndex--;
         }
         
-        autoSelectFirstTask();
+        renderTodos();
+        if(todos.length === 0) {
+            document.getElementById('currentTaskDisplay').innerText = "🎯 أضف مهمة للبدء التلقائي";
+            timeLeft = modeDurations[currentMode] * 60;
+            updateTimerDisplay();
+        }
+    }
+
+    function loadTodos() {
+        renderTodos();
     }
 
     function renderTodos() {
@@ -895,34 +921,26 @@
         let todos = JSON.parse(localStorage.getItem('todos')) || [];
 
         if (todos.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-dim);">لا توجد مهام مضافة حالياً. أضف هدفاً جديداً بالأعلى لتشغيل العداد تلقائياً! 🎯</td></tr>';
-            document.getElementById('currentTaskDisplay').innerText = "🎯 أضف مهمة للبدء التلقائي";
+            tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-dim);">لا يوجد أهداف مضافة حالياً... 🎯</td></tr>';
             return;
         }
 
         todos.forEach((todo, index) => {
             const row = document.createElement('tr');
-            row.className = `task-row ${todo.completed ? 'completed' : ''} ${index === currentTaskIndex && !todo.completed ? 'active-task' : ''}`;
-            row.style.cursor = todo.completed ? 'default' : 'pointer';
-            
-            row.onclick = () => { if(!todo.completed) selectTask(index); };
+            row.className = 'task-row';
+            if (todo.completed) row.classList.add('completed');
+            if (index === currentTaskIndex && !todo.completed && currentMode === 'pomodoro') row.classList.add('active-task');
 
             row.innerHTML = `
-                <td class="task-name" style="text-align: right; color: var(--text-neon);">
-                    <span onclick="event.stopPropagation(); toggleTodo(${index});" style="margin-left: 10px; cursor: pointer;">${todo.completed ? '✅' : '⚡'}</span>${todo.text}
-                </td>
-                <td style="color: var(--neon-blue); font-weight: 500;">${todo.minutes} دقيقة</td>
-                <td style="color: var(--neon-purple); font-weight: 500;">${todo.rounds} جولات</td>
-                <td style="text-align: center;" onclick="event.stopPropagation();">
-                    <button onclick="deleteTodo(${index})" style="background:var(--neon-red); padding:5px 12px; font-size:0.8rem; color:white; box-shadow:none;">حذف</button>
+                <td class="task-name" style="cursor:pointer;" onclick="selectTask(${index})">${todo.text} ${todo.completed ? "✅" : ""}</td>
+                <td>${todo.minutes} د</td>
+                <td>${todo.rounds} جولات</td>
+                <td style="text-align: center;">
+                    <button onclick="deleteTodo(${index})" style="background:var(--neon-red); color:white; padding: 5px 12px; font-size:0.8rem; box-shadow:none;">حذف 🗑️</button>
                 </td>
             `;
             tbody.appendChild(row);
         });
-    }
-
-    function loadTodos() {
-        renderTodos();
     }
 </script>
 </body>
