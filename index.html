@@ -9,14 +9,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
     
     <style>
-        /* نظام الألوان الحماسية والنيون المستقبلي */
         :root {
             --bg-dark: #05070b;
             --panel-glass: rgba(15, 22, 36, 0.7);
             --text-neon: #f0f5fa;
             --text-dim: #8a9cb2;
             
-            /* ألوان الإضاءة المتوهجة */
             --neon-blue: #00f3ff;
             --neon-purple: #9d4edd;
             --neon-gold: #ffb703;
@@ -33,17 +31,16 @@
             font-family: 'Tajawal', sans-serif;
         }
 
-        /* خلفية حركية مذهلة تبعث على النشاط */
         body {
             background: linear-gradient(135deg, #05070b, #0f1123, #05070b);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
             color: var(--text-neon);
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             align-items: center;
             min-height: 100vh;
-            padding: 12px;
+            padding: 20px;
             overflow-x: hidden;
             flex-direction: column;
         }
@@ -56,55 +53,43 @@
 
         .container {
             width: 100%;
-            max-width: 1000px;
+            max-width: 1100px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
-            flex: 1;
-            align-items: center; /* لضمان سنترة اللوحات بالمنتصف تماماً */
+            gap: 25px;
         }
 
-        /* اسم الموقع في صدارة الصفحة بتأثير نيون متوهج وحماسي */
         .site-header {
             text-align: center;
-            margin-bottom: 5px;
-            margin-top: 10px;
+            margin: 10px 0;
             width: 100%;
         }
 
         .site-header h1 {
-            font-size: calc(2rem + 1.5vw);
+            font-size: calc(2.2rem + 1.2vw);
             font-weight: 900;
             color: #fff;
-            letter-spacing: 1px;
             background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple), var(--neon-gold));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             filter: drop-shadow(0 0 15px rgba(0, 243, 255, 0.4));
-            margin: 0;
         }
 
-        /* ألواح زجاجية بارزة للأمام مع توهج خلفي حماسي */
+        /* الألواح أصبحت تتمدد بعرض الحاوية تلقائياً لتناسب الشاشات الكبيرة */
         .panel {
             background: var(--panel-glass);
             backdrop-filter: blur(14px);
             -webkit-backdrop-filter: blur(14px);
             border-radius: 20px;
-            padding: 25px;
+            padding: 30px;
             border: var(--glass-border);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 
-                        0 0 30px rgba(0, 243, 255, 0.03),
-                        inset 0 0 15px rgba(255, 255, 255, 0.02);
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
             position: relative;
             width: 100%;
             display: flex;
             flex-direction: column;
-            align-items: center; /* سنترة المحتويات الداخلية تلقائياً */
-            text-align: center;
         }
 
-        /* خط نيون جمالي علوي لكل لوحة لزيادة الحداثة */
         .panel::before {
             content: '';
             position: absolute;
@@ -116,113 +101,95 @@
             box-shadow: 0 0 10px var(--neon-blue);
         }
 
-        .panel:hover {
-            transform: translateY(-2px);
-            border-color: rgba(0, 243, 255, 0.4);
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 
-                        0 0 40px rgba(0, 243, 255, 0.15);
-        }
-
         h2, h3 {
             color: var(--neon-gold);
             text-shadow: 0 0 12px rgba(255, 183, 3, 0.4);
             margin-bottom: 20px;
             text-align: center;
             font-weight: 800;
-            letter-spacing: 1px;
-            font-size: calc(1.1rem + 0.3vw);
+            font-size: calc(1.2rem + 0.3vw);
             width: 100%;
         }
 
-        /* تقسيم السطر السفلي: يمين جدول الترتيب، يسار لوحة الاسم مصغرة */
+        /* تخطيط مرن ومثالي للشاشات الكبيرة والصغيرة */
         .bottom-layout {
             display: grid;
-            grid-template-columns: 1.5fr 1fr;
-            gap: 20px;
-            align-items: stretch;
+            grid-template-columns: 1.6fr 1fr;
+            gap: 25px;
             width: 100%;
         }
 
         .profile-inline-section {
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            gap: 15px;
-            padding: 20px;
+            gap: 20px;
         }
 
         .input-group {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             width: 100%;
-            justify-content: center;
         }
 
+        /* تحسين مظهر وحجم حقول الإدخال */
         input {
-            flex: 1;
-            padding: 12px;
-            border-radius: 10px;
+            padding: 14px;
+            border-radius: 12px;
             border: 1px solid rgba(138, 156, 178, 0.3);
             background: rgba(5, 7, 11, 0.8);
             color: var(--text-neon);
             outline: none;
-            font-size: 0.95rem;
-            text-align: center; /* جعل النص بداخل حقل الإدخال في المنتصف دائماً */
+            font-size: 1rem;
+            text-align: center;
             transition: all 0.3s ease;
-            min-width: 0;
         }
 
         input:focus {
             border-color: var(--neon-blue);
             box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
-            background: #05070b;
         }
 
-        /* أزرار النيون المشعة */
         button {
-            padding: 12px 24px;
-            border-radius: 10px;
+            padding: 14px 28px;
+            border-radius: 12px;
             border: none;
             background: linear-gradient(135deg, var(--neon-gold), #e6a100);
             color: #05070b;
             font-weight: bold;
+            font-size: 1rem;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 0 15px rgba(255, 183, 3, 0.3);
-            white-space: nowrap;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             display: inline-flex;
             justify-content: center;
             align-items: center;
-            text-align: center;
+            white-space: nowrap;
         }
 
         button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0 25px rgba(255, 183, 3, 0.6);
+            box-shadow: 0 0 25px rgba(255, 183, 3, 0.5);
         }
 
         .badge-display {
             font-size: 1rem;
             font-weight: bold;
             color: var(--neon-blue);
-            text-shadow: 0 0 15px rgba(0, 243, 255, 0.6);
+            text-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
             background: rgba(0, 243, 255, 0.05);
-            padding: 8px 15px;
+            padding: 10px 20px;
             border-radius: 30px;
             border: 1px solid rgba(0, 243, 255, 0.2);
-            margin-top: 5px;
             width: 100%;
             text-align: center;
         }
 
-        /* أزرار أوضاع الجلسات المتوهجة */
         .session-modes {
             display: flex;
             justify-content: center;
-            gap: 8px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
             width: 100%;
         }
 
@@ -230,153 +197,126 @@
             background: rgba(255, 255, 255, 0.03);
             color: var(--text-dim);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: none;
-            padding: 10px 14px;
-            font-size: 0.85rem;
+            padding: 12px 20px;
+            font-size: 0.95rem;
             flex: 1;
-            min-width: 100px;
-            text-align: center;
         }
 
         .mode-btn.active {
             background: linear-gradient(135deg, var(--neon-blue), #00b4d8);
             color: #05070b;
             border-color: var(--neon-blue);
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
         }
 
         .current-task-title {
-            font-size: calc(1.1rem + 0.3vw);
+            font-size: calc(1.2rem + 0.3vw);
             color: #fff;
             text-shadow: 0 0 10px rgba(255,255,255,0.2);
-            margin-top: 5px;
-            font-weight: 600;
-            min-height: 28px;
-            padding: 0 10px;
             text-align: center;
-            width: 100%;
+            margin-bottom: 10px;
+            font-weight: 700;
         }
 
-        /* شاشة العداد الأكبر لتشمل المساحة كاملة */
         .timer-display {
-            font-size: calc(4.5rem + 4vw);
+            font-size: calc(5rem + 5vw);
             font-weight: 900;
             color: var(--text-neon);
-            margin: 10px 0;
+            margin: 15px 0;
             font-family: 'Courier New', Courier, monospace;
             text-align: center;
-            text-shadow: 0 0 35px rgba(0, 243, 255, 0.4), 0 0 70px rgba(157, 78, 221, 0.2);
-            letter-spacing: 2px;
-            line-height: 1.1;
-            width: 100%;
+            text-shadow: 0 0 35px rgba(0, 243, 255, 0.4);
+            line-height: 1;
         }
 
         .session-counter {
             color: var(--text-dim);
-            font-size: 1rem;
-            margin-bottom: 20px;
-            padding: 0 5px;
+            font-size: 1.05rem;
+            margin-bottom: 25px;
             text-align: center;
-            width: 100%;
         }
 
-        /* تنسيق عنصر العبارات المحفزة التفاعلي */
         .motivation-container {
-            font-size: calc(0.95rem + 0.2vw);
+            font-size: calc(1rem + 0.2vw);
             font-weight: 700;
             color: var(--neon-gold);
             text-shadow: 0 0 10px rgba(255, 183, 3, 0.3);
-            margin-bottom: 20px;
-            min-height: 35px;
-            transition: all 0.5s ease-in-out;
-            padding: 0 10px;
-            line-height: 1.4;
+            margin-bottom: 25px;
+            min-height: 40px;
             text-align: center;
-            width: 100%;
+            line-height: 1.4;
         }
 
         .controls {
             display: flex;
             justify-content: center;
-            gap: 12px;
+            gap: 15px;
             width: 100%;
-            flex-wrap: wrap;
         }
 
-        /* تنسيقات اللوحة المدمجة للمهام والتحكم */
+        /* صف المدخلات للمهام يتوزع بعرض الشاشة تلقائياً وبشكل متناسق */
         .merged-todo-section .input-row {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            align-items: center;
+            gap: 12px;
+            margin-bottom: 25px;
             width: 100%;
-            justify-content: center;
         }
 
         .merged-todo-section .inputs-flex {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             flex: 1;
-            min-width: 140px;
-            justify-content: center;
         }
 
         .merged-todo-section button.add-btn {
             background: linear-gradient(135deg, var(--neon-green), #22c55e);
-            box-shadow: 0 0 15px rgba(57, 255, 20, 0.3);
-            flex: 1;
-            min-width: 80px;
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
+            padding: 14px 35px;
         }
 
         .merged-todo-section button.add-btn:hover {
-            box-shadow: 0 0 25px rgba(57, 255, 20, 0.6);
+            box-shadow: 0 0 25px rgba(57, 255, 20, 0.5);
         }
 
-        /* جداول متجاوبة وموحدة النمط مع شريط تمرير ذكي للاجهزة المحمولة */
+        /* تنظيم الجداول وحمايتها من التشوه */
         .table-wrapper {
             width: 100%;
             overflow-x: auto;
-            -webkit-overflow-scrolling: touch; 
+            -webkit-overflow-scrolling: touch;
             background: rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
+            border-radius: 12px;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
 
         .custom-table {
             width: 100%;
             border-collapse: collapse;
-            text-align: center; /* جعل النص بالكامل داخل الجداول في المنتصف للـ Desktop والـ Mobile */
-            min-width: 450px; 
         }
 
         .custom-table th, .custom-table td {
-            padding: 12px 14px;
+            padding: 15px 20px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            white-space: nowrap; 
-            text-align: center; /* تأكيد سنترة الخلايا والعناوين بنسبة 100% */
+            text-align: center;
             vertical-align: middle;
+            white-space: nowrap;
         }
 
         .custom-table th {
             color: var(--neon-gold);
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
             background: rgba(5, 7, 11, 0.4);
         }
 
         .custom-table td {
-            font-size: 0.9rem;
+            font-size: 0.95rem;
         }
 
-        /* نمط الجلسة النشطة حالياً داخل الجدول */
         .task-row.active-task {
             background-color: rgba(57, 255, 20, 0.08);
             border-right: 4px solid var(--neon-green);
-            border-left: 4px solid var(--neon-green); /* سنترة الشريط على الجانبين للتناسق البصري */
         }
 
-        /* نمط خاص بصفوف المهام المكتملة */
         .task-row.completed td.task-name {
             text-decoration: line-through;
             color: var(--text-dim);
@@ -386,23 +326,18 @@
         .current-user-row {
             background-color: rgba(0, 243, 255, 0.06);
             border-right: 4px solid var(--neon-blue);
-            border-left: 4px solid var(--neon-blue);
             font-weight: bold;
-            box-shadow: inset 0 0 15px rgba(0, 243, 255, 0.1);
         }
 
-        /* شريط حقوق النشر والملكية الفكرية السفلي */
         .site-footer {
-            margin-top: 30px;
-            margin-bottom: 10px;
+            margin-top: 40px;
+            margin-bottom: 15px;
             text-align: center;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
             color: var(--text-dim);
-            letter-spacing: 0.5px;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
-            padding-top: 15px;
+            padding-top: 20px;
             width: 100%;
-            line-height: 1.5;
         }
 
         .site-footer span.copyright-name {
@@ -411,36 +346,49 @@
             text-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
         }
 
-        /* استعلامات الوسائط الذكية لتوافق كامل مع الهواتف المحمولة */
-        @media (max-width: 768px) {
+        /* الاستعلامات الذكية للشاشات المتوسطة والصغيرة (Mobile & Tablets) */
+        @media (max-width: 900px) {
             .bottom-layout {
-                grid-template-columns: 1fr; 
-                gap: 20px;
-                width: 100%;
+                grid-template-columns: 1fr;
+                gap: 25px;
+            }
+        }
+
+        @media (max-width: 650px) {
+            body {
+                padding: 12px;
             }
 
             .panel {
-                padding: 18px;
-                align-items: center; /* إجبار كل العناصر على التمركز بالمنتصف في الهاتف */
-            }
-            
-            .controls button {
-                flex: 1;
-                min-width: 120px;
+                padding: 20px;
             }
 
+            .session-modes {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            /* تحويل صف إدخال المهام لعمودي متناسق في الشاشات الصغيرة جداً */
             .merged-todo-section .input-row {
                 flex-direction: column;
-                align-items: center; /* سنترة المدخلات الطولية في الهاتف */
+                gap: 12px;
             }
 
             .merged-todo-section .inputs-flex {
                 width: 100%;
             }
-            
-            input, button {
+
+            #todoInput, .merged-todo-section .inputs-flex input, button.add-btn {
                 width: 100%;
-                text-align: center;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .controls button {
+                width: 100%;
             }
         }
     </style>
@@ -453,7 +401,8 @@
         <h1>Pomodoro MR</h1>
     </div>
 
-    <div class="panel">
+    <!-- العداد الرئيسي -->
+    <div class="panel" style="align-items: center;">
         <div class="session-modes">
             <button class="mode-btn active" id="pomodoroMode" onclick="setMode('pomodoro')">دورة تركيز ⏱️</button>
             <button class="mode-btn" id="shortBreakMode" onclick="setMode('short')">استراحة ☕</button>
@@ -468,18 +417,19 @@
         <div class="session-counter">الـجـلـسـات الـمـكـتـمـلـة الـيـوم: <span id="sessionCountDisplay" style="color: var(--neon-purple); font-weight: bold; text-shadow: 0 0 10px var(--neon-purple);">0</span> 💎</div>
         
         <div class="controls">
-            <button onclick="toggleTimer()" id="startBtn" style="background: linear-gradient(135deg, var(--neon-blue), #00b4d8); box-shadow: 0 0 15px rgba(0, 243, 255, 0.3); padding: 14px 30px; font-size: 1.05rem;">ابدأ الجلسة 🚀</button>
-            <button onclick="resetTimer()" style="background: var(--neon-red); color: white; box-shadow: 0 0 15px rgba(255,23,68,0.3); padding: 14px 25px;">تصفير 🔄</button>
+            <button onclick="toggleTimer()" id="startBtn" style="background: linear-gradient(135deg, var(--neon-blue), #00b4d8); box-shadow: 0 0 15px rgba(0, 243, 255, 0.3); min-width: 160px;">ابدأ الجلسة 🚀</button>
+            <button onclick="resetTimer()" style="background: var(--neon-red); color: white; box-shadow: 0 0 15px rgba(255,23,68,0.3); min-width: 120px;">تصفير 🔄</button>
         </div>
     </div>
 
+    <!-- لوحة إدارة المهام اليومية المدمجة -->
     <div class="panel merged-todo-section">
         <h3>قائمة المهام والعمليات اليومية 📋</h3>
         <div class="input-row">
-            <input type="text" id="todoInput" placeholder="عنوان الهدف اليومي..." style="flex: 2; min-width: 200px;" />
+            <input type="text" id="todoInput" placeholder="عنوان الهدف اليومي..." style="flex: 2;" />
             <div class="inputs-flex">
-                <input type="number" id="todoMinutesInput" placeholder="الدقائق" min="1" max="180" />
-                <input type="number" id="todoRoundsInput" placeholder="الجولات" min="1" max="10" />
+                <input type="number" id="todoMinutesInput" placeholder="الدقائق" min="1" max="180" style="width: 50%;" />
+                <input type="number" id="todoRoundsInput" placeholder="الجولات" min="1" max="10" style="width: 50%;" />
             </div>
             <button onclick="addTodo()" class="add-btn">إضافة </button>
         </div>
@@ -491,7 +441,7 @@
                         <th>اسم المهمة</th>
                         <th>الدقائق</th>
                         <th>الجولات المتبقية</th>
-                        <th style="text-align: center;">التحكم</th>
+                        <th>التحكم</th>
                     </tr>
                 </thead>
                 <tbody id="todoTableBody">
@@ -500,8 +450,10 @@
         </div>
     </div>
 
+    <!-- القسم السفلي المتجاوب ثنائي الأعمدة -->
     <div class="bottom-layout">
         
+        <!-- لوحة المتصدرين السحابية -->
         <div class="panel">
             <h3>ترتيب المسجلين 🏆</h3>
             <div class="table-wrapper">
@@ -521,15 +473,16 @@
             </div>
         </div>
 
+        <!-- لوحة الملف الشخصي وتعديل الاسم -->
         <div class="panel profile-inline-section">
-            <h3 style="font-size: 1.1rem; margin-bottom: 10px;">تسجيل الاسم (اختياري) 👤</h3>
-            <div id="loginForm" class="input-group" style="flex-direction: column; gap: 10px;">
+            <h3 style="font-size: 1.15rem; margin-bottom: 5px;">تسجيل الاسم (اختياري) 👤</h3>
+            <div id="loginForm" class="input-group" style="flex-direction: column; gap: 12px; width: 100%;">
                 <input type="text" id="usernameInput" placeholder="اسمك ..." style="width: 100%;" />
-                <button onclick="registerUser()" style="width: 100%; padding: 10px;">حفظ </button>
+                <button onclick="registerUser()" style="width: 100%;">حفظ والربط سحابياً </button>
             </div>
             <div id="userInfo" style="display: none; text-align: center; width: 100%;">
-                <h4 style="font-size: 1rem; margin-bottom: 6px;">السحابة: <span id="displayUsername" style="color: var(--neon-blue);">المخدم</span> ⚡</h4>
-                <p style="font-size: 0.85rem; color: var(--text-dim);">المنجز: <span id="displayHours" style="color: var(--neon-gold); font-weight: bold;">0</span> ساعة</p>
+                <h4 style="font-size: 1.1rem; margin-bottom: 8px;">السحابة: <span id="displayUsername" style="color: var(--neon-blue);">المخدم</span> ⚡</h4>
+                <p style="font-size: 0.95rem; color: var(--text-dim); margin-bottom: 5px;">المنجز: <span id="displayHours" style="color: var(--neon-gold); font-weight: bold;">0</span> ساعة</p>
             </div>
             <div class="badge-display" id="badgeDisplay">🌱 بداية الرحلة </div>
         </div>
@@ -539,7 +492,7 @@
 </div>
 
 <footer class="site-footer">
-    <p>&copy; 2026 جميع الحقوق محفوظة    | تم التطوير بواسطة  <span class="copyright-name">Mahmod Rabaa</span> 🛡️🚀</p>
+    <p>&copy; 2026 جميع الحقوق محفوظة    | تم التطوير بواسطة  <span class="copyright-name">Mahmoud Rabaa</span> 🛡️🚀</p>
 </footer>
 
 <script>
@@ -573,7 +526,7 @@
         "أنت أقوى من أي ملهيات تحاول سرقة وقتك وثوانيك! 🔒",
         "عندما تريد الاستسلام، فكر في روعة الشعور عند النهاية! 🎉",
         "الاستمرارية الذكية تتفوق دائماً على الحماس المؤقت! 🔄",
-        "ضع كامل ثقلك في هذه الجلسة، فالأهداف الكبرى تستحق! 💪",
+        "ضع كامل ثقلك في هذه الجلسة, فالأهداف الكبرى تستحق! 💪",
         "لا تتنازل عما تريد البارحة من أجل إغراء الكسل اليوم! 🌊",
         "أنت تبني مساراً متميزاً، لا تسمح لشيء بقطع حبل أفكارك! 🧵",
         "استمر بالتقدم، فحتى الخطوات الصغيرة تصنع فارقاً بالمدى البعيد! 👣",
@@ -933,11 +886,11 @@
             row.className = `task-row ${todo.completed ? 'completed' : ''} ${index === currentTaskIndex && !todo.completed ? 'active-task' : ''}`;
             
             row.innerHTML = `
-                <td class="task-name">${todo.text}</td>
+                <td class="task-name" style="text-align: right; padding-right: 25px;">${todo.text}</td>
                 <td>${todo.minutes} د</td>
                 <td>${todo.rounds} جولات</td>
-                <td style="text-align: center;">
-                    <button onclick="deleteTodo(${index})" style="background:var(--neon-red); color:white; padding:6px 12px; font-size:0.8rem; box-shadow:none; width:auto;">حذف</button>
+                <td>
+                    <button onclick="deleteTodo(${index})" style="background:var(--neon-red); color:white; padding:6px 14px; font-size:0.85rem; border-radius:8px;">حذف</button>
                 </td>
             `;
             tbody.appendChild(row);
