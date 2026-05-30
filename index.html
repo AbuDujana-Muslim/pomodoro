@@ -3,892 +3,330 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡  Pomodoro MR |  MR بومودورو   </title>
+    <title>مؤقت التركيز الأكاديمي ⏱️</title>
     <style>
+        /* سمة المكتبة الأكاديمية الدافئة - Warm Academic Study */
         :root {
-            --bg-main: #060913;
-            --panel-bg: #0d1222;
-            --panel-border: #1e294b;
-            --text-main: #f1f5f9;
-            --text-muted: #64748b;
-            --led-glow: rgba(56, 189, 248, 0.25);
-            --led-glow-hover: rgba(56, 189, 248, 0.5);
-            --primary: #38bdf8;
-            --primary-hover: #0ea5e9;
-            --accent-success: #34d399;
-            --accent-break: #fbbf24;
-            --accent-danger: #f87171;
-            --font-family: "Inter", "Segoe UI", Tahoma, sans-serif;
+            --bg-color: #1a120b; /* بني خشبي داكن جداً مريح للعين */
+            --panel-bg: #2c1e11; /* لون ألواح خشبي متناسق */
+            --text-main: #f5f2eb; /* أبيض عاجي مريح للقراءة */
+            --text-muted: #bd9a7a; /* لون ورق عتيق ناعم */
+            --accent-gold: #d4af37; /* لمسات ذهبية للأزرار الهامة */
+            --accent-hover: #aa8c2c;
+            --shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            min-height: 100vh;
-            font-family: var(--font-family);
+            background-color: var(--bg-color);
             color: var(--text-main);
-            background-color: var(--bg-main);
-            background-image: 
-                radial-gradient(circle at 50% 0%, rgba(56, 189, 248, 0.12) 0%, transparent 50%),
-                radial-gradient(circle at 50% 100%, rgba(52, 211, 153, 0.05) 0%, transparent 50%);
-            padding: 40px 20px 20px 20px;
-            line-height: 1.6;
-            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
         }
 
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            gap: 30px;
-        }
-
-        .app-header {
+            width: 100%;
+            max-width: 900px;
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 28px 36px;
-            background: var(--panel-bg);
-            border: 1px solid var(--panel-border);
-            border-radius: 20px;
-            box-shadow: 0 0 25px var(--led-glow);
-            position: relative;
-        }
-
-        .app-header::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 10%;
-            width: 80%;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, var(--primary), transparent);
-        }
-
-        .app-title h1 {
-            font-size: 1.85rem;
-            font-weight: 800;
-            letter-spacing: -0.025em;
-            background: linear-gradient(to left, #fff, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .app-title p {
-            color: var(--text-muted);
-            font-size: 0.95rem;
-            margin-top: 6px;
-        }
-
-        .motivation-box {
-            background: rgba(13, 18, 34, 0.85);
-            border: 1px solid var(--panel-border);
-            padding: 24px;
-            border-radius: 16px;
-            text-align: center;
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #e2e8f0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 14px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 15px var(--led-glow);
-            backdrop-filter: blur(8px);
-        }
-
-        .motivation-box:hover {
-            box-shadow: 0 4px 25px rgba(0,0,0,0.4), 0 0 25px var(--led-glow-hover);
-            border-color: var(--primary);
-        }
-
-        .motivation-text-wrapper {
-            transition: opacity 0.4s ease, transform 0.4s ease;
-        }
-
-        .motivation-icon {
-            font-size: 1.6rem;
-            animation: pulseGlow 2.5s infinite ease-in-out;
-        }
-
-        @keyframes pulseGlow {
-            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px var(--primary)); }
-            50% { transform: scale(1.1); filter: drop-shadow(0 0 10px var(--primary)); }
-        }
-
-        .panel {
-            background: var(--panel-bg);
-            border: 1px solid var(--panel-border);
-            border-radius: 20px;
-            padding: 32px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px var(--led-glow);
-            position: relative;
-        }
-
-        .panel:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.6), 0 0 25px var(--led-glow-hover);
-            border-color: rgba(56, 189, 248, 0.4);
-        }
-
-        .panel-title {
-            font-size: 1.25rem;
-            font-weight: 700;
-            margin-bottom: 24px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            border-bottom: 1px solid var(--panel-border);
-            padding-bottom: 14px;
-            color: #fff;
-        }
-
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            flex-direction: column;
             gap: 20px;
         }
 
-        .metric-card {
-            background: var(--panel-bg);
-            border: 1px solid var(--panel-border);
-            padding: 24px;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3), 0 0 10px var(--led-glow);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .metric-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.4), 0 0 20px var(--led-glow-hover);
-            border-color: var(--primary);
-        }
-
-        .metric-card::before {
-            content: "";
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, var(--primary), transparent);
-        }
-
-        .metric-card.success::before { background: linear-gradient(90deg, transparent, var(--accent-success), transparent); }
-        .metric-card.break::before { background: linear-gradient(90deg, transparent, var(--accent-break), transparent); }
-
-        .metric-card .label {
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
-
-        .metric-card .value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-top: 10px;
-            color: #fff;
-        }
-
-        .main-layout {
-            display: grid;
-            grid-template-columns: 1.20fr 0.80fr;
-            gap: 30px;
-        }
-
-        .timer-container {
+        /* اللوحات الأساسية */
+        .panel {
+            background-color: var(--panel-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(212, 175, 55, 0.1);
             text-align: center;
-            padding: 10px 0;
         }
 
-        .timer-display {
-            font-size: 6.5rem;
-            font-weight: 900;
-            font-variant-numeric: tabular-nums;
-            letter-spacing: -0.03em;
-            color: #fff;
-            text-shadow: 0 0 30px rgba(56, 189, 248, 0.4);
-            animation: floatingTime 4s infinite ease-in-out;
+        h1, h2, h3 {
+            color: var(--accent-gold);
+            margin-bottom: 15px;
         }
 
-        @keyframes floatingTime {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-5px); }
+        /* لوحة تسجيل الدخول والملف الشخصي */
+        .profile-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
-        .progress-container {
+        .input-group {
+            display: flex;
+            gap: 10px;
             width: 100%;
-            height: 12px;
-            background: #090d16;
-            border-radius: 999px;
-            overflow: hidden;
-            margin: 24px 0 32px 0;
-            border: 1px solid var(--panel-border);
-            box-shadow: inset 0 2px 8px rgba(0,0,0,0.7);
+            max-width: 400px;
         }
 
-        .progress-bar {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, var(--primary), var(--accent-success));
-            box-shadow: 0 0 15px var(--primary);
-            border-radius: 999px;
-            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        input {
+            flex: 1;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid var(--text-muted);
+            background: #110a05;
+            color: var(--text-main);
+            outline: none;
         }
 
-        .btn-group {
+        button {
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            background-color: var(--accent-gold);
+            color: #1a120b;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .badge-display {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* مؤقت التركيز */
+        .timer-display {
+            font-size: 5rem;
+            font-weight: bold;
+            color: var(--text-main);
+            margin: 20px 0;
+            font-family: monospace;
+        }
+
+        .controls {
             display: flex;
             justify-content: center;
-            gap: 14px;
-            flex-wrap: wrap;
+            gap: 15px;
         }
 
-        .btn {
-            font-family: var(--font-family);
-            padding: 14px 28px;
-            font-size: 0.95rem;
-            font-weight: 600;
-            border-radius: 10px;
-            border: none;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-
-        .btn:active {
-            transform: scale(0.96);
-        }
-
-        .btn-primary { 
-            background: linear-gradient(135deg, var(--primary), #0284c7); 
-            color: #fff;
-            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
-        }
-        .btn-primary:hover { 
-            box-shadow: 0 4px 25px rgba(56, 189, 248, 0.5);
-            transform: translateY(-2px);
-        }
-        
-        .btn-secondary { 
-            background: #151f38; 
-            color: var(--text-main); 
-            border: 1px solid var(--panel-border); 
-        }
-        .btn-secondary:hover { 
-            background: #1e2d52;
-            border-color: var(--primary);
-            transform: translateY(-2px);
-        }
-
-        .btn-add-time { 
-            background: rgba(56, 189, 248, 0.12); 
-            color: var(--primary); 
-            border: 1px solid rgba(56, 189, 248, 0.3); 
-        }
-        .btn-add-time:hover { 
-            background: rgba(56, 189, 248, 0.22); 
-            box-shadow: 0 0 15px var(--led-glow);
-            transform: translateY(-2px);
-        }
-
-        .btn-danger { 
-            background: linear-gradient(135deg, var(--accent-danger), #dc2626); 
-            color: #fff; 
-            box-shadow: 0 4px 15px rgba(248, 113, 113, 0.3);
-        }
-        .btn-danger:hover {
-            box-shadow: 0 4px 25px rgba(248, 113, 113, 0.5);
-            transform: translateY(-2px);
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-            font-weight: 500;
-        }
-
-        .form-control {
+        /* لوحة الصدارة المشتركة */
+        .leaderboard-table {
             width: 100%;
-            background: #090d16;
-            border: 1px solid var(--panel-border);
-            padding: 14px 18px;
-            border-radius: 10px;
-            color: #fff;
-            font-size: 0.95rem;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
+            border-collapse: collapse;
+            margin-top: 15px;
+            text-align: right;
         }
 
-        .form-control:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5), 0 0 12px var(--led-glow);
+        .leaderboard-table th, .leaderboard-table td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(189, 154, 122, 0.2);
         }
 
-        .task-list {
-            display: grid;
-            gap: 14px;
-            margin-top: 16px;
+        .leaderboard-table th {
+            color: var(--accent-gold);
         }
 
-        .task-item {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 18px 22px;
-            background: #111a30;
-            border: 1px solid var(--panel-border);
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-        }
-
-        .task-item:hover {
-            border-color: var(--primary);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3), 0 0 12px var(--led-glow);
-            transform: scale(1.01);
-        }
-
-        .task-item.active {
-            border-color: var(--accent-success);
-            background: rgba(52, 211, 153, 0.05);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4), 0 0 20px rgba(52, 211, 153, 0.25);
-        }
-
-        .task-info {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .task-name { font-weight: 600; font-size: 1.05rem; color: #fff; }
-        .task-duration { font-size: 0.85rem; color: var(--text-muted); }
-
-        .badge-type {
-            padding: 5px 12px;
-            border-radius: 999px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            letter-spacing: 0.02em;
-        }
-        .badge-task { background: rgba(56, 189, 248, 0.15); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.2); }
-        .badge-break { background: rgba(251, 191, 36, 0.15); color: #fbbf24; border: 1px solid rgba(251, 191, 36, 0.2); }
-
-        .task-actions {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .audio-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-        }
-        .audio-card {
-            background: #090d16;
-            padding: 16px;
-            border-radius: 12px;
-            border: 1px solid var(--panel-border);
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.5);
-        }
-        .audio-card label { font-size: 0.85rem; font-weight: 600; display: block; margin-bottom: 10px; color: #cbd5e1;}
-
-        input[type="range"] {
-            -webkit-appearance: none;
-            width: 100%;
-            height: 6px;
-            background: #1e293b;
-            border-radius: 999px;
-            outline: none;
-        }
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 16px;
-            height: 16px;
-            background: var(--primary);
-            border-radius: 50%;
-            cursor: pointer;
-            box-shadow: 0 0 10px var(--primary);
-        }
-
-        .app-footer {
-            margin-top: 40px;
-            text-align: center;
-            padding: 20px;
-            background: var(--panel-bg);
-            border: 1px solid var(--panel-border);
-            border-radius: 14px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-        }
-
-        .footer-text {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-        }
-
-        .footer-brand {
-            color: var(--primary);
-            font-weight: 700;
-            text-shadow: 0 0 8px var(--led-glow);
-        }
-
-        @media (max-width: 900px) {
-            .main-layout { grid-template-columns: 1fr; }
+        .current-user-row {
+            background-color: rgba(212, 175, 55, 0.15);
+            font-weight: bold;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <header class="app-header">
-            <div class="app-title">
-                <h1> Pomodoro MR </h1>
-                <p>مساحة العمل الرقمية العالمية المتطورة لتعزيز مستويات الانتاجية وحظر التشتيت</p>
-            </div>
-            <div style="text-align: left;">
-                <span style="color: var(--primary); font-weight: 700; font-size: 0.9rem; text-shadow: 0 0 10px var(--primary);">● SYSTEM ONLINE</span>
-            </div>
-        </header>
+<div class="container">
 
-        <div class="motivation-box" id="motivation-box">
-            <span class="motivation-icon" id="motivation-icon">🎓</span>
-            <div class="motivation-text-wrapper" id="motivation-wrapper">
-                <span id="motivation-text">أهلاً بك يا بطل في مساحتك الدراسية! ركز جيداً، فكل دقيقة تقضيها هنا تقربك خطوة نحو قمة حلمك.</span>
-            </div>
+    <div class="panel profile-section" id="profilePanel">
+        <div id="loginForm" class="input-group">
+            <input type="text" id="usernameInput" placeholder="اكتب اسمك للانضمام للمكتبة..." />
+            <button onclick="registerUser()">دخول</button>
         </div>
-
-        <section class="metrics-grid">
-            <div class="metric-card">
-                <div class="label">🎯 المهمة الحالية للتركيز</div>
-                <div class="value" id="current-task-label">في انتظار إضافة الجلسات</div>
-            </div>
-            <div class="metric-card success">
-                <div class="label">⚙️ جلسات العمل المدرجة</div>
-                <div class="value" id="schedule-count">0</div>
-            </div>
-            <div class="metric-card break">
-                <div class="label">⏳ الزمن الإجمالي المخطط</div>
-                <div class="value" id="total-duration">0 دقيقة</div>
-            </div>
-        </section>
-
-        <main class="main-layout">
-            <div class="panel">
-                <div class="panel-title">⏱️ عداد جلسة التركيز الحالية</div>
-                
-                <div class="timer-container">
-                    <div class="timer-display" id="time-display">25:00</div>
-
-                    <div class="progress-container">
-                        <div class="progress-bar" id="progress-bar"></div>
-                    </div>
-
-                    <div class="btn-group">
-                        <button class="btn btn-primary" id="start-btn">⚡ بدء الجلسة</button>
-                        <button class="btn btn-add-time" id="add-minute-btn">➕ زيادة دقيقة</button>
-                        <button class="btn btn-secondary" id="skip-btn">⏭️ تخطي</button>
-                        <button class="btn btn-secondary" id="reset-btn">🔄 إعادة ضبط</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="panel">
-                <div class="panel-title">🎧 مؤثرات صوتية لزيادة التركيز   </div>
-                <div class="audio-grid">
-                    <div class="audio-card">
-                        <label for="brown-volume">🟫 ضوضاء بنية </label>
-                        <input id="brown-volume" type="range" min="0" max="1" step="0.05" value="0">
-                    </div>
-                    <div class="audio-card">
-                        <label for="rain-volume">☔ صوت مطر </label>
-                        <input id="rain-volume" type="range" min="0" max="1" step="0.05" value="0">
-                    </div>
-                </div>
-                <p style="font-size:0.8rem; color:var(--text-muted); margin-top:24px; text-align:center;">
-                    * اخلط الترددات الصوتية لعزل ذهنك تماماً عن المحيط الخارجي .
-                </p>
-            </div>
-        </main>
-
-        <main class="main-layout">
-            <div class="panel">
-                <div class="panel-title">📝 خانة اضافة المهام والجلسات</div>
-                <div class="form-group">
-                    <label for="task-name">عنوان المهمة أو مجال العمل</label>
-                    <input id="task-name" type="text" class="form-control" placeholder="مثال: فيزياء، كيمياء، رياضيات، لغات">
-                </div>
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                    <div class="form-group">
-                        <label for="task-duration">زمن الجلسة (دقائق)</label>
-                        <input id="task-duration" type="number" class="form-control" value="25" min="1">
-                    </div>
-                    <div class="form-group">
-                        <label for="task-count">عدد الجلسات</label>
-                        <input id="task-count" type="number" class="form-control" value="1" min="1">
-                    </div>
-                </div>
-                <button class="btn btn-primary" id="add-task-btn" style="width: 100%; justify-content: center; margin-top: 8px;">📊 اضافة جلسة </button>
-            </div>
-
-            <div class="panel">
-                <div class="panel-title">📋 قائمة المهام و المواد</div>
-                <div id="schedule-list" class="task-list"></div>
-            </div>
-        </main>
-
-        <footer class="app-footer">
-            <p class="footer-text">جميع الحقوق محفوظة © 2026 | تم التطوير بواسطة <span class="footer-brand">Mahmoud Rabaa</span> 🚀</p>
-        </footer>
+        <div id="userInfo" style="display: none; text-align: right;">
+            <h3>مرحباً، <span id="displayUsername">المستخدم</span> 👋</h3>
+            <p>مجموع ساعات التركيز: <span id="displayHours" style="color: var(--accent-gold);">0</span> ساعة</p>
+        </div>
+        <div class="badge-display" id="badgeDisplay">🛡️ لا يوجد درع حالياً</div>
     </div>
 
-    <script>
-        // خزانة تضم 200 عبارة تحفيزية مخصصة وموجهة لرفع معنويات الطالب وممارسة الإنجليزية
-        const quotes = [
-            { text: "يا بطل! التركيز الآن هو سر تفوقك غداً، اجعل هذه الجلسة انطلاقة قوية. 🎯", icon: "💪" },
-            { text: "كل معادلة تحلها وكل صفحة تقرأها تبني بها صرح مجدك الشخصي، استمر! 📚", icon: "✏️" },
-            { text: "Believe in yourself and you will be unstoppable. ✨ (آمن بنفسك وستصبح شخصاً لا يمكن إيقافه.)", icon: "🌟" },
-            { text: "لا يوجد مستحيل أمام طالب يملك الإصرار والعزيمة. أنت قادر على فعلها! 🔥", icon: "🚀" },
-            { text: "المستقبل يُصنع في هذه اللحظات الهادئة من الجهد والتركيز الكامل. 🧠", icon: "💡" },
-            { text: "The harder you work for something, the greater you'll feel when you achieve it. 🏆 (كلما تعبت من أجل شيء ما، كان شعورك أعظم عند تحقيقه.)", icon: "🎉" },
-            { text: "نظم وقتك، واجه المواد الصعبة بثقة، وتذكر دائماً لماذا بدأت هذه الرحلة. 🧭", icon: "👑" },
-            { text: "أنت لست مجرد طالب عادي، أنت مشروع نجاح باهر ينتظر الوقت المناسب ليلمع. ✨", icon: "💎" },
-            { text: "Don't stop until you are proud. 🥊 (لا تتوقف حتى تكون فخوراً بنفسك.)", icon: "💯" },
-            { text: "التسويف هو عدو طموحك؛ خذ نفساً عميقاً وابدأ فوراً بدون تردد. ⚔️", icon: "🎯" }
-        ];
+    <div class="panel">
+        <h2>مؤقت التركيز الأكاديمي ⏱️</h2>
+        <p style="color: var(--text-muted);">اضغط ابدأ واجمع الساعات لتطوير درعك ومنافسة زملائك</p>
+        <div class="timer-display" id="timer">25:00</div>
+        <div class="controls">
+            <button onclick="toggleTimer()" id="startBtn">ابدأ التركيز 🚀</button>
+            <button onclick="resetTimer()" style="background-color: #8b0000; color: white;">إعادة تعيين 🔄</button>
+        </div>
+    </div>
 
-        // مصفوفات ذكية لإنشاء العبارات الـ 190 المتبقية آلياً وتوجيهها بالكامل للطالب لرفع معنوياته
-        const studentSubjects = ["فهم المواد بدقة", "حل المسائل المعقدة", "استغلال وقت الجلسة", "المراجعة التراكمية", "تنظيم الملاحظات", "التركيز الدراسي العميق"];
-        const studentBoosters = ["يقربك خطوات عملاقة نحو مجموعك المثالي 📈", "يجعل الامتحانات القادمة مجرد نزهة ممتعة لك 🗺️", "يصنع منك طالباً متميزاً يقتدي به الجميع 🎓", "يفتح لك أبواب التخصص الجامعي الذي تحلم به 🏛️", "يمنحك الثقة الكاملة للتفوق والريادة 🥇"];
+    <div class="panel">
+        <h3>لوحة صدارة مجتمع التركيز 🏆</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 10px;">كن في الصدارة وأشعل الحماس في نفوس بقية زملائك في الدراسة!</p>
+        <table class="leaderboard-table">
+            <thead>
+                <tr>
+                    <th>الترتيب</th>
+                    <th>المستحدم</th>
+                    <th>مجموع الساعات</th>
+                    <th>الدرع المستحق</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboardBody">
+                </tbody>
+        </table>
+    </div>
 
-        for (let i = 0; i < 190; i++) {
-            const subject = studentSubjects[i % studentSubjects.length];
-            const booster = studentBoosters[i % studentBoosters.length];
-            quotes.push({
-                text: `تأكد يا صديقي أن استمرارك في ${subject} هو المحرك الأساسي الذي ${booster}.`,
-                icon: "✨"
+</div>
+
+<script>
+    // الإعدادات الأساسية
+    let timerInterval;
+    let totalMinutesFocused = parseFloat(localStorage.getItem('totalMinutesFocused')) || 0;
+    let currentUsername = localStorage.getItem('currentUsername') || '';
+    let timeLeft = 25 * 60; // 25 دقيقة للتجربة السريعة (يمكنك تعديلها)
+    let isRunning = false;
+
+    // قائمة مستخدمين وهميين في لوحة الصدارة لمحاكاة "الشبكة المشتركة والتنافس"
+    let mockUsers = [
+        { username: "أحمد الملتزم", hours: 6.5, badge: "⚔️ الدرع الفضي" },
+        { username: "سارة متفوقة", hours: 4.2, badge: "⚔️ الدرع الفضي" },
+        { username: "خالد التكتيكي", hours: 2.1, badge: "🛡️ الدرع البرونزي" }
+    ];
+
+    // تشغيل التهيئة عند تحميل الصفحة
+    window.onload = function() {
+        if (currentUsername) {
+            showProfile();
+        }
+        updateBadge();
+        renderLeaderboard();
+    };
+
+    function registerUser() {
+        const input = document.getElementById('usernameInput').value.trim();
+        if (input) {
+            currentUsername = input;
+            localStorage.setItem('currentUsername', currentUsername);
+            showProfile();
+            renderLeaderboard();
+        }
+    }
+
+    function showProfile() {
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('userInfo').style.display = 'block';
+        document.getElementById('displayUsername').innerText = currentUsername;
+        // عرض الساعات كعدد طبيعي مبسط
+        document.getElementById('displayHours').innerText = Math.floor(totalMinutesFocused / 60);
+    }
+
+    // دالة تحديد نوع الدرع بناءً على شروطك الذكية
+    function getBadge(hours) {
+        if (hours >= 1 && hours < 3) return "🛡️ الدرع البرونزي";
+        if (hours >= 3 && hours < 5) return "⚔️ الدرع الفضي";
+        if (hours >= 5 && hours <= 8) return "👑 الدرع الذهبي";
+        if (hours > 8) return "💎 درع الماس النادر";
+        return "🌱 بداية الرحلة";
+    }
+
+    function updateBadge() {
+        let currentHours = totalMinutesFocused / 60;
+        let badge = getBadge(currentHours);
+        document.getElementById('badgeDisplay').innerText = badge;
+    }
+
+    // تحديث وعرض لوحة الصدارة التنافسية
+    function renderLeaderboard() {
+        const tbody = document.getElementById('leaderboardBody');
+        tbody.innerHTML = '';
+
+        let currentHours = totalMinutesFocused / 60;
+        let allUsers = [...mockUsers];
+
+        if (currentUsername) {
+            allUsers.push({
+                username: currentUsername + " (أنت)",
+                hours: parseFloat(currentHours.toFixed(1)),
+                badge: getBadge(currentHours),
+                isCurrent: true
             });
         }
 
-        let unusedQuotes = [...quotes];
+        // ترتيب المستخدمين تنازلياً من الأعلى تركيزاً إلى الأقل
+        allUsers.sort((a, b) => b.hours - a.hours);
 
-        function changeQuote() {
-            if (unusedQuotes.length === 0) {
-                unusedQuotes = [...quotes];
-            }
-            const randomIndex = Math.floor(Math.random() * unusedQuotes.length);
-            const quote = unusedQuotes.splice(randomIndex, 1)[0];
-            
-            const wrapper = document.getElementById('motivation-wrapper');
-            const textElement = document.getElementById('motivation-text');
-            const iconElement = document.getElementById('motivation-icon');
-            
-            if(wrapper) {
-                wrapper.style.opacity = '0';
-                wrapper.style.transform = 'translateY(5px)';
-                
-                setTimeout(() => {
-                    textElement.textContent = quote.text;
-                    iconElement.textContent = quote.icon;
-                    
-                    wrapper.style.opacity = '1';
-                    wrapper.style.transform = 'translateY(0)';
-                }, 400);
-            }
-        }
+        allUsers.forEach((user, index) => {
+            const row = document.createElement('tr');
+            if (user.isCurrent) row.className = 'current-user-row';
 
-        setInterval(changeQuote, 120000);
-        changeQuote();
-
-        // منطق العداد وإدارة الجلسات
-        const timeDisplay = document.getElementById('time-display');
-        const progressBar = document.getElementById('progress-bar');
-        const currentTaskLabel = document.getElementById('current-task-label');
-        const scheduleCount = document.getElementById('schedule-count');
-        const totalDuration = document.getElementById('total-duration');
-        const startBtn = document.getElementById('start-btn');
-        const skipBtn = document.getElementById('skip-btn');
-        const resetBtn = document.getElementById('reset-btn');
-        const addMinuteBtn = document.getElementById('add-minute-btn');
-        const scheduleList = document.getElementById('schedule-list');
-        const taskNameInput = document.getElementById('task-name');
-        const taskDurationInput = document.getElementById('task-duration');
-        const taskCountInput = document.getElementById('task-count');
-        const addTaskBtn = document.getElementById('add-task-btn');
-
-        let timerId = null;
-        let isRunning = false;
-        let remaining = 25 * 60;
-        let currentSession = null;
-        let currentIndex = 0;
-        let schedule = [];
-
-        let audioCtx = null;
-
-        function makeSession(title, duration, type) {
-            return {
-                id: `${type}-${Date.now()}-${Math.random().toString(16).slice(2)}`,
-                title,
-                duration: Number(duration),
-                type
-            };
-        }
-
-        function formatTime(seconds) {
-            const mins = String(Math.floor(seconds / 60)).padStart(2, '0');
-            const secs = String(seconds % 60).padStart(2, '0');
-            return `${mins}:${secs}`;
-        }
-
-        function initAudio() {
-            if (!audioCtx) {
-                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            }
-            if (audioCtx.state === 'suspended') {
-                audioCtx.resume();
-            }
-        }
-
-        function playBellTone() {
-            try {
-                initAudio();
-                [0, 0.4].forEach(delay => {
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(880, audioCtx.currentTime + delay);
-                    gain.gain.setValueAtTime(0.3, audioCtx.currentTime + delay);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + delay + 0.8);
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.start(audioCtx.currentTime + delay);
-                    osc.stop(audioCtx.currentTime + delay + 0.8);
-                });
-            } catch (error) {
-                console.error('Audio bell tone error:', error);
-            }
-        }
-
-        function updateDisplay() {
-            if (!currentSession) {
-                timeDisplay.textContent = '25:00';
-                progressBar.style.width = '0%';
-                currentTaskLabel.textContent = 'في انتظار خطة العمل الأولى';
-                startBtn.textContent = '⚡ بدء الجلسة';
-                startBtn.className = 'btn btn-primary';
-                return;
-            }
-
-            timeDisplay.textContent = formatTime(remaining);
-            const totalSeconds = currentSession.duration * 60;
-            const progress = ((totalSeconds - remaining) / totalSeconds) * 100;
-            progressBar.style.width = `${progress}%`;
-            currentTaskLabel.textContent = currentSession.title;
-
-            if (isRunning) {
-                startBtn.textContent = '⏸️ إيقاف مؤقت';
-                startBtn.className = 'btn btn-danger';
-            } else {
-                startBtn.textContent = '⚡ استئناف الجلسة';
-                startBtn.className = 'btn btn-primary';
-            }
-        }
-
-        function renderSchedule() {
-            scheduleList.innerHTML = '';
-            let totalMin = 0;
-            let count = 0;
-
-            schedule.forEach((item) => {
-                if (item.type === 'task') count++;
-                totalMin += item.duration;
-            });
-
-            scheduleCount.textContent = String(count);
-            totalDuration.textContent = `${totalMin} دقيقة`;
-
-            if (schedule.length === 0) {
-                scheduleList.innerHTML = '<div style="text-align:center; color:var(--text-muted); padding:20px;">الجدول فارغ حالياً. أضف الجلسات للبدء المباشر.</div>';
-                return;
-            }
-
-            schedule.forEach((item, index) => {
-                const isActive = index === currentIndex && currentSession;
-                const div = document.createElement('div');
-                div.className = `task-item ${isActive ? 'active' : ''}`;
-                
-                const badgeClass = item.type === 'task' ? 'badge-task' : 'badge-break';
-                const badgeText = item.type === 'task' ? 'تركيز صافي 🎯' : 'استراحة ☕';
-
-                div.innerHTML = `
-                    <div class="task-info">
-                        <span class="task-name">${item.title}</span>
-                        <span class="task-duration">⏱️ المدة: ${item.duration} دقيقة</span>
-                    </div>
-                    <div class="task-actions">
-                        <span class="badge-type ${badgeClass}">${badgeText}</span>
-                        <button class="btn-sm btn" style="background:#38bdf8; color:#060913; padding:6px 14px; font-size:0.8rem; font-weight:700; border-radius:6px;" onclick="startSessionDirectly(${index})">🚀 تشغيل</button>
-                        <button class="btn-sm btn" style="background:rgba(248, 113, 113, 0.1); color:#f87171; padding:6px 12px; font-size:0.8rem; border-radius:6px;" onclick="deleteSession('${item.id}')">حذف</button>
-                    </div>
-                `;
-                scheduleList.appendChild(div);
-            });
-        }
-
-        addTaskBtn.addEventListener('click', () => {
-            const title = taskNameInput.value.trim() || "جلسة دراسة";
-            const duration = parseInt(taskDurationInput.value) || 25;
-            const count = parseInt(taskCountInput.value) || 1;
-
-            for (let i = 0; i < count; i++) {
-                schedule.push(makeSession(`${title} (جلسة ${i + 1})`, duration, 'task'));
-                if (i < count - 1) {
-                    schedule.push(makeSession(`استراحة قصيرة`, 5, 'break'));
-                }
-            }
-
-            taskNameInput.value = "";
-            renderSchedule();
-            if (!currentSession && schedule.length > 0) {
-                currentIndex = 0;
-                currentSession = schedule[currentIndex];
-                remaining = currentSession.duration * 60;
-                updateDisplay();
-            }
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${user.username}</td>
+                <td>${Math.floor(user.hours)} ساعة</td>
+                <td>${user.badge}</td>
+            `;
+            tbody.appendChild(row);
         });
+    }
 
-        function startSessionDirectly(index) {
-            clearInterval(timerId);
-            currentIndex = index;
-            currentSession = schedule[currentIndex];
-            remaining = currentSession.duration * 60;
+    // إدارة العداد
+    function toggleTimer() {
+        if (isRunning) {
+            clearInterval(timerInterval);
+            document.getElementById('startBtn').innerText = 'استئناف التركيز 🚀';
+            isRunning = false;
+        } else {
             isRunning = true;
-            
-            initAudio();
-            startTimerInterval();
-            updateDisplay();
-            renderSchedule();
-        }
+            document.getElementById('startBtn').innerText = 'إيقاف مؤقت ⏸️';
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
 
-        function deleteSession(id) {
-            const index = schedule.findIndex(item => item.id === id);
-            if (index === -1) return;
-
-            const deletingCurrent = (currentSession && currentSession.id === id);
-            schedule.splice(index, 1);
-
-            if (index < currentIndex) {
-                currentIndex--;
-            }
-            currentIndex = Math.min(currentIndex, Math.max(schedule.length - 1, 0));
-            currentSession = schedule[currentIndex] || null;
-
-            if (currentSession && deletingCurrent) {
-                remaining = currentSession.duration * 60;
-                clearInterval(timerId);
-                isRunning = false;
-            }
-
-            if (schedule.length === 0) {
-                clearInterval(timerId);
-                isRunning = false;
-                currentSession = null;
-            }
-
-            renderSchedule();
-            updateDisplay();
-        }
-
-        // هنا يكمن التعديل ليتوقف النظام تماماً بمجرد انتهاء آخر جلسة بالجدول
-        function nextSession() {
-            playBellTone();
-            currentIndex++;
-            
-            if (currentIndex >= schedule.length) {
-                clearInterval(timerId);
-                timerId = null;
-                isRunning = false;
-                currentSession = null;
-                remaining = 25 * 60; 
-                alert("تهانينا يا بطل! لقد أكملت جميع الجلسات بنجاح. خذ قسطاً كافياً من الراحة الآن. 🎉🎓");
-            } else {
-                currentSession = schedule[currentIndex];
-                remaining = currentSession.duration * 60;
-            }
-
-            renderSchedule();
-            updateDisplay();
-        }
-
-        function startTimerInterval() {
-            if (timerId) clearInterval(timerId);
-            timerId = setInterval(() => {
-                if (remaining > 0) {
-                    remaining--;
-                    updateDisplay();
-                } else {
-                    nextSession();
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    // عند انتهاء الـ 25 دقيقة بنجاح، تُضاف دقائق التركيز تلقائياً
+                    totalMinutesFocused += 25; 
+                    localStorage.setItem('totalMinutesFocused', totalMinutesFocused);
+                    
+                    alert('أحسنت صنعاً يا بطل! تم إنهاء جلسة التركيز بنجاح وإضافة الإنجاز لقاعدة البيانات. 🎉');
+                    
+                    timeLeft = 25 * 60;
+                    isRunning = false;
+                    document.getElementById('startBtn').innerText = 'ابدأ التركيز 🚀';
+                    
+                    if (currentUsername) showProfile();
+                    updateBadge();
+                    renderLeaderboard();
                 }
             }, 1000);
         }
+    }
 
-        startBtn.addEventListener('click', () => {
-            if (schedule.length === 0) return;
+    function resetTimer() {
+        clearInterval(timerInterval);
+        timeLeft = 25 * 60;
+        isRunning = false;
+        document.getElementById('startBtn').innerText = 'ابدأ التركيز 🚀';
+        updateTimerDisplay();
+    }
 
-            initAudio();
-
-            if (isRunning) {
-                clearInterval(timerId);
-                timerId = null;
-                isRunning = false;
-            } else {
-                isRunning = true;
-                if (!currentSession) {
-                    currentIndex = 0;
-                    currentSession = schedule[currentIndex];
-                    remaining = currentSession.duration * 60;
-                }
-                startTimerInterval();
-            }
-            updateDisplay();
-            renderSchedule();
-        });
-
-        addMinuteBtn.addEventListener('click', () => {
-            if (!currentSession) return;
-            remaining += 60;
-            updateDisplay();
-        });
-
-        skipBtn.addEventListener('click', () => {
-            if (schedule.length === 0 || !currentSession) return;
-            nextSession();
-        });
-
-        resetBtn.addEventListener('click', () => {
-            clearInterval(timerId);
-            timerId = null;
-            isRunning = false;
-            if (currentSession) {
-                remaining = currentSession.duration * 60;
-            } else {
-                remaining = 25 * 60;
-            }
-            updateDisplay();
-        });
-    </script>
+    function updateTimerDisplay() {
+        let minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
+        document.getElementById('timer').innerText = 
+            `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    }
+</script>
 </body>
 </html>
