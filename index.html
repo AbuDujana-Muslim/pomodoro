@@ -61,6 +61,7 @@
             flex-direction: column;
             gap: 20px;
             flex: 1;
+            align-items: center; /* لضمان سنترة اللوحات بالمنتصف تماماً */
         }
 
         /* اسم الموقع في صدارة الصفحة بتأثير نيون متوهج وحماسي */
@@ -68,6 +69,7 @@
             text-align: center;
             margin-bottom: 5px;
             margin-top: 10px;
+            width: 100%;
         }
 
         .site-header h1 {
@@ -96,6 +98,10 @@
             transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
             position: relative;
             width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* سنترة المحتويات الداخلية تلقائياً */
+            text-align: center;
         }
 
         /* خط نيون جمالي علوي لكل لوحة لزيادة الحداثة */
@@ -125,6 +131,7 @@
             font-weight: 800;
             letter-spacing: 1px;
             font-size: calc(1.1rem + 0.3vw);
+            width: 100%;
         }
 
         /* تقسيم السطر السفلي: يمين جدول الترتيب، يسار لوحة الاسم مصغرة */
@@ -149,6 +156,7 @@
             display: flex;
             gap: 10px;
             width: 100%;
+            justify-content: center;
         }
 
         input {
@@ -160,9 +168,9 @@
             color: var(--text-neon);
             outline: none;
             font-size: 0.95rem;
-            text-align: center;
+            text-align: center; /* جعل النص بداخل حقل الإدخال في المنتصف دائماً */
             transition: all 0.3s ease;
-            min-width: 0; /* يمنع تمدد الإدخال خارج الحاوية في الـ Flexbox */
+            min-width: 0;
         }
 
         input:focus {
@@ -183,6 +191,10 @@
             transition: all 0.3s ease;
             box-shadow: 0 0 15px rgba(255, 183, 3, 0.3);
             white-space: nowrap;
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
         }
 
         button:hover {
@@ -241,6 +253,8 @@
             font-weight: 600;
             min-height: 28px;
             padding: 0 10px;
+            text-align: center;
+            width: 100%;
         }
 
         /* شاشة العداد الأكبر لتشمل المساحة كاملة */
@@ -254,6 +268,7 @@
             text-shadow: 0 0 35px rgba(0, 243, 255, 0.4), 0 0 70px rgba(157, 78, 221, 0.2);
             letter-spacing: 2px;
             line-height: 1.1;
+            width: 100%;
         }
 
         .session-counter {
@@ -261,6 +276,8 @@
             font-size: 1rem;
             margin-bottom: 20px;
             padding: 0 5px;
+            text-align: center;
+            width: 100%;
         }
 
         /* تنسيق عنصر العبارات المحفزة التفاعلي */
@@ -274,6 +291,8 @@
             transition: all 0.5s ease-in-out;
             padding: 0 10px;
             line-height: 1.4;
+            text-align: center;
+            width: 100%;
         }
 
         .controls {
@@ -292,6 +311,7 @@
             flex-wrap: wrap;
             align-items: center;
             width: 100%;
+            justify-content: center;
         }
 
         .merged-todo-section .inputs-flex {
@@ -299,6 +319,7 @@
             gap: 8px;
             flex: 1;
             min-width: 140px;
+            justify-content: center;
         }
 
         .merged-todo-section button.add-btn {
@@ -316,7 +337,7 @@
         .table-wrapper {
             width: 100%;
             overflow-x: auto;
-            -webkit-overflow-scrolling: touch; /* تمرير سلس على هواتف iOS */
+            -webkit-overflow-scrolling: touch; 
             background: rgba(0, 0, 0, 0.2);
             border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.05);
@@ -325,14 +346,16 @@
         .custom-table {
             width: 100%;
             border-collapse: collapse;
-            text-align: right;
-            min-width: 450px; /* يحافظ على مظهر الجدول من الضغط الزائد ويسمح بالتمرير الأفقي المريح */
+            text-align: center; /* جعل النص بالكامل داخل الجداول في المنتصف للـ Desktop والـ Mobile */
+            min-width: 450px; 
         }
 
         .custom-table th, .custom-table td {
             padding: 12px 14px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            white-space: nowrap; /* يمنع نزول نصوص الأعمدة تحت بعضها بشكل مشوه */
+            white-space: nowrap; 
+            text-align: center; /* تأكيد سنترة الخلايا والعناوين بنسبة 100% */
+            vertical-align: middle;
         }
 
         .custom-table th {
@@ -350,6 +373,7 @@
         .task-row.active-task {
             background-color: rgba(57, 255, 20, 0.08);
             border-right: 4px solid var(--neon-green);
+            border-left: 4px solid var(--neon-green); /* سنترة الشريط على الجانبين للتناسق البصري */
         }
 
         /* نمط خاص بصفوف المهام المكتملة */
@@ -361,6 +385,7 @@
 
         .current-user-row {
             background-color: rgba(0, 243, 255, 0.06);
+            border-right: 4px solid var(--neon-blue);
             border-left: 4px solid var(--neon-blue);
             font-weight: bold;
             box-shadow: inset 0 0 15px rgba(0, 243, 255, 0.1);
@@ -389,12 +414,14 @@
         /* استعلامات الوسائط الذكية لتوافق كامل مع الهواتف المحمولة */
         @media (max-width: 768px) {
             .bottom-layout {
-                grid-template-columns: 1fr; /* تحويل الترتيب السفلي لعمود واحد بدلاً من عمودين ليتناسب مع العرض */
+                grid-template-columns: 1fr; 
                 gap: 20px;
+                width: 100%;
             }
 
             .panel {
                 padding: 18px;
+                align-items: center; /* إجبار كل العناصر على التمركز بالمنتصف في الهاتف */
             }
             
             .controls button {
@@ -404,7 +431,7 @@
 
             .merged-todo-section .input-row {
                 flex-direction: column;
-                align-items: stretch;
+                align-items: center; /* سنترة المدخلات الطولية في الهاتف */
             }
 
             .merged-todo-section .inputs-flex {
@@ -413,6 +440,7 @@
             
             input, button {
                 width: 100%;
+                text-align: center;
             }
         }
     </style>
@@ -425,7 +453,7 @@
         <h1>Pomodoro MR</h1>
     </div>
 
-    <div class="panel" style="text-align: center;">
+    <div class="panel">
         <div class="session-modes">
             <button class="mode-btn active" id="pomodoroMode" onclick="setMode('pomodoro')">دورة تركيز ⏱️</button>
             <button class="mode-btn" id="shortBreakMode" onclick="setMode('short')">استراحة ☕</button>
@@ -511,7 +539,7 @@
 </div>
 
 <footer class="site-footer">
-    <p>&copy; 2026 جميع الحقوق محفوظة    | تم التطوير بواسطة  <span class="copyright-name">Mahmoud Rabaa</span> 🛡️🚀</p>
+    <p>&copy; 2026 جميع الحقوق محفوظة    | تم التطوير بواسطة  <span class="copyright-name">Mahmod Rabaa</span> 🛡️🚀</p>
 </footer>
 
 <script>
@@ -536,7 +564,7 @@
         "الجهد المبذول خلف الكواليس سيصنع فارقاً تراه العيون قريباً! 🎬",
         "لا تنتظر الظروف المثالية، خذ هذه اللحظة واجعلها مثالية! ✨",
         "كل إنجاز عظيم بدأ بقرار شجاع بالمحاولة والاستمرار! 🚀",
-        "ثق بقدراتك, فالعقل يصدق ما تصر على فعله! 🧬",
+        "ثق بقدراتك، فالعقل يصدق ما تصر على فعله! 🧬",
         "اجعل شغفك أقوى من أعذارك اليومية! 🛑",
         "طريق الألف ميل يبدأ بجلسة تركيز واحدة ناجحة! 📈",
         "ركّز على التقدم المستمر وليس الكمال الزائف! ⚙️",
@@ -545,7 +573,7 @@
         "أنت أقوى من أي ملهيات تحاول سرقة وقتك وثوانيك! 🔒",
         "عندما تريد الاستسلام، فكر في روعة الشعور عند النهاية! 🎉",
         "الاستمرارية الذكية تتفوق دائماً على الحماس المؤقت! 🔄",
-        "ضع كامل ثقلك في هذه الجلسة, فالأهداف الكبرى تستحق! 💪",
+        "ضع كامل ثقلك في هذه الجلسة، فالأهداف الكبرى تستحق! 💪",
         "لا تتنازل عما تريد البارحة من أجل إغراء الكسل اليوم! 🌊",
         "أنت تبني مساراً متميزاً، لا تسمح لشيء بقطع حبل أفكارك! 🧵",
         "استمر بالتقدم، فحتى الخطوات الصغيرة تصنع فارقاً بالمدى البعيد! 👣",
