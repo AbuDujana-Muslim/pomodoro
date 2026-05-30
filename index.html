@@ -40,7 +40,7 @@
             justify-content: flex-start;
             align-items: center;
             min-height: 100vh;
-            padding: 20px;
+            padding: 25px;
             overflow-x: hidden;
             flex-direction: column;
         }
@@ -51,9 +51,10 @@
             100% { background-position: 0% 50%; }
         }
 
+        /* الحاوية الأساسية تتمدد بشكل كامل لتعطي مساحة للموقع كله */
         .container {
             width: 100%;
-            max-width: 1100px;
+            max-width: 1200px;
             display: flex;
             flex-direction: column;
             gap: 25px;
@@ -75,7 +76,7 @@
             filter: drop-shadow(0 0 15px rgba(0, 243, 255, 0.4));
         }
 
-        /* الألواح أصبحت تتمدد بعرض الحاوية تلقائياً لتناسب الشاشات الكبيرة */
+        /* تعديل جوهري: الألواح الآن مرنة بالكامل (width: 100%) وتملأ المساحة المتاحة لها هندسياً */
         .panel {
             background: var(--panel-glass);
             backdrop-filter: blur(14px);
@@ -85,9 +86,10 @@
             border: var(--glass-border);
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
             position: relative;
-            width: 100%;
+            width: 100%; 
             display: flex;
             flex-direction: column;
+            align-items: stretch; /* تجعل العناصر الداخلية تتمدد بكامل عرض اللوحة */
         }
 
         .panel::before {
@@ -104,14 +106,122 @@
         h2, h3 {
             color: var(--neon-gold);
             text-shadow: 0 0 12px rgba(255, 183, 3, 0.4);
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             text-align: center;
             font-weight: 800;
             font-size: calc(1.2rem + 0.3vw);
             width: 100%;
         }
 
-        /* تخطيط مرن ومثالي للشاشات الكبيرة والصغيرة */
+        /* منطقة العداد العلوي أصبحت متجاوبة وواسعة */
+        .timer-section {
+            align-items: center; /* سنترة المحتوى النصي والعداد فقط داخل اللوحة المتمددة */
+            text-align: center;
+        }
+
+        /* أزرار الأوضاع تتوزع بكامل عرض اللوحة بشكل مرن */
+        .session-modes {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 25px;
+            width: 100%;
+        }
+
+        .mode-btn {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-dim);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 14px 24px;
+            font-size: 1rem;
+            flex: 1; /* جعل الأزرار تتوزع بالتساوي تماماً حسب حجم الشاشة */
+            transition: all 0.3s ease;
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, var(--neon-blue), #00b4d8);
+            color: #05070b;
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+        }
+
+        .current-task-title {
+            font-size: calc(1.2rem + 0.3vw);
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.2);
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 700;
+            width: 100%;
+        }
+
+        .timer-display {
+            font-size: calc(5.5rem + 5vw); /* تكبير ذكي ومناسب للشاشات الكبيرة */
+            font-weight: 900;
+            color: var(--text-neon);
+            margin: 15px 0;
+            font-family: 'Courier New', Courier, monospace;
+            text-align: center;
+            text-shadow: 0 0 35px rgba(0, 243, 255, 0.4);
+            line-height: 1;
+            width: 100%;
+        }
+
+        .session-counter {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+            text-align: center;
+            width: 100%;
+        }
+
+        .motivation-container {
+            font-size: calc(1.05rem + 0.2vw);
+            font-weight: 700;
+            color: var(--neon-gold);
+            text-shadow: 0 0 10px rgba(255, 183, 3, 0.3);
+            margin-bottom: 25px;
+            min-height: 40px;
+            text-align: center;
+            line-height: 1.4;
+            width: 100%;
+            transition: opacity 0.3s ease;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+            max-width: 500px; /* عدم تمدد أزرار التحكم بشكل مفرط على الشاشات الضخمة */
+            margin: 0 auto;
+        }
+
+        /* التعديل الشامل لصف مدخلات قائمة المهام */
+        .merged-todo-section .input-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+            width: 100%;
+        }
+
+        .merged-todo-section .inputs-flex {
+            display: flex;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .merged-todo-section button.add-btn {
+            background: linear-gradient(135deg, var(--neon-green), #22c55e);
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
+            padding: 14px 35px;
+        }
+
+        .merged-todo-section button.add-btn:hover {
+            box-shadow: 0 0 25px rgba(57, 255, 20, 0.5);
+        }
+
+        /* تخطيط مرن للقسم السفلي (المتصدرين والاسم) */
         .bottom-layout {
             display: grid;
             grid-template-columns: 1.6fr 1fr;
@@ -133,7 +243,6 @@
             width: 100%;
         }
 
-        /* تحسين مظهر وحجم حقول الإدخال */
         input {
             padding: 14px;
             border-radius: 12px;
@@ -178,107 +287,14 @@
             color: var(--neon-blue);
             text-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
             background: rgba(0, 243, 255, 0.05);
-            padding: 10px 20px;
+            padding: 11px 20px;
             border-radius: 30px;
             border: 1px solid rgba(0, 243, 255, 0.2);
             width: 100%;
             text-align: center;
         }
 
-        .session-modes {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 25px;
-            width: 100%;
-        }
-
-        .mode-btn {
-            background: rgba(255, 255, 255, 0.03);
-            color: var(--text-dim);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 12px 20px;
-            font-size: 0.95rem;
-            flex: 1;
-        }
-
-        .mode-btn.active {
-            background: linear-gradient(135deg, var(--neon-blue), #00b4d8);
-            color: #05070b;
-            border-color: var(--neon-blue);
-            box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
-        }
-
-        .current-task-title {
-            font-size: calc(1.2rem + 0.3vw);
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255,255,255,0.2);
-            text-align: center;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-
-        .timer-display {
-            font-size: calc(5rem + 5vw);
-            font-weight: 900;
-            color: var(--text-neon);
-            margin: 15px 0;
-            font-family: 'Courier New', Courier, monospace;
-            text-align: center;
-            text-shadow: 0 0 35px rgba(0, 243, 255, 0.4);
-            line-height: 1;
-        }
-
-        .session-counter {
-            color: var(--text-dim);
-            font-size: 1.05rem;
-            margin-bottom: 25px;
-            text-align: center;
-        }
-
-        .motivation-container {
-            font-size: calc(1rem + 0.2vw);
-            font-weight: 700;
-            color: var(--neon-gold);
-            text-shadow: 0 0 10px rgba(255, 183, 3, 0.3);
-            margin-bottom: 25px;
-            min-height: 40px;
-            text-align: center;
-            line-height: 1.4;
-        }
-
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            width: 100%;
-        }
-
-        /* صف المدخلات للمهام يتوزع بعرض الشاشة تلقائياً وبشكل متناسق */
-        .merged-todo-section .input-row {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 25px;
-            width: 100%;
-        }
-
-        .merged-todo-section .inputs-flex {
-            display: flex;
-            gap: 10px;
-            flex: 1;
-        }
-
-        .merged-todo-section button.add-btn {
-            background: linear-gradient(135deg, var(--neon-green), #22c55e);
-            box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
-            padding: 14px 35px;
-        }
-
-        .merged-todo-section button.add-btn:hover {
-            box-shadow: 0 0 25px rgba(57, 255, 20, 0.5);
-        }
-
-        /* تنظيم الجداول وحمايتها من التشوه */
+        /* حماية وتوزيع الجداول بالتساوي */
         .table-wrapper {
             width: 100%;
             overflow-x: auto;
@@ -294,7 +310,7 @@
         }
 
         .custom-table th, .custom-table td {
-            padding: 15px 20px;
+            padding: 16px 20px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
             text-align: center;
             vertical-align: middle;
@@ -304,7 +320,7 @@
         .custom-table th {
             color: var(--neon-gold);
             font-weight: 700;
-            font-size: 0.95rem;
+            font-size: 1rem;
             background: rgba(5, 7, 11, 0.4);
         }
 
@@ -346,7 +362,7 @@
             text-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
         }
 
-        /* الاستعلامات الذكية للشاشات المتوسطة والصغيرة (Mobile & Tablets) */
+        /* شاشات التابلت والأجهزة المتوسطة */
         @media (max-width: 900px) {
             .bottom-layout {
                 grid-template-columns: 1fr;
@@ -354,6 +370,7 @@
             }
         }
 
+        /* شاشات الهواتف المحمولة الذكية */
         @media (max-width: 650px) {
             body {
                 padding: 12px;
@@ -368,7 +385,6 @@
                 gap: 8px;
             }
 
-            /* تحويل صف إدخال المهام لعمودي متناسق في الشاشات الصغيرة جداً */
             .merged-todo-section .input-row {
                 flex-direction: column;
                 gap: 12px;
@@ -385,6 +401,7 @@
             .controls {
                 flex-direction: column;
                 gap: 10px;
+                max-width: 100%;
             }
 
             .controls button {
@@ -401,8 +418,7 @@
         <h1>Pomodoro MR</h1>
     </div>
 
-    <!-- العداد الرئيسي -->
-    <div class="panel" style="align-items: center;">
+    <div class="panel timer-section">
         <div class="session-modes">
             <button class="mode-btn active" id="pomodoroMode" onclick="setMode('pomodoro')">دورة تركيز ⏱️</button>
             <button class="mode-btn" id="shortBreakMode" onclick="setMode('short')">استراحة ☕</button>
@@ -417,16 +433,15 @@
         <div class="session-counter">الـجـلـسـات الـمـكـتـمـلـة الـيـوم: <span id="sessionCountDisplay" style="color: var(--neon-purple); font-weight: bold; text-shadow: 0 0 10px var(--neon-purple);">0</span> 💎</div>
         
         <div class="controls">
-            <button onclick="toggleTimer()" id="startBtn" style="background: linear-gradient(135deg, var(--neon-blue), #00b4d8); box-shadow: 0 0 15px rgba(0, 243, 255, 0.3); min-width: 160px;">ابدأ الجلسة 🚀</button>
-            <button onclick="resetTimer()" style="background: var(--neon-red); color: white; box-shadow: 0 0 15px rgba(255,23,68,0.3); min-width: 120px;">تصفير 🔄</button>
+            <button onclick="toggleTimer()" id="startBtn" style="background: linear-gradient(135deg, var(--neon-blue), #00b4d8); box-shadow: 0 0 15px rgba(0, 243, 255, 0.3); flex: 2;">ابدأ الجلسة 🚀</button>
+            <button onclick="resetTimer()" style="background: var(--neon-red); color: white; box-shadow: 0 0 15px rgba(255,23,68,0.3); flex: 1;">تصفير 🔄</button>
         </div>
     </div>
 
-    <!-- لوحة إدارة المهام اليومية المدمجة -->
     <div class="panel merged-todo-section">
         <h3>قائمة المهام والعمليات اليومية 📋</h3>
         <div class="input-row">
-            <input type="text" id="todoInput" placeholder="عنوان الهدف اليومي..." style="flex: 2;" />
+            <input type="text" id="todoInput" placeholder="عنوان الهدف اليومي..." style="flex: 2.5;" />
             <div class="inputs-flex">
                 <input type="number" id="todoMinutesInput" placeholder="الدقائق" min="1" max="180" style="width: 50%;" />
                 <input type="number" id="todoRoundsInput" placeholder="الجولات" min="1" max="10" style="width: 50%;" />
@@ -450,10 +465,8 @@
         </div>
     </div>
 
-    <!-- القسم السفلي المتجاوب ثنائي الأعمدة -->
     <div class="bottom-layout">
         
-        <!-- لوحة المتصدرين السحابية -->
         <div class="panel">
             <h3>ترتيب المسجلين 🏆</h3>
             <div class="table-wrapper">
@@ -473,7 +486,6 @@
             </div>
         </div>
 
-        <!-- لوحة الملف الشخصي وتعديل الاسم -->
         <div class="panel profile-inline-section">
             <h3 style="font-size: 1.15rem; margin-bottom: 5px;">تسجيل الاسم (اختياري) 👤</h3>
             <div id="loginForm" class="input-group" style="flex-direction: column; gap: 12px; width: 100%;">
@@ -503,51 +515,6 @@
         "الألم مؤقت، لكن مجد الوصول دائم! 🏆",
         "كل ثانية تقضيها هنا هي استثمار في مستقبلك! ⚡",
         "القمة تتسع للجميع، ولكنها لا تستقبل إلا المثابرين! ⛰️",
-        "الانضباط هو الجسر الذي يربط بين أهدافك وإنجازاتك! 🌉",
-        "إذا تعبت تعلم أن ترتاح، لا أن تنسحب! ☕",
-        "أنت لست هنا لتكون عادياً، أنت هنا لتترك بصمة! 🛡️",
-        "النجاح يُبنى في دقائق الصمت والتركيز المطلق! 🤫",
-        "تحدّ صخب العالم الخارجي وهدوءك الداخلي هو السلاح! ⚔️",
-        "العقبات هي تلك الأشياء المرعبة التي تراها عندما ترفع عينيك عن هدفك! 👀",
-        "لا تنظر إلى الخلف، أنت لا تسير في ذلك الاتجاه! 🚶‍♂️",
-        "كل جولة تنهيها تقربك خطوة عملاقة نحو القمة! 💎",
-        "اصنع من عقلك حصناً لا تخترقه المشتتات! 🏰",
-        "التميز ليس عملاً عابراً، بل هو عادة وانضباط يومي! 🔥",
-        "تذكر دائماً لماذا بدأت هذه الرحلة! 🧠",
-        "الجهد المبذول خلف الكواليس سيصنع فارقاً تراه العيون قريباً! 🎬",
-        "لا تنتظر الظروف المثالية، خذ هذه اللحظة واجعلها مثالية! ✨",
-        "كل إنجاز عظيم بدأ بقرار شجاع بالمحاولة والاستمرار! 🚀",
-        "ثق بقدراتك، فالعقل يصدق ما تصر على فعله! 🧬",
-        "اجعل شغفك أقوى من أعذارك اليومية! 🛑",
-        "طريق الألف ميل يبدأ بجلسة تركيز واحدة ناجحة! 📈",
-        "ركّز على التقدم المستمر وليس الكمال الزائف! ⚙️",
-        "الناجحون لا يملكون وقتاً للندم، يملكون وقتاً للعمل فقط! ⏱️",
-        "كن أنت الشخص الذي يلهم الآخرين للنهوض والالتزام!🌟",
-        "أنت أقوى من أي ملهيات تحاول سرقة وقتك وثوانيك! 🔒",
-        "عندما تريد الاستسلام، فكر في روعة الشعور عند النهاية! 🎉",
-        "الاستمرارية الذكية تتفوق دائماً على الحماس المؤقت! 🔄",
-        "ضع كامل ثقلك في هذه الجلسة, فالأهداف الكبرى تستحق! 💪",
-        "لا تتنازل عما تريد البارحة من أجل إغراء الكسل اليوم! 🌊",
-        "أنت تبني مساراً متميزاً، لا تسمح لشيء بقطع حبل أفكارك! 🧵",
-        "استمر بالتقدم، فحتى الخطوات الصغيرة تصنع فارقاً بالمدى البعيد! 👣",
-        "النجاح الحقيقي هو أن تفعل ما يجب فعله عندما يجب فعله! 🧭",
-        "أنت مهندس مستقبلك، فاحرص على بناء الأساسات بقوة وذكاء! 🧱",
-        "اجعل من هذه الدقائق فرصة لإثبات ذاتك وقدراتك العميقة! 🔮",
-        "قاوم رغبة التصفح العشوائي، فالوقت لا ينتظر أحداً! ⏳",
-        "عقلك قادر على استيعاب المستحيل إذا منحت نفسك دقيقة تركيز! 🌀",
-        "الإنتاجية العالية هي نتيجة الالتزام الواعي بالخطة! 🗺️",
-        "اجعل اسمك يلمع دائماً في صدارة الملتزمين! 🥇",
-        "لا تسمح ليومك أن يمضي دون تحقيق انتصار واحد على الأقل! 🏳️",
-        "كل فكرة عظيمة تحتاج إلى عقل هادئ وجلسة تركيز عميقة لترى النور! 💡",
-        "أنت لا تضيع الوقت هنا، أنت تصنع قيمتك الحقيقية! 💰",
-        "ابتعد عن السطحية، الغوص بالعمق هو سر المبدعين! 🌊",
-        "الكسل يعطي راحة مؤقتة تتبعها حسرة، والعمل يعطي تعباً تتبعه رفعة! 🏔️",
-        "حافظ على طاقتك متقدة، الجلسة القادمة تحمل إنجازاً جديداً! 🔋",
-        "لا تدع يومك يسير عشوائياً، أنت قائد دفة السفينة! 🧭",
-        "تحكم في تركيزك، تتحكم في مصيرك ونتائجك! 🎛️",
-        "أنت على بعد خطوات قليلة من إنهاء هذا الهدف بنجاح ساحق! 🏁",
-        "المستقبل ينتمي لأولئك الذين يلتزمون بأهدافهم في العلن والخفاء! 🌌",
-        "تجاوز حدودك السابقة واصنع لنفسك معايير جديدة ومستحيلة! 📈",
         "انتهت العبارة السابقة، وبدأ وقتك الذهبي لتثبت حضورك الآن! ⚡"
     ];
 
