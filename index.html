@@ -3,120 +3,373 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة التركيز | Pomodoro MR</title>
+    <title>Pomodoro MR | منصة التركيز  ⏱️</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+    
     <style>
-        /* التنسيقات العامة المستوحاة من واجهة تطبيقك */
-        body {
-            background-color: #0d0e12;
-            color: #ffffff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        /* نظام الألوان الحماسية والنيون المستقبلي */
+        :root {
+            --bg-dark: #05070b;
+            --panel-glass: rgba(15, 22, 36, 0.7);
+            --text-neon: #f0f5fa;
+            --text-dim: #8a9cb2;
+            
+            /* ألوان الإضاءة المتوهجة */
+            --neon-blue: #00f3ff;
+            --neon-purple: #9d4edd;
+            --neon-gold: #ffb703;
+            --neon-green: #39ff14;
+            --neon-red: #ff1744;
+            
+            --glass-border: 1px solid rgba(0, 243, 255, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
             margin: 0;
-            padding: 20px;
+            padding: 0;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        /* خلفية حركية مذهلة تبعث على النشاط */
+        body {
+            background: linear-gradient(135deg, #05070b, #0f1123, #05070b);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: var(--text-neon);
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+            flex-direction: column;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         .container {
             width: 100%;
-            max-width: 900px;
+            max-width: 1000px;
             display: flex;
             flex-direction: column;
-            gap: 20px;
-        }
-
-        /* كروت الواجهة */
-        .card {
-            background: #13151a;
-            border: 1px solid #1f232b;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-        }
-
-        .flex-row {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-
-        .flex-child {
+            gap: 25px;
             flex: 1;
-            min-width: 300px;
         }
 
-        h3 {
-            margin-top: 0;
-            color: #ffb300;
-            font-size: 1.2rem;
-            border-bottom: 1px solid #1f232b;
-            padding-bottom: 10px;
-        }
-
-        /* حقول الإدخال والأزرار */
-        input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid #00e5ff;
-            background: #0d0e12;
-            color: #fff;
+        .site-header {
             text-align: center;
-            box-sizing: border-box;
-            margin-bottom: 15px;
-            font-size: 1rem;
-        }
-
-        input[type="text"]:focus {
-            outline: none;
-            box-shadow: 0 0 8px rgba(0, 229, 255, 0.5);
-        }
-
-        .btn-start {
-            width: 100%;
-            cursor: pointer;
-            padding: 12px;
-            border-radius: 25px;
-            border: 1px solid #00e5ff;
-            background: transparent;
-            color: #00e5ff;
-            font-weight: bold;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .btn-start:hover {
-            background: #00e5ff;
-            color: #0d0e12;
-            box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
-        }
-
-        /* الجداول */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: center;
+            margin-bottom: 5px;
             margin-top: 10px;
         }
 
-        th {
-            color: #ffb300;
-            padding: 12px;
-            font-weight: 600;
-            border-bottom: 2px solid #1f232b;
+        .site-header h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: 2px;
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple), var(--neon-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 15px rgba(0, 243, 255, 0.4));
+            margin: 0;
         }
 
-        td {
-            padding: 12px;
-            border-bottom: 1px solid #1f232b;
-            color: #e0e0e0;
+        .panel {
+            background: var(--panel-glass);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-radius: 20px;
+            padding: 30px;
+            border: var(--glass-border);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 
+                        0 0 30px rgba(0, 243, 255, 0.03),
+                        inset 0 0 15px rgba(255, 255, 255, 0.02);
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            position: relative;
         }
 
-        .footer {
+        .panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 20px;
+            right: 20px;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), var(--neon-purple), transparent);
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .panel:hover {
+            transform: translateY(-4px) scale(1.005);
+            border-color: rgba(0, 243, 255, 0.4);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), 
+                        0 0 40px rgba(0, 243, 255, 0.15);
+        }
+
+        h2, h3 {
+            color: var(--neon-gold);
+            text-shadow: 0 0 12px rgba(255, 183, 3, 0.4);
+            margin-bottom: 20px;
             text-align: center;
-            margin-top: 30px;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .bottom-layout {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 25px;
+            align-items: stretch;
+        }
+
+        .profile-inline-section {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 12px;
+            width: 100%;
+        }
+
+        input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(138, 156, 178, 0.3);
+            background: rgba(5, 7, 11, 0.8);
+            color: var(--text-neon);
+            outline: none;
+            font-size: 0.95rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        input:focus {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+            background: #05070b;
+        }
+
+        button {
+            padding: 12px 24px;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(135deg, var(--neon-gold), #e6a100);
+            color: #05070b;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 15px rgba(255, 183, 3, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(255, 183, 3, 0.6);
+        }
+
+        .badge-display {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--neon-blue);
+            text-shadow: 0 0 15px rgba(0, 243, 255, 0.6);
+            background: rgba(0, 243, 255, 0.05);
+            padding: 6px 15px;
+            border-radius: 30px;
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            margin-top: 5px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .session-modes {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .mode-btn {
+            background: rgba(255, 255, 255, 0.03);
+            color: var(--text-dim);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: none;
+            padding: 10px 18px;
             font-size: 0.9rem;
-            color: #666;
+        }
+
+        .mode-btn.active {
+            background: linear-gradient(135deg, var(--neon-blue), #00b4d8);
+            color: #05070b;
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.5);
+        }
+
+        .current-task-title {
+            font-size: 1.5rem;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.2);
+            margin-top: 5px;
+            font-weight: 600;
+            min-height: 28px;
+        }
+
+        .timer-display {
+            font-size: calc(5rem + 3vw);
+            font-weight: 900;
+            color: var(--text-neon);
+            margin: 15px 0;
+            font-family: 'Courier New', Courier, monospace;
+            text-align: center;
+            text-shadow: 0 0 35px rgba(0, 243, 255, 0.4), 0 0 70px rgba(157, 78, 221, 0.2);
+            letter-spacing: 2px;
+        }
+
+        .session-counter {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+        }
+
+        .motivation-container {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--neon-gold);
+            text-shadow: 0 0 10px rgba(255, 183, 3, 0.3);
+            margin-bottom: 20px;
+            min-height: 35px;
+            transition: all 0.5s ease-in-out;
+            padding: 0 15px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .merged-todo-section .input-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .merged-todo-section .inputs-flex {
+            display: flex;
+            gap: 10px;
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .merged-todo-section button.add-btn {
+            background: linear-gradient(135deg, var(--neon-green), #22c55e);
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.3);
+        }
+
+        .merged-todo-section button.add-btn:hover {
+            box-shadow: 0 0 25px rgba(57, 255, 20, 0.6);
+        }
+
+        .table-wrapper {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+            min-width: 400px;
+        }
+
+        .custom-table th, .custom-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .custom-table th {
+            color: var(--neon-gold);
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .custom-table td {
+            font-size: 0.95rem;
+        }
+
+        .task-row.active-task {
+            background-color: rgba(57, 255, 20, 0.08);
+            border-right: 4px solid var(--neon-green);
+        }
+
+        .task-row.completed td.task-name {
+            text-decoration: line-through;
+            color: var(--text-dim);
+            opacity: 0.5;
+        }
+
+        .current-user-row {
+            background-color: rgba(0, 243, 255, 0.06);
+            border-left: 4px solid var(--neon-blue);
+            font-weight: bold;
+            box-shadow: inset 0 0 15px rgba(0, 243, 255, 0.1);
+        }
+
+        .site-footer {
+            margin-top: 40px;
+            margin-bottom: 15px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-dim);
+            letter-spacing: 0.5px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 15px;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .site-footer span.copyright-name {
+            color: var(--neon-blue);
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+        }
+
+        @media (max-width: 850px) {
+            .bottom-layout {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .panel {
+                padding: 20px;
+            }
+
+            .site-header h1 {
+                font-size: 2.3rem;
+            }
+            
+            button, input {
+                width: 100%;
+            }
+            
+            .input-group, .merged-todo-section .input-row, .merged-todo-section .inputs-flex {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -124,122 +377,470 @@
 
 <div class="container">
 
-    <div class="flex-row">
+    <div class="site-header">
+        <h1>Pomodoro MR</h1>
+    </div>
+
+    <div class="panel" style="text-align: center; width: 100%;">
+        <div class="session-modes">
+            <button class="mode-btn active" id="pomodoroMode" onclick="setMode('pomodoro')">دورة تركيز ⏱️</button>
+            <button class="mode-btn" id="shortBreakMode" onclick="setMode('short')">استراحة ☕</button>
+            <button class="mode-btn" id="longBreakMode" onclick="setMode('long')">شحن طاقة 🚶‍♂️</button>
+        </div>
         
-        <div class="card flex-child">
-            <h3>تسجيل الاسم (اختياري) 👤</h3>
-            <p style="font-size: 0.9rem; color: #aaa;">السحابة: <span id="cloudStatus" style="color: #00e5ff; font-weight: bold;">Mahmoud Rabaa ⚡</span></p>
-            <p style="font-size: 0.8rem; color: #666; margin-bottom: 15px;">المنجز: 0 ساعة</p>
-            
-            <input type="text" id="usernameInput" placeholder="عنوان الهدف اليومي...">
-            
-            <button class="btn-start" onclick="submitToCloud()">
-                بداية الرحلة 🌱
-            </button>
+        <div class="current-task-title" id="currentTaskDisplay">🎯 أضف مهمة للبدء التلقائي</div>
+        <div class="timer-display" id="timer">25:00</div>
+        
+        <div class="motivation-container" id="motivationDisplay">🔥 ركّز الآن، البدايات تصنع الفارق العظيم!</div>
+        
+        <div class="session-counter">الـجـلـسـات الـمـكـتـمـلـة الـيـوم: <span id="sessionCountDisplay" style="color: var(--neon-purple); font-weight: bold; text-shadow: 0 0 10px var(--neon-purple);">0</span> 💎</div>
+        
+        <div class="controls">
+            <button onclick="toggleTimer()" id="startBtn" style="background: linear-gradient(135deg, var(--neon-blue), #00b4d8); box-shadow: 0 0 15px rgba(0, 243, 255, 0.3); padding: 14px 35px; font-size: 1.05rem;">ابدأ الجلسة 🚀</button>
+            <button onclick="resetTimer()" style="background: var(--neon-red); color: white; box-shadow: 0 0 15px rgba(255,23,68,0.3); padding: 14px 25px;">تصفير 🔄</button>
+        </div>
+    </div>
+
+    <div class="panel merged-todo-section">
+        <h3>قائمة المهام والعمليات اليومية 📋</h3>
+        <div class="input-row">
+            <input type="text" id="todoInput" placeholder="عنوان الهدف اليومي..." style="flex: 2; min-width: 250px;" />
+            <div class="inputs-flex">
+                <input type="number" id="todoMinutesInput" placeholder="الدقائق" min="1" max="180" />
+                <input type="number" id="todoRoundsInput" placeholder="الجولات" min="1" max="10" />
+            </div>
+            <button onclick="addTodo()" class="add-btn">إضافة </button>
         </div>
 
-        <div class="card flex-child">
-            <h3>ترتيب المسجلين 🏆</h3>
-            <table>
+        <div class="table-wrapper">
+            <table class="custom-table">
                 <thead>
                     <tr>
-                        <th>المرتبة</th>
-                        <th>المسجل</th>
-                        <th>ساعات الالتزام</th>
-                        <th>الدرع المحصل</th>
+                        <th>اسم المهمة</th>
+                        <th>الدقائق</th>
+                        <th>الجولات المتبقية</th>
+                        <th style="text-align: center;">التحكم</th>
                     </tr>
                 </thead>
-                <tbody id="rankingTableBody">
-                    <tr>
-                        <td colspan="4" style="color: #666; padding: 20px;">لا مسجلين حالياً . كن المسجل الأول!</td>
-                    </tr>
+                <tbody id="todoTableBody">
                 </tbody>
             </table>
         </div>
-
     </div>
 
-    <div class="footer">
-        © 2026 جميع الحقوق محفوظة | تم التطوير بواسطة <span style="color: #00e5ff; font-weight: bold;">Mahmoud Rabaa 🚀🛡️</span>
+    <div class="bottom-layout">
+        
+        <div class="panel">
+            <h3>ترتيب المسجلين 🏆</h3>
+            <div class="table-wrapper">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>المرتبة</th>
+                            <th>المسجل</th>
+                            <th>ساعات الالتزام</th>
+                            <th>الدرع المحصّل</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <tr><td colspan="4" style="text-align:center; color:var(--text-dim);">جاري مزامنة المنظومة سحابياً...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="panel profile-inline-section">
+            <h3 style="font-size: 1.1rem; margin-bottom: 10px;">تسجيل الاسم (اختياري) 👤</h3>
+            <div id="loginForm" class="input-group" style="flex-direction: column; gap: 10px;">
+                <input type="text" id="usernameInput" placeholder="اسمك ..." style="width: 100%;" />
+                <button onclick="registerUser()" style="width: 100%; padding: 10px;">حفظ </button>
+            </div>
+            <div id="userInfo" style="display: none; text-align: center; width: 100%;">
+                <h4 style="font-size: 1rem; margin-bottom: 6px;">السحابة: <span id="displayUsername" style="color: var(--neon-blue);">المخدم</span> ⚡</h4>
+                <p style="font-size: 0.85rem; color: var(--text-dim);">المنجز: <span id="displayHours" style="color: var(--neon-gold); font-weight: bold;">0</span> ساعة</p>
+            </div>
+            <div class="badge-display" id="badgeDisplay">🌱 بداية الرحلة </div>
+        </div>
+
     </div>
 
 </div>
 
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
-  import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js";
+<footer class="site-footer">
+    <p>&copy; 2026 جميع الحقوق محفوظة    | تم التطوير بواسطة  <span class="copyright-name">Mahmoud Rabaa</span> 🛡️🚀</p>
+</footer>
 
-  // إعدادات مشروع التخزين السحابي الخاص بك Pomodoro-MR
-  const firebaseConfig = {
-    apiKey: "AIzaSyCPPLBoiyecZqRSL7RgBCJ0fRYxemeuTEA",
-    authDomain: "pomodoro-mr-ea408.firebaseapp.com",
-    databaseURL: "https://pomodoro-mr-ea408-default-rtdb.firebaseio.com",
-    projectId: "pomodoro-mr-ea408",
-    storageBucket: "pomodoro-mr-ea408.firebasestorage.app",
-    messagingSenderId: "777364680214",
-    appId: "1:777364680214:web:5a5780639826d14c570f37"
-  };
+<script>
+    const FIREBASE_URL = "https://pomodoro-mr-default-rtdb.firebaseio.com";
 
-  // ربط وتهيئة قاعدة البيانات
-  const app = initializeApp(firebaseConfig);
-  const database = getDatabase(app);
+    const motivationPhrases = [
+        "لا تستسلم أبدًا، تذكر هدفك الأساسي جيداً! 🎯",
+        "الألم مؤقت، لكن مجد الوصول دائم! 🏆",
+        "كل ثانية تقضيها هنا هي استثمار في مستقبلك! ⚡",
+        "القمة تتسع للجميع، ولكنها لا تستقبل إلا المثابرين! ⛰️",
+        "الانضباط هو الجسر الذي يربط بين أهدافك وإنجازاتك! 🌉",
+        "إذا تعبت تعلم أن ترتاح، لا أن تنسحب! ☕",
+        "أنت لست هنا لتكون عادياً، أنت هنا لتترك بصمة! 🛡️",
+        "النجاح يُبنى في دقائق الصمت والتركيز المطلق! 🤫"
+    ];
 
-  // دالة إرسال الاسم وحفظه في سحابة Firebase
-  window.registerUserInCloud = function(userName) {
-    if (!userName) return;
+    let timerInterval;
+    let totalMinutesFocused = 0;
+    let completedSessionsCount = parseInt(localStorage.getItem('completedSessionsCount')) || 0;
+    let currentUsername = localStorage.getItem('cloudUsername') || '';
     
-    set(ref(database, 'users/' + userName), {
-      username: userName,
-      hours: 0,
-      badge: "الدرع المحصل"
-    }).then(() => {
-      console.log("تم التوصيل والحفظ في السحابة بنجاح! 🔥");
-    }).catch((error) => {
-      console.error("مشكلة في إرسال البيانات الكودية:", error);
-    });
-  };
-
-  // دالة التحقق من المدخلات عند الضغط على زر بداية الرحلة
-  window.submitToCloud = function() {
-    const nameInput = document.getElementById('usernameInput');
-    const name = nameInput.value.trim();
-    if (name) {
-      window.registerUserInCloud(name);
-      nameInput.value = ''; // تصفير خانة النص تلقائياً بعد الإرسال الناجح
-    } else {
-      alert('الرجاء كتابة الاسم أولاً! ⚠️');
-    }
-  };
-
-  // جلب البيانات بشكل حي ومباشر وتحديث الجدول فوراً عند جميع المتصفحين
-  onValue(ref(database, 'users/'), (snapshot) => {
-    const usersData = snapshot.val();
-    const tableBody = document.getElementById('rankingTableBody'); 
+    let currentMode = 'pomodoro'; 
+    let modeDurations = { pomodoro: 25, short: 5, long: 15 };
+    let timeLeft = modeDurations[currentMode] * 60; 
+    let isRunning = false;
     
-    if (tableBody) {
-      tableBody.innerHTML = ''; // إزالة الصفوف القديمة لبناء الترتيب الجديد
+    let currentTaskIndex = -1; 
+    let pomodoroSessionCounter = 0; 
 
-      if (!usersData) {
-        tableBody.innerHTML = `<tr><td colspan="4" style="color: #666; padding: 20px;">لا مسجلين حالياً . كن المسجل الأول!</td></tr>`;
-        return;
-      }
+    window.onload = function() {
+        if (currentUsername) {
+            fetchUserData();
+        }
+        fetchLeaderboard();
+        setInterval(fetchLeaderboard, 10000); 
+        loadTodos();
+        document.getElementById('sessionCountDisplay').innerText = completedSessionsCount;
+        autoSelectFirstTask(); 
+        startMotivationEngine();
+    };
 
-      // فرز وترتيب حسابات المستخدمين حسب ساعات الالتزام الأعلى
-      let sortedUsers = Object.values(usersData).sort((a, b) => b.hours - a.hours);
-
-      // رسم صفوف الجدول برمجياً وتضمين البيانات المسترجعة
-      sortedUsers.forEach((user, index) => {
-        tableBody.innerHTML += `
-          <tr>
-            <td>${index + 1}</td>
-            <td style="color: #ffffff; font-weight: bold;">${user.username}</td>
-            <td style="color: #ffb300;">${user.hours} ساعة</td>
-            <td><span style="background: rgba(0, 229, 255, 0.1); color: #00e5ff; padding: 4px 10px; border-radius: 12px; font-size: 0.85rem;">${user.badge}</span></td>
-          </tr>
-        `;
-      });
+    function startMotivationEngine() {
+        const motivationDisplay = document.getElementById('motivationDisplay');
+        setInterval(() => {
+            const randomIndex = Math.floor(Math.random() * motivationPhrases.length);
+            if(motivationDisplay) {
+                motivationDisplay.style.opacity = 0;
+                setTimeout(() => {
+                    motivationDisplay.innerText = motivationPhrases[randomIndex];
+                    motivationDisplay.style.opacity = 1;
+                }, 200);
+            }
+        }, 10000);
     }
-  });
+
+    function registerUser() {
+        const input = document.getElementById('usernameInput').value.trim();
+        if (input) {
+            currentUsername = input.replace(/[.#$\[\]]/g, ""); 
+            localStorage.setItem('cloudUsername', currentUsername);
+            fetchUserData();
+        }
+    }
+
+    function fetchUserData() {
+        if (!FIREBASE_URL || !currentUsername) return;
+        fetch(`${FIREBASE_URL}/users/${currentUsername}.json`)
+        .then(res => res.json())
+        .then(data => {
+            if (data) {
+                totalMinutesFocused = data.minutes || 0;
+            } else {
+                saveProgressToCloud(0);
+            }
+            showProfile();
+            updateBadge();
+            fetchLeaderboard();
+        });
+    }
+
+    function showProfile() {
+        document.getElementById('loginForm').style.display = 'none';
+        document.getElementById('userInfo').style.display = 'block';
+        document.getElementById('displayUsername').innerText = currentUsername;
+        document.getElementById('displayHours').innerText = Math.floor(totalMinutesFocused / 60);
+    }
+
+    function saveProgressToCloud(minutes) {
+        if (!FIREBASE_URL || !currentUsername) return;
+        fetch(`${FIREBASE_URL}/users/${currentUsername}.json`, {
+            method: 'PUT',
+            body: JSON.stringify({ minutes: minutes })
+        }).then(() => {
+            fetchLeaderboard();
+        });
+    }
+
+    function getBadge(hours) {
+        if (hours >= 1 && hours < 3) return "🛡️ الدرع البرونزي";
+        if (hours >= 3 && hours < 5) return "⚔️ الدرع الفضي";
+        if (hours >= 5 && hours <= 8) return "👑 الدرع الذهبي";
+        if (hours > 8) return "💎 درع الماس النادر";
+        return "🌱 بداية الرحلة";
+    }
+
+    function updateBadge() {
+        let currentHours = totalMinutesFocused / 60;
+        document.getElementById('badgeDisplay').innerText = getBadge(currentHours);
+    }
+
+    function fetchLeaderboard() {
+        if (!FIREBASE_URL) return;
+        fetch(`${FIREBASE_URL}/users.json`)
+        .then(res => res.json())
+        .then(usersData => {
+            const tbody = document.getElementById('leaderboardBody');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+
+            if (!usersData) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-dim);">لا مسجلين حاليا . كن المسجل الأول!</td></tr>';
+                return;
+            }
+
+            let allUsers = [];
+            for (let name in usersData) {
+                let hours = (usersData[name].minutes || 0) / 60;
+                allUsers.push({
+                    username: name,
+                    hours: hours,
+                    badge: getBadge(hours),
+                    isCurrent: name === currentUsername
+                });
+            }
+
+            allUsers.sort((a, b) => b.hours - a.hours);
+
+            allUsers.forEach((user, index) => {
+                const row = document.createElement('tr');
+                if (user.isCurrent) row.className = 'current-user-row';
+
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${user.username} ${user.isCurrent ? "(أنت)" : ""}</td>
+                    <td>${Math.floor(user.hours)} ساعة</td>
+                    <td>${user.badge}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        });
+    }
+
+    function setMode(mode) {
+        // حماية حالة المؤقت عند ضغط وضع الاستراحة لمنع التوقف المفاجئ
+        currentMode = mode;
+        if (!isRunning) {
+            let todos = JSON.parse(localStorage.getItem('todos')) || [];
+            if(mode === 'pomodoro' && todos[currentTaskIndex]) {
+                timeLeft = todos[currentTaskIndex].minutes * 60;
+            } else {
+                timeLeft = modeDurations[currentMode] * 60;
+            }
+            updateTimerDisplay();
+        }
+        
+        let todos = JSON.parse(localStorage.getItem('todos')) || [];
+        if(mode === 'pomodoro' && todos[currentTaskIndex]) {
+            document.getElementById('currentTaskDisplay').innerText = `التركيز الحالي: ${todos[currentTaskIndex].text} 🎯`;
+        } else if(mode === 'short') {
+            document.getElementById('currentTaskDisplay').innerText = "الاستراحة الحالية: التقاط الأنفاس التلقائي ☕";
+        } else if(mode === 'long') {
+            document.getElementById('currentTaskDisplay').innerText = "الاستراحة الحالية: شحن الخلايا الشامل 🚶‍♂️";
+        }
+
+        document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
+        if (mode === 'pomodoro') document.getElementById('pomodoroMode').classList.add('active');
+        if (mode === 'short') document.getElementById('shortBreakMode').classList.add('active');
+        if (mode === 'long') document.getElementById('longBreakMode').classList.add('active');
+    }
+
+    function toggleTimer() {
+        if (isRunning) {
+            clearInterval(timerInterval);
+            document.getElementById('startBtn').innerText = 'استئناف 🚀';
+            isRunning = false;
+        } else {
+            let todos = JSON.parse(localStorage.getItem('todos')) || [];
+            if (todos.length === 0 && currentMode === 'pomodoro') {
+                alert("يرجى إضافة مهمة واحدة على الأقل إلى الجدول لتشغيل العداد تلقائياً! 🎯");
+                return;
+            }
+            
+            isRunning = true;
+            document.getElementById('startBtn').innerText = 'تعليق مؤقت ⏸️';
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                updateTimerDisplay();
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    isRunning = false;
+                    document.getElementById('startBtn').innerText = 'ابدأ الجلسة 🚀';
+                    handleSessionCompletion();
+                }
+            }, 1000);
+        }
+    }
+
+    function handleSessionCompletion() {
+        let todos = JSON.parse(localStorage.getItem('todos')) || [];
+
+        if (currentMode === 'pomodoro') {
+            pomodoroSessionCounter++; 
+            completedSessionsCount++;
+            localStorage.setItem('completedSessionsCount', completedSessionsCount);
+            document.getElementById('sessionCountDisplay').innerText = completedSessionsCount;
+
+            if (currentUsername) {
+                if (todos[currentTaskIndex]) {
+                    totalMinutesFocused += parseInt(todos[currentTaskIndex].minutes);
+                } else {
+                    totalMinutesFocused += modeDurations.pomodoro;
+                }
+                saveProgressToCloud(totalMinutesFocused);
+                showProfile();
+                updateBadge();
+            }
+
+            if (todos[currentTaskIndex]) {
+                todos[currentTaskIndex].rounds--;
+                if (todos[currentTaskIndex].rounds <= 0) {
+                    todos[currentTaskIndex].completed = true;
+                    alert(`أنهيت تماماً مهمة: [ ${todos[currentTaskIndex].text} ] 🎉 سيتم الانتقال للمهمة التالية.`);
+                } else {
+                    alert(`اكتملت جولة التركيز بنجاح! متبقي ${todos[currentTaskIndex].rounds} جولات لهذه المهمة. 🔥`);
+                }
+                localStorage.setItem('todos', JSON.stringify(todos));
+                renderTodos();
+            }
+
+            if (pomodoroSessionCounter >= 3) {
+                pomodoroSessionCounter = 0; 
+                setMode('long');
+            } else {
+                setMode('short');
+            }
+            
+            toggleTimer();
+
+        } else {
+            alert('انتهت الاستراحة التلقائية! العودة إلى التركيز والإنتاجية الآن. ⚡');
+            autoSelectFirstTask();
+            
+            todos = JSON.parse(localStorage.getItem('todos')) || [];
+            if (todos.length > 0 && currentTaskIndex < todos.length) {
+                setMode('pomodoro');
+                toggleTimer(); 
+            } else {
+                document.getElementById('currentTaskDisplay').innerText = "🏁 تهانينا! لقد أنهيت جميع المهام المضافة بالقائمة!";
+                resetTimer();
+            }
+        }
+    }
+
+    function resetTimer() {
+        clearInterval(timerInterval);
+        let todos = JSON.parse(localStorage.getItem('todos')) || [];
+        if (currentMode === 'pomodoro' && todos[currentTaskIndex]) {
+            timeLeft = todos[currentTaskIndex].minutes * 60;
+        } else {
+            timeLeft = modeDurations[currentMode] * 60;
+        }
+        isRunning = false;
+        document.getElementById('startBtn').innerText = 'ابدأ الجلسة 🚀';
+        updateTimerDisplay();
+    }
+
+    function updateTimerDisplay() {
+        let minutes = Math.floor(timeLeft / 60);
+        let seconds = timeLeft % 60;
+        document.getElementById('timer').innerText = 
+            `${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+    }
+
+    function addTodo() {
+        const todoInput = document.getElementById('todoInput');
+        const minutesInput = document.getElementById('todoMinutesInput');
+        const roundsInput = document.getElementById('todoRoundsInput');
+        
+        const text = todoInput.value.trim();
+        const mins = parseInt(minutesInput.value) || 25;
+        const rounds = parseInt(roundsInput.value) || 1;
+
+        if (text) {
+            let todos = JSON.parse(localStorage.getItem('todos')) || [];
+            todos.push({ text: text, minutes: mins, rounds: rounds, completed: false });
+            localStorage.setItem('todos', JSON.stringify(todos));
+            
+            todoInput.value = '';
+            minutesInput.value = '';
+            roundsInput.value = '';
+            
+            renderTodos();
+            
+            if (todos.length === 1 || currentTaskIndex === -1) {
+                autoSelectFirstTask();
+            }
+        }
+    }
+
+    function autoSelectFirstTask() {
+        let todos = JSON.parse(localStorage.getItem('todos')) || [];
+        let found = false;
+        
+        for (let i = 0; i < todos.length; i++) {
+            if (!todos[i].completed) {
+                currentTaskIndex = i;
+                found = true;
+                break;
+            }
+        }
+        
+        if (!found && todos.length > 0) {
+            currentTaskIndex = todos.length - 1;
+        }
+        
+        renderTodos();
+        if (currentMode === 'pomodoro' && todos[currentTaskIndex]) {
+            document.getElementById('currentTaskDisplay').innerText = `التركيز الحالي: ${todos[currentTaskIndex].text} 🎯`;
+            if(!isRunning) {
+                timeLeft = todos[currentTaskIndex].minutes * 60;
+                updateTimerDisplay();
+            }
+        }
+    }
+
+    function loadTodos() {
+        renderTodos();
+    }
+
+    function renderTodos() {
+        const tbody = document.getElementById('todoTableBody');
+        if(!tbody) return;
+        tbody.innerHTML = '';
+        let todos = JSON.parse(localStorage.getItem('todos')) || [];
+
+        todos.forEach((todo, index) => {
+            const row = document.createElement('tr');
+            row.className = `task-row ${todo.completed ? 'completed' : ''} ${index === currentTaskIndex && !todo.completed ? 'active-task' : ''}`;
+            
+            row.innerHTML = `
+                <td class="task-name">${todo.text}</td>
+                <td>${todo.minutes} د</td>
+                <td>${todo.rounds} جولات</td>
+                <td style="text-align: center;">
+                    <button onclick="deleteTodo(${index})" style="background:var(--neon-red); color:white; padding:6px 12px; font-size:0.8rem; box-shadow:none;">حذف</button>
+                </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    function deleteTodo(index) {
+        let todos = JSON.parse(localStorage.getItem('todos')) || [];
+        todos.splice(index, 1);
+        localStorage.setItem('todos', JSON.stringify(todos));
+        if (currentTaskIndex === index) {
+            currentTaskIndex = -1;
+        } else if (currentTaskIndex > index) {
+            currentTaskIndex--;
+        }
+        autoSelectFirstTask();
+    }
 </script>
 
 </body>
