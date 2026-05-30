@@ -1,26 +1,190 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة التركيز | Pomodoro MR</title>
+    <style>
+        /* التنسيقات العامة المستوحاة من واجهة تطبيقك */
+        body {
+            background-color: #0d0e12;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* كروت الواجهة */
+        .card {
+            background: #13151a;
+            border: 1px solid #1f232b;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .flex-row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .flex-child {
+            flex: 1;
+            min-width: 300px;
+        }
+
+        h3 {
+            margin-top: 0;
+            color: #ffb300;
+            font-size: 1.2rem;
+            border-bottom: 1px solid #1f232b;
+            padding-bottom: 10px;
+        }
+
+        /* حقول الإدخال والأزرار */
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #00e5ff;
+            background: #0d0e12;
+            color: #fff;
+            text-align: center;
+            box-sizing: border-box;
+            margin-bottom: 15px;
+            font-size: 1rem;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            box-shadow: 0 0 8px rgba(0, 229, 255, 0.5);
+        }
+
+        .btn-start {
+            width: 100%;
+            cursor: pointer;
+            padding: 12px;
+            border-radius: 25px;
+            border: 1px solid #00e5ff;
+            background: transparent;
+            color: #00e5ff;
+            font-weight: bold;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-start:hover {
+            background: #00e5ff;
+            color: #0d0e12;
+            box-shadow: 0 0 15px rgba(0, 229, 255, 0.4);
+        }
+
+        /* الجداول */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        th {
+            color: #ffb300;
+            padding: 12px;
+            font-weight: 600;
+            border-bottom: 2px solid #1f232b;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #1f232b;
+            color: #e0e0e0;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="flex-row">
+        
+        <div class="card flex-child">
+            <h3>تسجيل الاسم (اختياري) 👤</h3>
+            <p style="font-size: 0.9rem; color: #aaa;">السحابة: <span id="cloudStatus" style="color: #00e5ff; font-weight: bold;">Mahmoud Rabaa ⚡</span></p>
+            <p style="font-size: 0.8rem; color: #666; margin-bottom: 15px;">المنجز: 0 ساعة</p>
+            
+            <input type="text" id="usernameInput" placeholder="عنوان الهدف اليومي...">
+            
+            <button class="btn-start" onclick="submitToCloud()">
+                بداية الرحلة 🌱
+            </button>
+        </div>
+
+        <div class="card flex-child">
+            <h3>ترتيب المسجلين 🏆</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>المرتبة</th>
+                        <th>المسجل</th>
+                        <th>ساعات الالتزام</th>
+                        <th>الدرع المحصل</th>
+                    </tr>
+                </thead>
+                <tbody id="rankingTableBody">
+                    <tr>
+                        <td colspan="4" style="color: #666; padding: 20px;">لا مسجلين حالياً . كن المسجل الأول!</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <div class="footer">
+        © 2026 جميع الحقوق محفوظة | تم التطوير بواسطة <span style="color: #00e5ff; font-weight: bold;">Mahmoud Rabaa 🚀🛡️</span>
+    </div>
+
+</div>
+
 <script type="module">
-  // 1. استيراد الدوال الأساسية من Firebase
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-app.js";
   import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/12.14.0/firebase-database.js";
 
-  // 2. إعدادات تطبيق الويب الخاص بك
+  // إعدادات مشروع التخزين السحابي الخاص بك Pomodoro-MR
   const firebaseConfig = {
     apiKey: "AIzaSyCPPLBoiyecZqRSL7RgBCJ0fRYxemeuTEA",
     authDomain: "pomodoro-mr-ea408.firebaseapp.com",
-    databaseURL: "https://pomodoro-mr-ea408-default-rtdb.firebaseio.com", // تأكد من وجود رابط قاعدة البيانات هنا
+    databaseURL: "https://pomodoro-mr-ea408-default-rtdb.firebaseio.com",
     projectId: "pomodoro-mr-ea408",
     storageBucket: "pomodoro-mr-ea408.firebasestorage.app",
     messagingSenderId: "777364680214",
     appId: "1:777364680214:web:5a5780639826d14c570f37"
   };
 
-  // 3. تهيئة Firebase وقاعدة البيانات
+  // ربط وتهيئة قاعدة البيانات
   const app = initializeApp(firebaseConfig);
   const database = getDatabase(app);
 
-  // --- دوال التحكم بقاعدة البيانات ---
-
-  // أ) دالة لإضافة مستخدم جديد عند الضغط على "بداية الرحلة"
+  // دالة إرسال الاسم وحفظه في سحابة Firebase
   window.registerUserInCloud = function(userName) {
     if (!userName) return;
     
@@ -29,36 +193,54 @@
       hours: 0,
       badge: "الدرع المحصل"
     }).then(() => {
-      console.log("تم حفظ المستخدم بنجاح في السحابة! 🎉");
+      console.log("تم التوصيل والحفظ في السحابة بنجاح! 🔥");
     }).catch((error) => {
-      console.error("خطأ أثناء الحفظ:", error);
+      console.error("مشكلة في إرسال البيانات الكودية:", error);
     });
   };
 
-  // ب) دالة لجلب البيانات وتحديث الجدول تلقائياً عند الجميع
+  // دالة التحقق من المدخلات عند الضغط على زر بداية الرحلة
+  window.submitToCloud = function() {
+    const nameInput = document.getElementById('usernameInput');
+    const name = nameInput.value.trim();
+    if (name) {
+      window.registerUserInCloud(name);
+      nameInput.value = ''; // تصفير خانة النص تلقائياً بعد الإرسال الناجح
+    } else {
+      alert('الرجاء كتابة الاسم أولاً! ⚠️');
+    }
+  };
+
+  // جلب البيانات بشكل حي ومباشر وتحديث الجدول فوراً عند جميع المتصفحين
   onValue(ref(database, 'users/'), (snapshot) => {
     const usersData = snapshot.val();
-    if (!usersData) return;
-
-    // ⚠️ استبدل 'rankingTableBody' بالـ id الفعلي لـ `<tbody>` الخاص بجدول الترتيب عندك
     const tableBody = document.getElementById('rankingTableBody'); 
+    
     if (tableBody) {
-      tableBody.innerHTML = ''; // تفريغ الجدول القديم
+      tableBody.innerHTML = ''; // إزالة الصفوف القديمة لبناء الترتيب الجديد
 
-      // ترتيب المستخدمين من الأكثر ساعات إلى الأقل
+      if (!usersData) {
+        tableBody.innerHTML = `<tr><td colspan="4" style="color: #666; padding: 20px;">لا مسجلين حالياً . كن المسجل الأول!</td></tr>`;
+        return;
+      }
+
+      // فرز وترتيب حسابات المستخدمين حسب ساعات الالتزام الأعلى
       let sortedUsers = Object.values(usersData).sort((a, b) => b.hours - a.hours);
 
-      // بناء صفوف الجدول من جديد
+      // رسم صفوف الجدول برمجياً وتضمين البيانات المسترجعة
       sortedUsers.forEach((user, index) => {
         tableBody.innerHTML += `
           <tr>
             <td>${index + 1}</td>
-            <td>${user.username}</td>
-            <td>${user.hours} ساعة</td>
-            <td>${user.badge}</td>
+            <td style="color: #ffffff; font-weight: bold;">${user.username}</td>
+            <td style="color: #ffb300;">${user.hours} ساعة</td>
+            <td><span style="background: rgba(0, 229, 255, 0.1); color: #00e5ff; padding: 4px 10px; border-radius: 12px; font-size: 0.85rem;">${user.badge}</span></td>
           </tr>
         `;
       });
     }
   });
 </script>
+
+</body>
+</html>
