@@ -37,7 +37,8 @@
             animation: gradientBG 15s ease infinite;
             color: var(--text-neon);
             display: flex;
-            justify-content: flex-start;
+            /* التعديل: سنترة المحتوى بالكامل عمودياً وأفقياً */
+            justify-content: center; 
             align-items: center;
             min-height: 100vh;
             padding: 25px;
@@ -51,13 +52,14 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* الحاوية الأساسية تتمدد بشكل كامل لتعطي مساحة للموقع كله */
         .container {
             width: 100%;
             max-width: 1200px;
             display: flex;
             flex-direction: column;
             gap: 25px;
+            /* التعديل: التأكد من سنترة الحاوية نفسها */
+            align-items: center; 
         }
 
         .site-header {
@@ -76,7 +78,6 @@
             filter: drop-shadow(0 0 15px rgba(0, 243, 255, 0.4));
         }
 
-        /* تعديل جوهري: الألواح الآن مرنة بالكامل (width: 100%) وتملأ المساحة المتاحة لها هندسياً */
         .panel {
             background: var(--panel-glass);
             backdrop-filter: blur(14px);
@@ -89,7 +90,9 @@
             width: 100%; 
             display: flex;
             flex-direction: column;
-            align-items: stretch; /* تجعل العناصر الداخلية تتمدد بكامل عرض اللوحة */
+            /* التعديل: سنترة العناصر داخل اللوحة وجعلها متناسقة */
+            align-items: center; 
+            text-align: center;
         }
 
         .panel::before {
@@ -113,19 +116,18 @@
             width: 100%;
         }
 
-        /* منطقة العداد العلوي أصبحت متجاوبة وواسعة */
         .timer-section {
-            align-items: center; /* سنترة المحتوى النصي والعداد فقط داخل اللوحة المتمددة */
+            align-items: center; 
             text-align: center;
         }
 
-        /* أزرار الأوضاع تتوزع بكامل عرض اللوحة بشكل مرن */
         .session-modes {
             display: flex;
             justify-content: center;
             gap: 12px;
             margin-bottom: 25px;
             width: 100%;
+            max-width: 600px; /* لتجنب تمدد الأزرار بشكل مفرط */
         }
 
         .mode-btn {
@@ -134,8 +136,9 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             padding: 14px 24px;
             font-size: 1rem;
-            flex: 1; /* جعل الأزرار تتوزع بالتساوي تماماً حسب حجم الشاشة */
+            flex: 1; 
             transition: all 0.3s ease;
+            border-radius: 12px;
         }
 
         .mode-btn.active {
@@ -156,7 +159,7 @@
         }
 
         .timer-display {
-            font-size: calc(5.5rem + 5vw); /* تكبير ذكي ومناسب للشاشات الكبيرة */
+            font-size: calc(5.5rem + 5vw); 
             font-weight: 900;
             color: var(--text-neon);
             margin: 15px 0;
@@ -193,16 +196,22 @@
             justify-content: center;
             gap: 15px;
             width: 100%;
-            max-width: 500px; /* عدم تمدد أزرار التحكم بشكل مفرط على الشاشات الضخمة */
+            max-width: 500px; 
             margin: 0 auto;
         }
 
-        /* التعديل الشامل لصف مدخلات قائمة المهام */
+        /* تعديل قسم الـ Todo ليكون متناسقاً وفي المنتصف */
+        .merged-todo-section {
+            align-items: center;
+        }
+
         .merged-todo-section .input-row {
             display: flex;
             gap: 12px;
             margin-bottom: 25px;
             width: 100%;
+            max-width: 800px; /* سنترة وتحديد العرض المريح */
+            justify-content: center;
         }
 
         .merged-todo-section .inputs-flex {
@@ -221,7 +230,6 @@
             box-shadow: 0 0 25px rgba(57, 255, 20, 0.5);
         }
 
-        /* تخطيط مرن للقسم السفلي (المتصدرين والاسم) */
         .bottom-layout {
             display: grid;
             grid-template-columns: 1.6fr 1fr;
@@ -294,7 +302,6 @@
             text-align: center;
         }
 
-        /* حماية وتوزيع الجداول بالتساوي */
         .table-wrapper {
             width: 100%;
             overflow-x: auto;
@@ -362,7 +369,6 @@
             text-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
         }
 
-        /* شاشات التابلت والأجهزة المتوسطة */
         @media (max-width: 900px) {
             .bottom-layout {
                 grid-template-columns: 1fr;
@@ -370,7 +376,6 @@
             }
         }
 
-        /* شاشات الهواتف المحمولة الذكية */
         @media (max-width: 650px) {
             body {
                 padding: 12px;
@@ -728,6 +733,7 @@
                 saveProgressToCloud(totalMinutesFocused);
                 showProfile();
                 updateBadge();
+                fetchLeaderboard();
             }
 
             if (todos[currentTaskIndex]) {
