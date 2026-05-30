@@ -63,6 +63,7 @@
             flex: 1;
         }
 
+        /* اسم الموقع في صدارة الصفحة بتأثير نيون متوهج وحماسي */
         .site-header {
             text-align: center;
             margin-bottom: 5px;
@@ -81,6 +82,7 @@
             margin: 0;
         }
 
+        /* ألواح زجاجية بارزة للأمام مع توهج خلفي حماسي */
         .panel {
             background: var(--panel-glass);
             backdrop-filter: blur(14px);
@@ -95,6 +97,7 @@
             position: relative;
         }
 
+        /* خط نيون جمالي علوي لكل لوحة لزيادة الحداثة */
         .panel::before {
             content: '';
             position: absolute;
@@ -122,6 +125,7 @@
             letter-spacing: 1px;
         }
 
+        /* تقسيم السطر السفلي: يمين جدول الترتيب، يسار لوحة الاسم مصغرة */
         .bottom-layout {
             display: grid;
             grid-template-columns: 1.5fr 1fr;
@@ -163,6 +167,7 @@
             background: #05070b;
         }
 
+        /* أزرار النيون المشعة */
         button {
             padding: 12px 24px;
             border-radius: 10px;
@@ -194,6 +199,7 @@
             text-align: center;
         }
 
+        /* أزرار أوضاع الجلسات المتوهجة */
         .session-modes {
             display: flex;
             justify-content: center;
@@ -227,6 +233,7 @@
             min-height: 28px;
         }
 
+        /* شاشة العداد الأكبر لتشمل المساحة كاملة */
         .timer-display {
             font-size: calc(5rem + 3vw);
             font-weight: 900;
@@ -244,6 +251,7 @@
             margin-bottom: 25px;
         }
 
+        /* تنسيق عنصر العبارات المحفزة التفاعلي */
         .motivation-container {
             font-size: 1.2rem;
             font-weight: 700;
@@ -261,6 +269,7 @@
             gap: 15px;
         }
 
+        /* تنسيقات اللوحة المدمجة للمهام والتحكم */
         .merged-todo-section .input-row {
             display: flex;
             gap: 12px;
@@ -285,6 +294,7 @@
             box-shadow: 0 0 25px rgba(57, 255, 20, 0.6);
         }
 
+        /* جداول متجاوبة وموحدة النمط */
         .table-wrapper {
             width: 100%;
             overflow-x: auto;
@@ -312,11 +322,13 @@
             font-size: 0.95rem;
         }
 
+        /* نمط الجلسة النشطة حالياً داخل الجدول */
         .task-row.active-task {
             background-color: rgba(57, 255, 20, 0.08);
             border-right: 4px solid var(--neon-green);
         }
 
+        /* نمط خاص بصفوف المهام المكتملة */
         .task-row.completed td.task-name {
             text-decoration: line-through;
             color: var(--text-dim);
@@ -330,6 +342,7 @@
             box-shadow: inset 0 0 15px rgba(0, 243, 255, 0.1);
         }
 
+        /* شريط حقوق النشر والملكية الفكرية السفلي */
         .site-footer {
             margin-top: 40px;
             margin-bottom: 15px;
@@ -349,6 +362,7 @@
             text-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
         }
 
+        /* استعلامات الوسائط لتوافق الأجهزة المحمولة */
         @media (max-width: 850px) {
             .bottom-layout {
                 grid-template-columns: 1fr;
@@ -481,7 +495,49 @@
         "الانضباط هو الجسر الذي يربط بين أهدافك وإنجازاتك! 🌉",
         "إذا تعبت تعلم أن ترتاح، لا أن تنسحب! ☕",
         "أنت لست هنا لتكون عادياً، أنت هنا لتترك بصمة! 🛡️",
-        "النجاح يُبنى في دقائق الصمت والتركيز المطلق! 🤫"
+        "النجاح يُبنى في دقائق الصمت والتركيز المطلق! 🤫",
+        "تحدّ صخب العالم الخارجي وهدوءك الداخلي هو السلاح! ⚔️",
+        "العقبات هي تلك الأشياء المرعبة التي تراها عندما ترفع عينيك عن هدفك! 👀",
+        "لا تنظر إلى الخلف، أنت لا تسير في ذلك الاتجاه! 🚶‍♂️",
+        "كل جولة تنهيها تقربك خطوة عملاقة نحو القمة! 💎",
+        "اصنع من عقلك حصناً لا تخترقه المشتتات! 🏰",
+        "التميز ليس عملاً عابراً، بل هو عادة وانضباط يومي! 🔥",
+        "تذكر دائماً لماذا بدأت هذه الرحلة! 🧠",
+        "الجهد المبذول خلف الكواليس سيصنع فارقاً تراه العيون قريباً! 🎬",
+        "لا تنتظر الظروف المثالية، خذ هذه اللحظة واجعلها مثالية! ✨",
+        "كل إنجاز عظيم بدأ بقرار شجاع بالمحاولة والاستمرار! 🚀",
+        "ثق بقدراتك, فالعقل يصدق ما تصر على فعله! 🧬",
+        "اجعل شغفك أقوى من أعذارك اليومية! 🛑",
+        "طريق الألف ميل يبدأ بجلسة تركيز واحدة ناجحة! 📈",
+        "ركّز على التقدم المستمر وليس الكمال الزائف! ⚙️",
+        "الناجحون لا يملكون وقتاً للندم، يملكون وقتاً للعمل فقط! ⏱️",
+        "كن أنت الشخص الذي يلهم الآخرين للنهوض والالتزام!🌟",
+        "أنت أقوى من أي ملهيات تحاول سرقة وقتك وثوانيك! 🔒",
+        "عندما تريد الاستسلام، فكر في روعة الشعور عند النهاية! 🎉",
+        "الاستمرارية الذكية تتفوق دائماً على الحماس المؤقت! 🔄",
+        "ضع كامل ثقلك في هذه الجلسة، فالأهداف الكبرى تستحق! 💪",
+        "لا تتنازل عما تريد البارحة من أجل إغراء الكسل اليوم! 🌊",
+        "أنت تبني مساراً متميزاً، لا تسمح لشيء بقطع حبل أفكارك! 🧵",
+        "استمر بالتقدم، فحتى الخطوات الصغيرة تصنع فارقاً بالمدى البعيد! 👣",
+        "النجاح الحقيقي هو أن تفعل ما يجب فعله عندما يجب فعله! 🧭",
+        "أنت مهندس مستقبلك, فاحرص على بناء الأساسات بقوة وذكاء! 🧱",
+        "اجعل من هذه الدقائق فرصة لإثبات ذاتك وقدراتك العميقة! 🔮",
+        "قاوم رغبة التصفح العشوائي، فالوقت لا ينتظر أحداً! ⏳",
+        "عقلك قادر على استيعاب المستحيل إذا منحت نفسك دقيقة تركيز! 🌀",
+        "الإنتاجية العالية هي نتيجة الالتزام الواعي بالخطة! 🗺️",
+        "اجعل اسمك يلمع دائماً في صدارة الملتزمين! 🥇",
+        "لا تسمح ليومك أن يمضي دون تحقيق انتصار واحد على الأقل! 🏳️",
+        "كل فكرة عظيمة تحتاج إلى عقل هادئ وجلسة تركيز عميقة لترى النور! 💡",
+        "أنت لا تضيع الوقت هنا، أنت تصنع قيمتك الحقيقية! 💰",
+        "ابتعد عن السطحية، الغوص بالعمق هو سر المبدعين! 🌊",
+        "الكسل يعطي راحة مؤقتة تتبعها حسرة، والعمل يعطي تعباً تتبعه رفعة! 🏔️",
+        "حافظ على طاقتك متقدة، الجلسة القادمة تحمل إنجازاً جديداً! 🔋",
+        "لا تدع يومك يسير عشوائياً، أنت قائد دفة السفينة! 🧭",
+        "تحكم في تركيزك، تتحكم في مصيرك ونتائجك! 🎛️",
+        "أنت على بعد خطوات قليلة من إنهاء هذا الهدف بنجاح ساحق! 🏁",
+        "المستقبل ينتمي لأولئك الذين يلتزمون بأهدافهم في العلن والخفاء! 🌌",
+        "تجاوز حدودك السابقة واصنع لنفسك معايير جديدة ومستحيلة! 📈",
+        "انتهت العبارة السابقة، وبدأ وقتك الذهبي لتثبت حضورك الآن! ⚡"
     ];
 
     let timerInterval;
@@ -545,7 +601,7 @@
             showProfile();
             updateBadge();
             fetchLeaderboard();
-        });
+        }).catch(err => console.log("خطأ شبكة في جلب البيانات:", err));
     }
 
     function showProfile() {
@@ -562,7 +618,7 @@
             body: JSON.stringify({ minutes: minutes })
         }).then(() => {
             fetchLeaderboard();
-        });
+        }).catch(err => console.log("خطأ في المزامنة السحابية:", err));
     }
 
     function getBadge(hours) {
@@ -617,30 +673,29 @@
                 `;
                 tbody.appendChild(row);
             });
-        });
+        }).catch(err => console.log("خطأ في سحب المتصدرين:", err));
     }
 
     function setMode(mode) {
-        // حماية حالة المؤقت عند ضغط وضع الاستراحة لمنع التوقف المفاجئ
+        clearInterval(timerInterval);
+        isRunning = false;
         currentMode = mode;
-        if (!isRunning) {
-            let todos = JSON.parse(localStorage.getItem('todos')) || [];
-            if(mode === 'pomodoro' && todos[currentTaskIndex]) {
-                timeLeft = todos[currentTaskIndex].minutes * 60;
-            } else {
-                timeLeft = modeDurations[currentMode] * 60;
-            }
-            updateTimerDisplay();
-        }
         
         let todos = JSON.parse(localStorage.getItem('todos')) || [];
         if(mode === 'pomodoro' && todos[currentTaskIndex]) {
+            timeLeft = todos[currentTaskIndex].minutes * 60;
             document.getElementById('currentTaskDisplay').innerText = `التركيز الحالي: ${todos[currentTaskIndex].text} 🎯`;
-        } else if(mode === 'short') {
-            document.getElementById('currentTaskDisplay').innerText = "الاستراحة الحالية: التقاط الأنفاس التلقائي ☕";
-        } else if(mode === 'long') {
-            document.getElementById('currentTaskDisplay').innerText = "الاستراحة الحالية: شحن الخلايا الشامل 🚶‍♂️";
+        } else {
+            timeLeft = modeDurations[currentMode] * 60;
+            if(mode === 'short') {
+                document.getElementById('currentTaskDisplay').innerText = "الاستراحة الحالية: التقاط الأنفاس التلقائي ☕";
+            } else if(mode === 'long') {
+                document.getElementById('currentTaskDisplay').innerText = "الاستراحة الحالية: شحن الخلايا الشامل 🚶‍♂️";
+            }
         }
+        
+        updateTimerDisplay();
+        document.getElementById('startBtn').innerText = 'ابدأ الجلسة 🚀';
 
         document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
         if (mode === 'pomodoro') document.getElementById('pomodoroMode').classList.add('active');
@@ -685,12 +740,13 @@
             localStorage.setItem('completedSessionsCount', completedSessionsCount);
             document.getElementById('sessionCountDisplay').innerText = completedSessionsCount;
 
+            if (todos[currentTaskIndex]) {
+                totalMinutesFocused += parseInt(todos[currentTaskIndex].minutes);
+            } else {
+                totalMinutesFocused += modeDurations.pomodoro;
+            }
+
             if (currentUsername) {
-                if (todos[currentTaskIndex]) {
-                    totalMinutesFocused += parseInt(todos[currentTaskIndex].minutes);
-                } else {
-                    totalMinutesFocused += modeDurations.pomodoro;
-                }
                 saveProgressToCloud(totalMinutesFocused);
                 showProfile();
                 updateBadge();
