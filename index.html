@@ -1,84 +1,258 @@
 <!DOCTYPE html>
+
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تنسيق الخانات المرنة</title>
-    <style>
-        /* إعدادات الصفحة العامة */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f7f6;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            box-sizing: border-box;
-        }
 
-        /* الحاوية الرئيسية (الأب) */
-        .container {
-            display: flex;
-            flex-wrap: wrap;            /* يسمح بنزول الخانات للأسفل على الشاشات الصغيرة */
-            justify-content: center;    /* يضمن بقاء الخانات في السنتر تماماً */
-            gap: 20px;                  /* مسافة مرنة بين الخانتين */
-            width: 100%;
-            max-width: 1200px;          /* حد أقصى لعرض الحاوية على الشاشات الكبيرة جداً */
-            margin: 0 auto;
-            padding: 15px;
-            box-sizing: border-box;
-        }
+```
+<title>Pomodoro MR | منصة التركيز ⏱️</title>
 
-        /* تنسيق الخانات (الأبناء) */
-        .box {
-            background-color: #ffffff;
-            border-top: 5px solid #007bff; /* خط جمالي علوي */
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 25px;
-            text-align: center;
-            
-            /* السحر هنا لجعلها مرنة وتتمدد حسب حجم الشاشة */
-            flex: 1 1 350px;            /* تنكمش حتى 350px وتتمدد لتملأ الشاشة الكبيرة بالتساوي */
-            max-width: 100%;            /* حماية لمنع خروج الخانة عن حدود شاشات الهواتف الصغيرة */
-            box-sizing: border-box;
-            transition: transform 0.2s; /* حركة خفيفة عند تمرير الماوس */
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-        /* تأثير بسيط عند تمرير الماوس فوق الخانة */
-        .box:hover {
-            transform: translateY(-5px);
-        }
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
 
-        /* تنسيق النصوص داخل الخانات */
-        .box h3 {
-            margin-top: 0;
-            color: #333;
-        }
+<link rel="stylesheet" href="style.css">
+```
 
-        .box p {
-            color: #666;
-            line-height: 1.6;
-        }
-    </style>
 </head>
+
 <body>
 
-    <div class="container">
-        
-        <div class="box">
-            <h3>الخانة الأولى 📱</h3>
-            <p>هذه الخانة ستكون في السنتر دائماً. جرب تصغير شاشة المتصفح وستلاحظ كيف تتكيف وتتمدد بمرونة كاملة لتناسب شاشة هاتف أو حاسوب.</p>
-        </div>
+<div class="container">
 
-        <div class="box">
-            <h3>الخانة الثانية 💻</h3>
-            <p>عندما تكون الشاشة متسعة، ستجاور هذه الخانة أختها بالتساوي في المنتصف، وعند تصفحها من الهاتف ستنزل أسفلها بسلاسة ودون مشاكل.</p>
-        </div>
+```
+<header class="site-header">
+    <h1>Pomodoro MR</h1>
+</header>
+
+<!-- لوحة المؤقت -->
+<section class="panel timer-section">
+
+    <div class="session-modes">
+        <button class="mode-btn active" id="pomodoroMode" onclick="setMode('pomodoro')">
+            دورة تركيز ⏱️
+        </button>
+
+        <button class="mode-btn" id="shortBreakMode" onclick="setMode('short')">
+            استراحة ☕
+        </button>
+
+        <button class="mode-btn" id="longBreakMode" onclick="setMode('long')">
+            شحن طاقة 🚶‍♂️
+        </button>
+    </div>
+
+    <div class="current-task-title" id="currentTaskDisplay">
+        🎯 أضف مهمة للبدء التلقائي
+    </div>
+
+    <div class="timer-display" id="timer">
+        25:00
+    </div>
+
+    <div class="motivation-container" id="motivationDisplay">
+        🔥 ركّز الآن، البدايات تصنع الفارق العظيم!
+    </div>
+
+    <div class="session-counter">
+        الجلسات المكتملة اليوم:
+        <span id="sessionCountDisplay">0</span>
+        💎
+    </div>
+
+    <div class="controls">
+
+        <button
+            id="startBtn"
+            class="start-btn"
+            onclick="toggleTimer()">
+            ابدأ الجلسة 🚀
+        </button>
+
+        <button
+            class="reset-btn"
+            onclick="resetTimer()">
+            تصفير 🔄
+        </button>
 
     </div>
+
+</section>
+
+<!-- المهام -->
+<section class="panel merged-todo-section">
+
+    <h3>قائمة المهام والعمليات اليومية 📋</h3>
+
+    <div class="input-row">
+
+        <input
+            type="text"
+            id="todoInput"
+            placeholder="عنوان الهدف اليومي..."
+        >
+
+        <div class="inputs-flex">
+
+            <input
+                type="number"
+                id="todoMinutesInput"
+                placeholder="الدقائق"
+                min="1"
+                max="180"
+            >
+
+            <input
+                type="number"
+                id="todoRoundsInput"
+                placeholder="الجولات"
+                min="1"
+                max="10"
+            >
+
+        </div>
+
+        <button
+            class="add-btn"
+            onclick="addTodo()">
+            إضافة
+        </button>
+
+    </div>
+
+    <div class="table-wrapper">
+
+        <table class="custom-table">
+
+            <thead>
+                <tr>
+                    <th>اسم المهمة</th>
+                    <th>الدقائق</th>
+                    <th>الجولات المتبقية</th>
+                    <th>التحكم</th>
+                </tr>
+            </thead>
+
+            <tbody id="todoTableBody">
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+<!-- القسم السفلي -->
+<div class="bottom-layout">
+
+    <!-- المتصدرون -->
+    <section class="panel">
+
+        <h3>ترتيب المسجلين 🏆</h3>
+
+        <div class="table-wrapper">
+
+            <table class="custom-table">
+
+                <thead>
+                    <tr>
+                        <th>المرتبة</th>
+                        <th>المسجل</th>
+                        <th>ساعات الالتزام</th>
+                        <th>الدرع المحصّل</th>
+                    </tr>
+                </thead>
+
+                <tbody id="leaderboardBody">
+
+                    <tr>
+                        <td colspan="4">
+                            جاري مزامنة المنظومة سحابياً...
+                        </td>
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+    <!-- الملف الشخصي -->
+    <section class="panel profile-inline-section">
+
+        <h3>
+            تسجيل الاسم (اختياري) 👤
+        </h3>
+
+        <div id="loginForm" class="input-group">
+
+            <input
+                type="text"
+                id="usernameInput"
+                placeholder="اسمك ..."
+            >
+
+            <button onclick="registerUser()">
+                حفظ
+            </button>
+
+        </div>
+
+        <div id="userInfo" class="user-info">
+
+            <h4>
+                السحابة:
+                <span id="displayUsername">
+                    المستخدم
+                </span>
+                ⚡
+            </h4>
+
+            <p>
+                المنجز:
+                <span id="displayHours">
+                    0
+                </span>
+                ساعة
+            </p>
+
+        </div>
+
+        <div
+            class="badge-display"
+            id="badgeDisplay">
+
+            🌱 بداية الرحلة
+
+        </div>
+
+    </section>
+
+</div>
+```
+
+</div>
+
+<footer class="site-footer">
+
+```
+<p>
+    &copy; 2026 جميع الحقوق محفوظة |
+    تم التطوير بواسطة
+    <span class="copyright-name">
+        Mahmoud Rabaa
+    </span>
+    🛡️🚀
+</p>
+```
+
+</footer>
+
+<script src="app.js"></script>
 
 </body>
 </html>
