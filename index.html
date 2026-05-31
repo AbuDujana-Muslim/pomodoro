@@ -3,396 +3,570 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pomodoro MR - Advanced Dashboard</title>
+    <title>Pomodoro MR </title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;900&display=swap');
 
         :root {
-            --bg-color: #050505;
-            --card-bg: #111111;
-            --neon-blue: #00f2ff;
-            --neon-purple: #b026ff;
-            --neon-green: #00ff88;
-            --neon-orange: #ffaa00;
-            --text-main: #ffffff;
-            --text-dim: #888888;
+            --bg-dark: #050508;
+            --card-bg: #0d0d13;
+            --neon-primary: #00f2ff;
+            --neon-secondary: #ff7799;
+            --text-light: #e2e8f0;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Cairo', sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
+            background-color: var(--bg-dark);
+            color: var(--text-light);
             min-height: 100vh;
-            padding: 30px;
             display: flex;
-            justify-content: center;
-            align-items: center;
+            flex-direction: column;
+            overflow: hidden;
         }
 
-        .dashboard {
+        header {
+            text-align: center;
+            padding: 6px;
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--neon-primary);
+            text-shadow: 0 0 12px var(--neon-primary);
+            letter-spacing: 1.5px;
+        }
+
+        .grid-container {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 30px;
+            grid-template-columns: 1fr 1.1fr 1.1fr;
+            gap: 10px;
+            padding: 5px 15px;
+            flex: 1;
+            max-width: 1100px;
+            margin: 0 auto;
             width: 100%;
-            max-width: 1200px;
+            height: calc(100vh - 70px);
         }
 
-        /* تصميم الخانات (Cards) مع النيون */
         .card {
             background: var(--card-bg);
-            border-radius: 20px;
-            padding: 30px;
-            position: relative;
-            z-index: 1;
-            transition: 0.3s;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: -2px; left: -2px; right: -2px; bottom: -2px;
-            z-index: -1;
-            border-radius: 22px;
-            opacity: 0.5;
-            transition: 0.3s;
-        }
-
-        .card:hover { transform: translateY(-5px); }
-
-        .timer-card::before { background: linear-gradient(45deg, var(--neon-blue), transparent); box-shadow: 0 0 20px rgba(0, 242, 255, 0.2); }
-        .tasks-card::before { background: linear-gradient(45deg, var(--neon-purple), transparent); box-shadow: 0 0 20px rgba(176, 38, 255, 0.2); }
-        .stats-card::before { background: linear-gradient(45deg, var(--neon-green), transparent); box-shadow: 0 0 20px rgba(0, 255, 136, 0.2); }
-        .quote-card::before { background: linear-gradient(45deg, var(--neon-orange), transparent); box-shadow: 0 0 20px rgba(255, 170, 0, 0.2); }
-
-        h2 {
-            font-size: 22px;
-            margin-bottom: 20px;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        /* 1. المؤقت */
-        .timer-container {
-            text-align: center;
-        }
-        .time-display {
-            font-size: 80px;
-            font-weight: 700;
-            color: var(--neon-blue);
-            text-shadow: 0 0 20px var(--neon-blue);
-            margin: 20px 0;
-            font-variant-numeric: tabular-nums;
-        }
-        .controls {
+            border-radius: 12px;
+            padding: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.7);
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            transition: all 0.3s ease;
             display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-        .btn {
-            background: transparent;
-            border: 1px solid var(--text-dim);
-            color: var(--text-main);
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 700;
-            transition: 0.3s;
-        }
-        .btn:hover {
-            border-color: var(--neon-blue);
-            color: var(--neon-blue);
-            box-shadow: 0 0 10px rgba(0, 242, 255, 0.3);
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
         }
 
-        /* 2. المهام */
-        .task-input-group {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+        .card:hover {
+            border-color: var(--neon-primary);
+            box-shadow: 0 0 10px rgba(0, 242, 255, 0.15);
         }
+
+        h2 { font-size: 14px; font-weight: 700; margin-bottom: 6px; color: var(--text-light); border-bottom: 2px solid var(--neon-primary); padding-bottom: 2px; display: inline-block; }
+
+        .input-group { margin-bottom: 4px; }
+        .input-group label { display: block; margin-bottom: 1px; color: #999; font-size: 10px; font-weight: bold; }
+        
         input, select {
-            background: #222;
-            border: 1px solid #333;
+            width: 100%;
+            background: #050508;
+            border: 1px solid #222;
             color: white;
-            padding: 10px;
-            border-radius: 8px;
+            padding: 5px 8px;
+            border-radius: 5px;
+            font-size: 12px;
             outline: none;
         }
-        input { flex: 1; }
-        input:focus, select:focus { border-color: var(--neon-purple); box-shadow: 0 0 10px rgba(176, 38, 255, 0.3); }
-        
-        .task-list {
-            list-style: none;
-            max-height: 200px;
-            overflow-y: auto;
-        }
-        .task-item {
-            background: #1a1a1a;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            display: flex;
-            justify-content: space-between;
-            border-left: 3px solid transparent;
-        }
-        .task-item.active {
-            border-left-color: var(--neon-purple);
-            background: #2a1a3a;
-        }
+        input:focus, select:focus { border-color: var(--neon-primary); }
 
-        /* 3. الإحصائيات (الرسم البياني) */
-        .chart-container {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
-            height: 200px;
-            padding-top: 20px;
-            border-bottom: 1px solid #333;
+        .numpad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 3px;
+            margin-top: 3px;
         }
-        .bar-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 12%;
-            gap: 10px;
+        .num-btn {
+            background: #12121a;
+            border: 1px solid #1f1f2e;
+            color: white;
+            padding: 6px;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: 0.1s;
         }
-        .bar {
-            width: 100%;
-            background: linear-gradient(to top, #004422, var(--neon-green));
-            border-radius: 5px 5px 0 0;
-            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
-            transition: 1s;
-        }
-        .day-label { font-size: 12px; color: var(--text-dim); }
+        .num-btn:hover { background: var(--neon-primary); color: #000; box-shadow: 0 0 5px var(--neon-primary); }
+        .num-btn.action { color: var(--neon-secondary); }
 
-        /* 4. التحفيز */
-        .quote-container {
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+        .color-picker-section {
+            margin-top: 6px;
+            padding-top: 4px;
+            border-top: 1px solid #222;
             text-align: center;
         }
-        .quote-text {
-            font-size: 26px;
-            font-weight: 700;
-            color: var(--neon-orange);
-            line-height: 1.5;
-            margin-bottom: 15px;
+        .color-picker-section p { font-size: 10px; margin-bottom: 3px; color: #666; }
+        .color-palette { display: flex; justify-content: center; flex-wrap: wrap; gap: 6px; }
+        .color-dot { width: 12px; height: 12px; border-radius: 50%; cursor: pointer; border: 1px solid #fff; transition: 0.2s; }
+        .color-dot:hover { transform: scale(1.3); }
+
+        .timer-card { align-items: center; text-align: center; }
+        
+        .clock-style-selector { width: 90%; margin-bottom: 8px; }
+        .clock-style-selector label { font-size: 10px; color: #aaa; display: block; margin-bottom: 2px; }
+
+        .timer-container-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 5px 0;
+            width: 100%;
+            height: 140px;
         }
 
+        .clock-face { display: none; width: 100%; text-align: center; }
+
+        .digital-glow {
+            display: inline-block;
+            font-size: 42px;
+            font-weight: 900;
+            color: var(--text-light);
+            text-shadow: 0 0 15px var(--neon-primary);
+            font-family: monospace;
+            padding: 15px 35px;
+            border: 2px solid var(--neon-primary);
+            border-radius: 16px;
+            box-shadow: 0 0 15px var(--neon-primary), inset 0 0 10px var(--neon-primary);
+            background: #000;
+            transition: all 0.3s ease;
+        }
+
+        .timer-controls { display: flex; gap: 5px; margin-top: 5px; }
+        .timer-controls button {
+            background: transparent; border: 2px solid var(--neon-primary); color: var(--neon-primary);
+            padding: 5px 12px; font-size: 11px; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.2s;
+        }
+        .timer-controls button:hover { background: var(--neon-primary); color: #000; }
+        .timer-controls .btn-add { border-color: var(--neon-secondary); color: var(--neon-secondary); }
+        .timer-controls .btn-add:hover { background: var(--neon-secondary); color: #000; }
+
+        .task-table-container { width: 100%; margin-top: 8px; max-height: 100px; overflow-y: auto; flex: 1; }
+        .task-item {
+            background: #050508; padding: 5px 8px; margin-bottom: 3px; border-radius: 4px;
+            display: flex; justify-content: space-between; font-size: 11px; border-right: 3px solid transparent;
+        }
+        .task-item.active { border-right-color: var(--neon-primary); background: rgba(0, 242, 255, 0.03); }
+
+        .anime-card { display: flex; flex-direction: column; justify-content: start; align-items: center; position: relative; }
+
+        .speech-bubble {
+            background: rgba(255, 255, 255, 0.96);
+            color: #111;
+            padding: 8px 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            width: 95%;
+            margin-bottom: 5px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+            z-index: 2;
+            min-height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+        
+        .emoji-container {
+            width: 100%;
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .live-emoji {
+            font-size: min(18vh, 105px); 
+            user-select: none;
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: bounceAnimation 3s ease-in-out infinite;
+        }
+
+        @keyframes bounceAnimation {
+            0%, 100% { transform: translateY(0px) scale(1); }
+            50% { transform: translateY(-6px) scale(1.04); }
+        }
+
+        footer { text-align: center; padding: 6px; color: #333; font-size: 10px; font-weight: bold; margin-top: auto; }
+        footer span { color: var(--neon-primary); }
     </style>
 </head>
 <body>
 
-    <div class="dashboard">
+    <header>POMODORO MR</header>
+
+    <div class="grid-container">
         
-        <div class="card timer-card">
-            <h2>المؤقت</h2>
-            <div class="timer-container">
-                <p id="mode-text" style="color: var(--text-dim);">في انتظار بدء المهام...</p>
-                <div class="time-display" id="timer">00:00</div>
-                <div class="controls">
-                    <button class="btn" onclick="toggleTimer()" id="startBtn">تشغيل</button>
-                    <button class="btn" onclick="addMinute()">+ دقيقة</button>
-                    <button class="btn" onclick="resetTimer()">تصفير</button>
+        <div class="card">
+            <div>
+                <h2>إضافة مهمة 📝</h2>
+                <div class="input-group">
+                    <label>اسم المهمة</label>
+                    <input type="text" id="taskName" placeholder="اكتب اسم المهمة ...">
+                </div>
+                <div class="input-group">
+                    <label>المدة (بالدقائق)</label>
+                    <input type="number" id="taskMinutes" placeholder="0" readonly>
+                </div>
+                
+                <div class="numpad">
+                    <button class="num-btn" onclick="typeNum('1')">1</button>
+                    <button class="num-btn" onclick="typeNum('2')">2</button>
+                    <button class="num-btn" onclick="typeNum('3')">3</button>
+                    <button class="num-btn" onclick="typeNum('4')">4</button>
+                    <button class="num-btn" onclick="typeNum('5')">5</button>
+                    <button class="num-btn" onclick="typeNum('6')">6</button>
+                    <button class="num-btn" onclick="typeNum('7')">7</button>
+                    <button class="num-btn" onclick="typeNum('8')">8</button>
+                    <button class="num-btn" onclick="typeNum('9')">9</button>
+                    <button class="num-btn action" onclick="clearNum()">C</button>
+                    <button class="num-btn" onclick="typeNum('0')">0</button>
+                    <button class="num-btn action" onclick="addTask()">✔</button>
+                </div>
+            </div>
+
+            <div class="color-picker-section">
+                <p>تخصيص لون النيون (10 ألوان) 🎨</p>
+                <div class="color-palette">
+                    <!-- الألوان الخمسة الأصلية -->
+                    <div class="color-dot" style="background: #00f2ff;" onclick="changeNeon('#00f2ff')"></div>
+                    <div class="color-dot" style="background: #ff7799;" onclick="changeNeon('#ff7799')"></div>
+                    <div class="color-dot" style="background: #b026ff;" onclick="changeNeon('#b026ff')"></div>
+                    <div class="color-dot" style="background: #00ff88;" onclick="changeNeon('#00ff88')"></div>
+                    <div class="color-dot" style="background: #ffaa00;" onclick="changeNeon('#ffaa00')"></div>
+                    <!-- الألوان الخمسة الجديدة -->
+                    <div class="color-dot" style="background: #fcee0a;" onclick="changeNeon('#fcee0a')"></div> <!-- Cyberpunk Yellow -->
+                    <div class="color-dot" style="background: #ff003c;" onclick="changeNeon('#ff003c')"></div> <!-- Crimson Red -->
+                    <div class="color-dot" style="background: #0055ff;" onclick="changeNeon('#0055ff')"></div> <!-- Deep Blue -->
+                    <div class="color-dot" style="background: #ff00ff;" onclick="changeNeon('#ff00ff')"></div> <!-- Magenta -->
+                    <div class="color-dot" style="background: #ffffff;" onclick="changeNeon('#ffffff')"></div> <!-- Pure White -->
                 </div>
             </div>
         </div>
 
-        <div class="card tasks-card">
-            <h2>المهام المبرمجة</h2>
-            <div class="task-input-group">
-                <input type="text" id="taskName" placeholder="اسم المهمة...">
-                <select id="taskDuration">
-                    <option value="25">25 دقيقة</option>
-                    <option value="50">50 دقيقة</option>
+        <div class="card timer-card">
+            <div class="clock-style-selector">
+                <label>اختر شكل المؤقت ⚙️</label>
+                <select id="clockStyle" onchange="changeClockStyle()">
+                    <option value="style-digital">ساعة رقمية مضيئة 📟</option>
+                    <option value="style-classic">ساعة دائرية كلاسيكية ⏰</option>
+                    <option value="style-pocket">ساعة جيب مزخرفة 🪙</option>
                 </select>
-                <button class="btn" style="border-color: var(--neon-purple); color: var(--neon-purple);" onclick="addTask()">إضافة</button>
             </div>
-            <ul class="task-list" id="taskList">
-                </ul>
+
+            <h2 id="currentTaskTitle">في انتظار المهام...</h2>
+            
+            <div class="timer-container-box">
+                
+                <!-- الساعة الرقمية -->
+                <div id="style-digital" class="clock-face" style="display: block;">
+                    <div class="digital-glow" id="digital-text">00:00</div>
+                </div>
+
+                <!-- الساعة الكلاسيكية الدائرية المحدثة (النص في المنتصف) -->
+                <div id="style-classic" class="clock-face">
+                    <svg viewBox="0 0 100 100" width="130" height="130">
+                        <circle cx="50" cy="50" r="45" fill="rgba(0,0,0,0.4)" stroke="#222" stroke-width="5" />
+                        <circle id="classic-progress" cx="50" cy="50" r="45" fill="none" stroke="var(--neon-primary)" stroke-width="5" stroke-dasharray="283" stroke-dashoffset="0" transform="rotate(-90 50 50)" stroke-linecap="round" style="transition: stroke-dashoffset 1s linear;" />
+                        <!-- استخدام dominant-baseline لمركزية النص أفقياً وعمودياً بدقة -->
+                        <text id="classic-text" x="50" y="50" dominant-baseline="central" text-anchor="middle" fill="var(--text-light)" font-size="22" font-weight="900" font-family="monospace">00:00</text>
+                    </svg>
+                </div>
+
+                <!-- ساعة الجيب -->
+                <div id="style-pocket" class="clock-face">
+                    <svg viewBox="0 0 100 110" width="130" height="143">
+                        <path d="M42,12 L58,12 L55,6 L45,6 Z" fill="#d4af37" />
+                        <circle cx="50" cy="8" r="6" fill="none" stroke="#d4af37" stroke-width="2.5" />
+                        <rect x="47" y="1" width="6" height="5" fill="#d4af37" rx="2" />
+                        <circle cx="50" cy="60" r="45" fill="#111" stroke="#d4af37" stroke-width="4" filter="drop-shadow(0 0 5px rgba(212, 175, 55, 0.3))" />
+                        <circle cx="50" cy="60" r="40" fill="none" stroke="#8c7323" stroke-width="1.5" stroke-dasharray="3 4" />
+                        <circle cx="50" cy="60" r="37" fill="#1a1a1a" />
+                        <line x1="50" y1="23" x2="50" y2="28" stroke="#d4af37" stroke-width="2.5" />
+                        <line x1="50" y1="97" x2="50" y2="92" stroke="#d4af37" stroke-width="2.5" />
+                        <line x1="13" y1="60" x2="18" y2="60" stroke="#d4af37" stroke-width="2.5" />
+                        <line x1="87" y1="60" x2="82" y2="60" stroke="#d4af37" stroke-width="2.5" />
+                        <line id="pocket-min" x1="50" y1="60" x2="50" y2="34" stroke="#e6e6e6" stroke-width="3" stroke-linecap="round" style="transition: transform 0.5s ease;" />
+                        <line id="pocket-sec" x1="50" y1="60" x2="50" y2="28" stroke="#ff4444" stroke-width="1.5" stroke-linecap="round" style="transition: transform 1s linear;" />
+                        <circle cx="50" cy="60" r="3" fill="#d4af37" />
+                        <text id="pocket-text" x="50" cy="82" text-anchor="middle" fill="#d4af37" font-size="10" font-weight="bold" font-family="monospace">00:00</text>
+                    </svg>
+                </div>
+
+            </div>
+
+            <div class="timer-controls">
+                <button onclick="toggleTimer()" id="btnStart">تشغيل الجلسة</button>
+                <button onclick="addOneMinute()" class="btn-add">+1 دقيقة</button>
+            </div>
+            <div class="task-table-container">
+                <ul class="task-list" id="taskList"></ul>
+            </div>
         </div>
 
-        <div class="card stats-card">
-            <h2>تحليل الأداء (هذا الأسبوع)</h2>
-            <div class="chart-container">
-                <div class="bar-wrapper"><div class="bar" style="height: 40%;"></div><span class="day-label">الأحد</span></div>
-                <div class="bar-wrapper"><div class="bar" style="height: 70%;"></div><span class="day-label">الإثنين</span></div>
-                <div class="bar-wrapper"><div class="bar" style="height: 30%;"></div><span class="day-label">الثلاثاء</span></div>
-                <div class="bar-wrapper"><div class="bar" style="height: 90%;"></div><span class="day-label">الأربعاء</span></div>
-                <div class="bar-wrapper"><div class="bar" style="height: 50%;"></div><span class="day-label">الخميس</span></div>
-                <div class="bar-wrapper"><div class="bar" style="height: 20%;"></div><span class="day-label">الجمعة</span></div>
-                <div class="bar-wrapper"><div class="bar" style="height: 80%;"></div><span class="day-label">السبت</span></div>
-            </div>
-        </div>
-
-        <div class="card quote-card">
-            <h2>النبض</h2>
-            <div class="quote-container">
-                <p class="quote-text" id="quoteText">"أهلاً محمود! أضف مهامك لنبدأ في تحطيم الأهداف اليوم."</p>
+        <div class="card anime-card">
+            <div class="speech-bubble" id="speechText">أهلاً بك! اكتب مهمتك الأولى لتبدأ التركيز وتجميع الاستراحات. 🎯</div>
+            
+            <div class="emoji-container">
+                <div class="live-emoji" id="emojiDisplay">😎</div>
             </div>
         </div>
 
     </div>
 
+    <footer>
+        Developed by <span>Mahmod Rabaa</span> | © 2026
+    </footer>
+
     <script>
-        // المتغيرات الأساسية
         let tasks = [];
         let currentTaskIndex = -1;
-        let timer;
         let timeLeft = 0;
+        let totalTimeForTask = 0;
+        let timer = null;
         let isRunning = false;
-        let isBreak = false;
-        let sessionsCompleted = 0;
+        let motivationTimer = null;
+        
+        // متغيرات الاستراحة والجلسات
+        let isBreakState = false; 
+        let focusSessionsCompleted = 0;
 
-        // مراجع الواجهة
-        const timerDisplay = document.getElementById('timer');
-        const modeText = document.getElementById('mode-text');
-        const taskList = document.getElementById('taskList');
-        const startBtn = document.getElementById('startBtn');
-        const quoteText = document.getElementById('quoteText');
+        // رابط صوت جرس هادئ ومناسب للاستراحات
+        const bellAudio = new Audio('https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3');
 
-        // تحديث الشاشة
-        function updateDisplay() {
-            let m = Math.floor(timeLeft / 60);
-            let s = timeLeft % 60;
-            timerDisplay.innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+        const motivationalQuotes = [
+            "استمر! التركيز يصنع المعجزات 🔥",
+            "أنت تنجز عملاً رائعاً، لا تتوقف! 👏",
+            "لا تتشتت، اقتربنا من الهدف 🎯",
+            "كل دقيقة هنا تبني مستقبلك ✨",
+            "عقلك كالسلاح، ابقه حاداً وجاهزاً! ⚔️",
+            "خطوة بخطوة نحو القمة! 🏔️",
+            "أداؤك مذهل، حافظ على هذه الطاقة! ⚡"
+        ];
+        const motivationEmojis = ['😎', '🤓', '🧠', '🔥', '💪', '🚀', '🌟'];
+
+        const taskNameInput = document.getElementById('taskName');
+        const taskMinutesInput = document.getElementById('taskMinutes');
+        const speechText = document.getElementById('speechText');
+        const emojiDisplay = document.getElementById('emojiDisplay');
+        const clockStyleSelect = document.getElementById('clockStyle');
+
+        function playBell() {
+            bellAudio.currentTime = 0;
+            bellAudio.play().catch(e => console.log("المتصفح منع تشغيل الصوت التلقائي."));
         }
 
-        // إضافة مهمة
-        function addTask() {
-            const name = document.getElementById('taskName').value;
-            const duration = parseInt(document.getElementById('taskDuration').value);
-            
-            if (name.trim() === '') return;
+        function updateStatus(emoji, text) {
+            emojiDisplay.innerText = emoji;
+            speechText.innerText = text;
+            emojiDisplay.style.transform = 'scale(1.2)';
+            setTimeout(() => { emojiDisplay.style.transform = 'scale(1)'; }, 200);
+        }
 
-            tasks.push({ name, duration, completed: false });
-            document.getElementById('taskName').value = '';
+        taskNameInput.addEventListener('focus', () => {
+            updateStatus('🤔', 'تكتب اسماً للمهمة الآن؟ اختر شيئاً واضحاً ومحفزاً!');
+        });
+
+        taskNameInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                updateStatus('🤓', 'خطوة ممتازة! حدد الآن الدقائق المطلوبة عبر لوحة الأرقام ثم ط ✔.');
+            }
+        });
+
+        function typeNum(num) { taskMinutesInput.value += num; }
+        function clearNum() { taskMinutesInput.value = ''; }
+
+        function changeNeon(color) {
+            document.documentElement.style.setProperty('--neon-primary', color);
+            updateStatus('🤩', 'لون مذهل! يجدد طاقة الواجهة ويجعلها أكثر حيوية.');
+        }
+
+        function changeClockStyle() {
+            let selectedStyle = clockStyleSelect.value;
+            document.querySelectorAll('.clock-face').forEach(el => el.style.display = 'none');
+            document.getElementById(selectedStyle).style.display = 'block';
+            updateStatus('🧐', 'تم تغيير شكل المؤقت بنجاح لتجديد واجهة التركيز.');
+        }
+
+        function addOneMinute() {
+            if (tasks.length === 0 || currentTaskIndex === -1) return;
+            timeLeft += 60;
+            totalTimeForTask += 60;
+            updateDisplay();
+            updateStatus('💪', 'تمت إضافة دقيقة إضافية بطلبك! استثمرها جيداً.');
+        }
+
+        function addTask() {
+            let name = taskNameInput.value.trim();
+            let mins = parseInt(taskMinutesInput.value);
+
+            if (!name || isNaN(mins) || mins <= 0) {
+                updateStatus('🤨', 'عذراً، يرجى إدخال اسم للمهمة وعدد الدقائق بشكل صحيح!');
+                return;
+            }
+
+            tasks.push({ name: name, time: mins * 60 });
+            taskNameInput.value = '';
+            taskMinutesInput.value = '';
             
+            updateStatus('🥳', 'جميل! تم إدراج المهمة، المؤقت جاهز للانطلاق.');
+            renderTasks();
+
             if (currentTaskIndex === -1) {
                 currentTaskIndex = 0;
-                loadTask(currentTaskIndex);
+                loadTask(0);
             }
-            
-            renderTasks();
         }
 
-        // رسم المهام في الجدول
         function renderTasks() {
-            taskList.innerHTML = '';
-            tasks.forEach((task, index) => {
-                let li = document.createElement('li');
-                li.className = `task-item ${index === currentTaskIndex ? 'active' : ''}`;
-                li.innerHTML = `<span>${task.name}</span> <span style="color:var(--text-dim)">${task.duration} د</span>`;
-                taskList.appendChild(li);
+            let list = document.getElementById('taskList');
+            list.innerHTML = '';
+            tasks.forEach((t, i) => {
+                let badge = i < currentTaskIndex ? '✅' : (i === currentTaskIndex ? '⏳' : '📝');
+                list.innerHTML += `<li class="task-item ${i === currentTaskIndex ? 'active' : ''}"><span>${badge} ${t.name}</span> <span>${t.time / 60} د</span></li>`;
             });
         }
 
-        // تحميل بيانات المهمة للمؤقت
         function loadTask(index) {
+            isBreakState = false;
             if (index >= tasks.length) {
-                modeText.innerText = "🎉 تم إنجاز جميع المهام!";
+                document.getElementById('currentTaskTitle').innerText = "أنهيت كل شيء! 🎉";
                 timeLeft = 0;
+                totalTimeForTask = 0;
                 updateDisplay();
-                quoteText.innerText = "عمل رائع يا محمود! خذ قسطاً طويلاً من الراحة.";
+                updateStatus('🏆', 'إنجاز منير ومثالي! لقد أكملت كل المهام المجدولة اليوم بجدارة!');
                 return;
             }
-            isBreak = false;
-            timeLeft = tasks[index].duration * 60;
-            modeText.innerText = `التركيز الحالي: ${tasks[index].name}`;
-            quoteText.innerText = `ركز الآن يا محمود، ${tasks[index].duration} دقيقة من الإبداع المستمر!`;
+            timeLeft = tasks[index].time;
+            totalTimeForTask = tasks[index].time;
+            document.getElementById('currentTaskTitle').innerText = "التركيز الحالي: " + tasks[index].name;
             updateDisplay();
             renderTasks();
         }
 
-        // تشغيل / إيقاف
-        function toggleTimer() {
-            if (tasks.length === 0) {
-                alert("يرجى إضافة مهمة أولاً!");
-                return;
+        function updateDisplay() {
+            let m = Math.floor(timeLeft / 60);
+            let s = timeLeft % 60;
+            let timeStr = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+            
+            document.getElementById('digital-text').innerText = timeStr;
+            document.getElementById('classic-text').innerText = timeStr;
+            document.getElementById('pocket-text').innerText = timeStr;
+
+            // تحديث خط الدائرة (التناقص)
+            if (totalTimeForTask > 0) {
+                let percent = timeLeft / totalTimeForTask;
+                let offset = 283 - (percent * 283); 
+                document.getElementById('classic-progress').style.strokeDashoffset = offset;
             }
+
+            let minDeg = (m / 60) * 360;
+            let secDeg = (s / 60) * 360;
+            document.getElementById('pocket-min').setAttribute('transform', `rotate(${minDeg} 50 60)`);
+            document.getElementById('pocket-sec').setAttribute('transform', `rotate(${secDeg} 50 60)`);
+        }
+
+        function startMotivation() {
+            motivationTimer = setInterval(() => {
+                if (!isBreakState) {
+                    let randQuote = motivationalQuotes[Math.floor(Math.random() * motivationalQuotes.length)];
+                    let randEmoji = motivationEmojis[Math.floor(Math.random() * motivationEmojis.length)];
+                    updateStatus(randEmoji, randQuote);
+                }
+            }, 8000);
+        }
+
+        function stopMotivation() {
+            clearInterval(motivationTimer);
+        }
+
+        function toggleTimer() {
+            if (tasks.length === 0 || currentTaskIndex >= tasks.length) return;
+
             if (isRunning) {
                 clearInterval(timer);
-                startBtn.innerText = "تشغيل";
-            } else {
-                timer = setInterval(countdown, 1000);
-                startBtn.innerText = "إيقاف";
-            }
-            isRunning = !isRunning;
-        }
-
-        // العد التنازلي والمنطق الذكي للاستراحة
-        function countdown() {
-            if (timeLeft > 0) {
-                timeLeft--;
-                updateDisplay();
-            } else {
-                clearInterval(timer);
+                stopMotivation();
                 isRunning = false;
-                startBtn.innerText = "تشغيل";
-                handleSessionEnd();
+                document.getElementById('btnStart').innerText = "إكمال الجلسة";
+                updateStatus('⏸️', 'تم إيقاف المؤقت مؤقتاً. عد بسرعة للمتابعة!');
+            } else {
+                isRunning = true;
+                document.getElementById('btnStart').innerText = "إيقاف مؤقت";
+                updateStatus(isBreakState ? '☕' : '🤓', isBreakState ? 'وقت الاسترخاء بدأ! افصل عقلك تماماً.' : 'بدأ عداد التركيز الفعلي الآن! انطلق بكامل قوتك.');
+                
+                if (!isBreakState) startMotivation();
+                
+                timer = setInterval(() => {
+                    if (timeLeft > 0) {
+                        timeLeft--;
+                        updateDisplay();
+                    } else {
+                        clearInterval(timer);
+                        stopMotivation();
+                        isRunning = false;
+                        handleSessionEnd();
+                    }
+                }, 1000);
             }
         }
 
-        // ماذا يحدث عند انتهاء الوقت؟
+        // معالجة الانتقال بين التركيز والاستراحات
         function handleSessionEnd() {
-            if (!isBreak) {
-                // انتهت جلسة العمل
-                sessionsCompleted++;
+            playBell(); // تشغيل الجرس
+
+            if (!isBreakState) {
+                // انتهت جلسة تركيز
+                focusSessionsCompleted++;
                 
-                let breakTime = 0;
-                if (sessionsCompleted % 3 === 0) {
-                    breakTime = 15; // استراحة طويلة بعد 3 جلسات
-                    quoteText.innerText = "استراحة ذهبية! 15 دقيقة لتجديد طاقتك يا بطل.";
-                } else {
-                    // استراحة حسب مدة المهمة
-                    breakTime = tasks[currentTaskIndex].duration === 50 ? 10 : 5;
-                    quoteText.innerText = "ممتاز يا محمود! استراحة قصيرة قبل العودة.";
+                // إذا كانت هذه آخر مهمة في الجدول، لا ننتقل للاستراحة بل ننهي العمل
+                if (currentTaskIndex >= tasks.length - 1) {
+                    currentTaskIndex++;
+                    loadTask(currentTaskIndex);
+                    return;
                 }
 
-                isBreak = true;
-                timeLeft = breakTime * 60;
-                modeText.innerText = "☕ وقت الاستراحة";
-                modeText.style.color = "var(--neon-green)";
-                updateDisplay();
+                isBreakState = true;
                 
-                // تشغيل الاستراحة تلقائياً (اختياري)
-                toggleTimer();
-
-            } else {
-                // انتهت الاستراحة
-                tasks[currentTaskIndex].completed = true;
-                currentTaskIndex++;
-                modeText.style.color = "var(--text-dim)";
-                loadTask(currentTaskIndex);
-            }
-        }
-
-        // زيادة دقيقة
-        function addMinute() {
-            timeLeft += 60;
-            updateDisplay();
-        }
-
-        // تصفير
-        function resetTimer() {
-            clearInterval(timer);
-            isRunning = false;
-            startBtn.innerText = "تشغيل";
-            if (currentTaskIndex !== -1 && currentTaskIndex < tasks.length) {
-                loadTask(currentTaskIndex);
-            } else {
-                timeLeft = 0;
+                // تحديد نوع الاستراحة بناءً على عدد الجلسات
+                if (focusSessionsCompleted % 3 === 0) {
+                    timeLeft = 15 * 60; // 15 دقيقة
+                    totalTimeForTask = 15 * 60;
+                    document.getElementById('currentTaskTitle').innerText = "استراحة طويلة 🛌 (15 دقيقة)";
+                    updateStatus('🛌', 'أنجزت 3 جلسات تركيز! كافئ نفسك باستراحة طويلة لتجديد طاقتك بالكامل.');
+                } else {
+                    timeLeft = 5 * 60; // 5 دقائق
+                    totalTimeForTask = 5 * 60;
+                    document.getElementById('currentTaskTitle').innerText = "استراحة قصيرة ☕ (5 دقائق)";
+                    updateStatus('☕', 'رائع! جلسة التركيز انتهت. خذ استراحة قصيرة وأرح عينيك من الشاشة.');
+                }
+                
                 updateDisplay();
+                document.getElementById('btnStart').innerText = "بدء الاستراحة";
+                
+            } else {
+                // انتهت جلسة الاستراحة
+                isBreakState = false;
+                currentTaskIndex++;
+                loadTask(currentTaskIndex);
+                document.getElementById('btnStart').innerText = "تشغيل الجلسة";
+                updateStatus('🤓', 'انتهت الاستراحة. هل أنت مستعد للبدء في المهمة التالية؟');
             }
         }
     </script>
