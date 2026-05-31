@@ -1,123 +1,78 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pomodoro MR | CYBER FOCUS X</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+<title>Pomodoro MR | FOCUS OS</title>
 
 <style>
 :root{
-  --bg:#050712;
-  --card:rgba(255,255,255,.06);
-  --stroke:rgba(255,255,255,.1);
-  --text:#EAF2FF;
-
-  --blue:#00E5FF;
-  --purple:#9D4EDD;
-  --gold:#FFCC00;
-  --red:#FF3B5C;
-  --green:#3CFF91;
+  --bg:#05060a;
+  --a:#00e5ff;
+  --b:#ff2d75;
+  --c:#7c4dff;
+  --glass:rgba(255,255,255,0.05);
 }
 
-*{box-sizing:border-box;font-family:Tajawal}
+*{box-sizing:border-box;font-family:system-ui}
 
 body{
   margin:0;
   min-height:100vh;
-  background:radial-gradient(circle at top,#0C1020,#050712 60%);
-  color:var(--text);
-  overflow-x:hidden;
+  background:radial-gradient(circle at top,#0b1020,#05060a);
+  color:#fff;
 }
 
-/* animated background */
+/* background */
 .bg{
   position:fixed;
-  inset:-30%;
+  inset:-40%;
   background:
-    radial-gradient(circle at 20% 20%, rgba(0,229,255,.20), transparent 40%),
-    radial-gradient(circle at 70% 30%, rgba(157,78,221,.18), transparent 45%),
-    radial-gradient(circle at 50% 80%, rgba(60,255,145,.12), transparent 50%);
-  filter:blur(70px);
-  animation:move 10s ease-in-out infinite alternate;
-}
-
-@keyframes move{
-  from{transform:scale(1) translate(0,0)}
-  to{transform:scale(1.2) translate(30px,40px)}
-}
-
-/* header */
-header{
-  text-align:center;
-  padding:20px;
-}
-
-.logo{
-  font-size:3rem;
-  font-weight:900;
-  background:linear-gradient(90deg,var(--blue),var(--purple),var(--gold));
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
+    radial-gradient(circle at 20% 20%, rgba(0,229,255,.25), transparent 40%),
+    radial-gradient(circle at 80% 30%, rgba(255,45,117,.18), transparent 45%),
+    radial-gradient(circle at 50% 70%, rgba(124,77,255,.15), transparent 50%);
+  filter:blur(80px);
 }
 
 /* layout */
-.container{
+.app{
+  position:relative;
   max-width:1100px;
   margin:auto;
+  padding:20px;
   display:grid;
-  grid-template-columns:1.2fr .8fr;
+  grid-template-columns:1fr 1.3fr;
   gap:15px;
-  padding:10px;
 }
 
-/* glass */
+/* card */
 .card{
-  background:var(--card);
-  border:1px solid var(--stroke);
-  border-radius:18px;
+  background:var(--glass);
+  border:1px solid rgba(255,255,255,0.1);
+  border-radius:16px;
   padding:16px;
   backdrop-filter:blur(25px);
-  box-shadow:0 0 60px rgba(0,0,0,.6);
 }
 
-/* TIMER */
+/* timer */
 .timer{
   font-size:5rem;
-  font-weight:900;
   text-align:center;
-  color:var(--blue);
-  text-shadow:0 0 25px rgba(0,229,255,.4);
-}
-
-/* progress bar */
-.bar{
-  height:8px;
-  background:#0f172a;
-  border-radius:20px;
-  overflow:hidden;
-  margin-top:10px;
-}
-
-.fill{
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,var(--blue),var(--purple));
-  transition:.3s;
+  font-weight:900;
+  color:var(--a);
 }
 
 /* inputs */
-.row{
+.grid{
   display:grid;
-  grid-template-columns:2fr 1fr 1fr auto;
+  grid-template-columns:2fr 1fr 1fr;
   gap:6px;
 }
 
 input{
   padding:10px;
   border-radius:10px;
-  border:1px solid var(--stroke);
+  border:1px solid #222;
   background:#0b1020;
   color:#fff;
 }
@@ -126,49 +81,41 @@ input{
 button{
   padding:10px;
   border-radius:10px;
-  border:1px solid var(--blue);
+  border:1px solid var(--a);
   background:transparent;
-  color:var(--blue);
+  color:var(--a);
   cursor:pointer;
-  font-weight:700;
 }
 
 button:hover{
-  background:var(--blue);
+  background:var(--a);
   color:#000;
 }
 
-/* task table */
+/* task */
 .task{
   display:flex;
   justify-content:space-between;
   padding:10px;
   margin-top:6px;
   background:#0b1020;
-  border-left:3px solid var(--purple);
+  border-left:3px solid var(--b);
   border-radius:10px;
 }
 
-/* stats */
-.stats{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
+/* progress */
+.bar{
+  height:6px;
+  background:#111;
+  border-radius:20px;
+  overflow:hidden;
   margin-top:10px;
 }
 
-.stat{
-  background:#0b1020;
-  padding:10px;
-  border-radius:10px;
-  text-align:center;
-}
-
-/* motivation */
-.motivation{
-  text-align:center;
-  margin-top:10px;
-  color:var(--gold);
+.fill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--a),var(--c));
 }
 </style>
 </head>
@@ -177,45 +124,36 @@ button:hover{
 
 <div class="bg"></div>
 
-<header>
-  <div class="logo">Pomodoro MR // CYBER EDITION</div>
-</header>
-
-<div class="container">
+<div class="app">
 
 <!-- LEFT -->
 <div class="card">
+<h3>FOCUS ENGINE</h3>
 
-<div class="timer" id="timer">25:00</div>
+<div class="timer" id="time">25:00</div>
 
 <div class="bar"><div class="fill" id="fill"></div></div>
 
-<div style="display:flex;gap:10px;margin-top:10px">
 <button onclick="start()">START</button>
 <button onclick="pause()">PAUSE</button>
 <button onclick="reset()">RESET</button>
-</div>
 
-<div class="motivation" id="motivation">Focus is your real power</div>
-
-<div class="stats">
-  <div class="stat">Sessions<br><b id="sessions">0</b></div>
-  <div class="stat">Hours<br><b id="hours">0</b></div>
-</div>
-
+<div id="mode">WORK</div>
+<div id="stats"></div>
 </div>
 
 <!-- RIGHT -->
 <div class="card">
 
-<h3>Task Engine</h3>
+<h3>TASK SYSTEM</h3>
 
-<div class="row">
-<input id="t1" placeholder="Task">
-<input id="t2" type="number" placeholder="min">
-<input id="t3" type="number" placeholder="x">
-<button onclick="add()">+</button>
+<div class="grid">
+<input id="name" placeholder="task">
+<input id="mins" type="number" placeholder="min">
+<input id="rounds" type="number" placeholder="x">
 </div>
+
+<button onclick="add()">ADD</button>
 
 <div id="list"></div>
 
@@ -226,103 +164,142 @@ button:hover{
 <script>
 
 let state={
+  mode:"work",
   work:1500,
   break:300,
   long:900,
   time:1500,
-  mode:"work",
-  run:false,
-  sessions:0,
-  hours:0,
+  running:false,
   cycles:0,
-  tasks:[]
+  sessions:0,
+  start:null,
+  tasks:JSON.parse(localStorage.getItem("tasks")||"[]"),
+  completedMinutes:0
 };
 
-let t;
+function format(t){
+let m=Math.floor(t/60);
+let s=t%60;
+return `${m}:${s.toString().padStart(2,'0')}`;
+}
 
+/* REAL TIMER (NO DRIFT) */
 function tick(){
+if(!state.running) return;
 
-state.time--;
+let now=Date.now();
+let diff=Math.floor((now-state.start)/1000);
+
+let total=
+state.mode==="work"?state.work:
+state.mode==="break"?state.break:state.long;
+
+state.time = total - diff;
 
 if(state.time<=0){
-
-state.cycles++;
-
-state.sessions++;
-
-if(state.cycles%3===0){
-state.time=state.long;
-}else{
-state.time=state.break;
+switchMode();
+notify();
 }
-
-beep();
-}
-
-state.hours+=0.00027;
 
 render();
+requestAnimationFrame(tick);
 }
 
+function switchMode(){
+
+if(state.mode==="work"){
+state.sessions++;
+state.completedMinutes+=25;
+state.cycles++;
+
+if(state.cycles%3===0){
+state.mode="long";
+state.time=state.long;
+}else{
+state.mode="break";
+state.time=state.break;
+}
+}else{
+state.mode="work";
+state.time=state.work;
+}
+
+state.start=Date.now();
+save();
+}
+
+/* CONTROL */
 function start(){
-if(state.run)return;
-state.run=true;
-t=setInterval(tick,1000);
+state.running=true;
+state.start=Date.now()-( (state.work-state.time)*1000 );
+requestAnimationFrame(tick);
 }
 
 function pause(){
-clearInterval(t);
-state.run=false;
+state.running=false;
 }
 
 function reset(){
-clearInterval(t);
-state.run=false;
+state.running=false;
+state.mode="work";
 state.time=state.work;
 render();
 }
 
+/* TASKS */
 function add(){
-let v=document.getElementById("t1").value;
-if(!v)return;
-state.tasks.push(v);
-document.getElementById("t1").value="";
+let n=document.getElementById("name").value;
+let m=document.getElementById("mins").value;
+let r=document.getElementById("rounds").value;
+
+if(!n) return;
+
+state.tasks.push({n,m,r});
+save();
 render();
 }
 
-function beep(){
-let a=new AudioContext();
-let o=a.createOscillator();
-o.connect(a.destination);
-o.start();
-o.stop(a.currentTime+0.15);
+function save(){
+localStorage.setItem("tasks",JSON.stringify(state.tasks));
 }
 
+/* NOTIFY */
+function notify(){
+try{
+navigator.vibrate?.(200);
+new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg").play();
+Notification.requestPermission().then(p=>{
+if(p==="granted"){
+new Notification("Session Complete 🔥");
+}
+});
+}catch(e){}
+}
+
+/* RENDER */
 function render(){
 
-let m=Math.floor(state.time/60);
-let s=state.time%60;
+document.getElementById("time").innerText=format(Math.max(0,state.time));
 
-document.getElementById("timer").innerText=
-`${m}:${s.toString().padStart(2,"0")}`;
+document.getElementById("mode").innerText=state.mode.toUpperCase();
 
-document.getElementById("sessions").innerText=state.sessions;
-document.getElementById("hours").innerText=state.hours.toFixed(2);
+document.getElementById("stats").innerText=
+`Sessions: ${state.sessions} | Focus min: ${state.completedMinutes}`;
 
-document.getElementById("list").innerHTML=
-state.tasks.map(t=>`<div class="task">${t}</div>`).join("");
+let total=state.mode==="work"?state.work:
+state.mode==="break"?state.break:state.long;
 
-let progress=((state.work-state.time)/state.work)*100;
+let progress=((total-state.time)/total)*100;
 document.getElementById("fill").style.width=progress+"%";
 
+document.getElementById("list").innerHTML=
+state.tasks.map(t=>`
+<div class="task">
+<span>${t.n}</span>
+<span>${t.m}m × ${t.r}</span>
+</div>
+`).join("");
 }
-
-/* auto motivation */
-setInterval(()=>{
-let m=["You are building discipline","Focus wins everything","No distractions allowed","Execution > motivation"];
-document.getElementById("motivation").innerText=
-m[Math.floor(Math.random()*m.length)];
-},5000);
 
 render();
 
