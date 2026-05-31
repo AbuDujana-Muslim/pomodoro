@@ -7,15 +7,11 @@
 
 <title>Pomodoro MR Ultimate</title>
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="style.css">
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 </head>
 
 <body>
@@ -24,11 +20,12 @@
 
 <div class="container">
 
+<!-- ===== HEADER ===== -->
 <header class="hero">
 
 <div>
 <h1>🔥 Pomodoro MR Ultimate</h1>
-<p>نظام إنتاجية ذكي متكامل</p>
+<p>نظام إنتاجية ذكي احترافي</p>
 </div>
 
 <div class="daily-goal">
@@ -40,27 +37,18 @@
 
 <div class="dashboard">
 
-<!-- المهام -->
-
+<!-- ===== TASKS ===== -->
 <section class="card tasks-card">
 
 <h2>📚 المهام</h2>
 
 <div class="task-form">
 
-<input
-id="taskName"
-type="text"
-placeholder="أدخل اسم المهمة">
+<input id="taskName" type="text" placeholder="اسم المهمة">
 
-<input
-id="focusTime"
-type="number"
-placeholder="مدة التركيز بالدقائق">
+<input id="focusTime" type="number" placeholder="مدة التركيز بالدقائق">
 
-<button id="addTaskBtn">
-إضافة مهمة
-</button>
+<button id="addTaskBtn">إضافة مهمة</button>
 
 </div>
 
@@ -68,45 +56,28 @@ placeholder="مدة التركيز بالدقائق">
 
 </section>
 
-<!-- المؤقت -->
-
+<!-- ===== TIMER ===== -->
 <section class="card timer-card">
 
 <h2>⏳ المؤقت الذكي</h2>
 
 <div class="timer-wrapper">
 
-<svg class="progress-ring" width="280" height="280">
+<svg class="progress-ring" width="260" height="260">
 
-<circle
-class="ring-bg"
-cx="140"
-cy="140"
-r="120">
-</circle>
+<circle class="ring-bg" cx="130" cy="130" r="120"></circle>
 
-<circle
-class="ring-progress"
-cx="140"
-cy="140"
-r="120">
-</circle>
+<circle class="ring-progress" cx="130" cy="130" r="120"></circle>
 
 </svg>
 
 <div class="timer-content">
 
-<div id="sessionType">
-تركيز
-</div>
+<div id="sessionType">جاهز</div>
 
-<div id="timer">
-25:00
-</div>
+<div id="timer">00:00</div>
 
-<div id="taskCurrent">
-لا توجد مهمة
-</div>
+<div id="taskCurrent">لا توجد مهمة</div>
 
 </div>
 
@@ -114,97 +85,91 @@ r="120">
 
 <div class="controls">
 
-<button id="startBtn">
-▶ تشغيل
-</button>
-
-<button id="pauseBtn">
-⏸ إيقاف
-</button>
-
-<button id="resetBtn">
-⏹ تصفير
-</button>
-
-<button id="plusBtn">
-➕ دقيقة
-</button>
-
-<button id="nextBtn">
-⏭ التالي
-</button>
+<button id="startBtn">▶ تشغيل</button>
+<button id="pauseBtn">⏸ إيقاف</button>
+<button id="resetBtn">⏹ تصفير</button>
+<button id="plusBtn">+ دقيقة</button>
+<button id="nextBtn">⏭ التالي</button>
 
 </div>
 
 </section>
 
-<!-- الإنجازات -->
+<!-- ===== ANALYTICS (NEW) ===== -->
+<section class="card analytics">
 
-<section class="card achievements">
+<h2>📊 التحليل الرياضي للأداء</h2>
 
-<h2>🏆 الإنجازات</h2>
+<div class="analytics-grid">
 
-<div class="stats-grid">
-
-<div class="stat-box">
-<span>الجلسات</span>
-<h3 id="sessionsCount">0</h3>
+<div class="metric">
+<div class="label">إجمالي الجلسات</div>
+<div class="value" id="sessionsCount">0</div>
+<div class="bar"><div id="sessionsBar"></div></div>
 </div>
 
-<div class="stat-box">
-<span>الساعات</span>
-<h3 id="focusHours">0</h3>
+<div class="metric">
+<div class="label">ساعات التركيز</div>
+<div class="value" id="focusHours">0</div>
+<div class="formula">H = Σ(minutes) ÷ 60</div>
 </div>
 
-<div class="stat-box">
-<span>السلسلة</span>
-<h3 id="streakCount">0</h3>
+<div class="metric">
+<div class="label">معدل الإنجاز</div>
+<div class="value" id="completionRate">0%</div>
+<div class="bar"><div id="completionBar"></div></div>
 </div>
 
-<div class="stat-box">
-<span>الإكمال</span>
-<h3 id="completionRate">0%</h3>
+<div class="metric">
+<div class="label">سلسلة الإنتاجية</div>
+<div class="value" id="streakCount">0</div>
+<div class="formula">S = sessions ÷ 3</div>
+</div>
+
+</div>
+
+<div class="radial-summary">
+
+<svg width="160" height="160">
+<circle cx="80" cy="80" r="65" class="circle-bg"></circle>
+<circle cx="80" cy="80" r="65" class="circle-progress"></circle>
+</svg>
+
+<div class="radial-text">
+<p>مستوى التركيز</p>
+<h3 id="focusLevel">0%</h3>
 </div>
 
 </div>
 
 </section>
 
-<!-- التحفيز -->
-
+<!-- ===== MOTIVATION ===== -->
 <section class="card motivation">
 
 <h2>⚡ التحفيز</h2>
 
 <div id="motivationText">
-
-ابدأ الآن... المستقبل لا يبنى بالتسويف.
-
+ابدأ الآن... لا تنتظر الدافع.
 </div>
 
 </section>
 
-<!-- الرسم البياني -->
-
+<!-- ===== CHART ===== -->
 <section class="card chart-card">
 
-<h2>📈 ساعات التركيز</h2>
+<h2>📈 الرسم البياني</h2>
 
 <canvas id="focusChart"></canvas>
 
 </section>
 
-<!-- السجل -->
-
+<!-- ===== HISTORY ===== -->
 <section class="card history-card">
 
 <h2>📝 سجل الجلسات</h2>
 
-<div id="historyList">
-
-لا توجد جلسات بعد
-
-</div>
+<div id="historyList">لا توجد جلسات بعد</div>
 
 </section>
 
@@ -212,8 +177,9 @@ r="120">
 
 </div>
 
-<audio id="alarmSound">
-<source src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg">
+<!-- ===== SOUND ===== -->
+<audio id="alarmSound" preload="auto">
+<source src="https://actions.google.com/sounds/v1/alarms/soft_bell_ring.ogg" type="audio/ogg">
 </audio>
 
 <script src="script.js"></script>
