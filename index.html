@@ -1,258 +1,203 @@
 <!DOCTYPE html>
-
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pomodoro MR Lite</title>
 
-```
-<title>Pomodoro MR | منصة التركيز ⏱️</title>
+<style>
+body{
+    margin:0;
+    font-family:tajawal;
+    background:linear-gradient(135deg,#05070b,#0f1123);
+    color:white;
+    display:flex;
+    justify-content:center;
+    padding:20px;
+}
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+.container{
+    width:100%;
+    max-width:900px;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+}
 
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+.panel{
+    background:rgba(15,22,36,.75);
+    padding:20px;
+    border-radius:15px;
+    backdrop-filter:blur(10px);
+    border:1px solid rgba(0,243,255,.15);
+}
 
-<link rel="stylesheet" href="style.css">
-```
+h1,h2{
+    text-align:center;
+    color:#ffb703;
+}
 
+.timer{
+    font-size:60px;
+    text-align:center;
+    font-weight:bold;
+}
+
+.controls{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    flex-wrap:wrap;
+}
+
+button{
+    padding:10px 15px;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.start{background:#00f3ff;color:#000;}
+.reset{background:#ff1744;color:#fff;}
+
+input{
+    width:100%;
+    padding:10px;
+    border-radius:8px;
+    border:none;
+    margin-bottom:10px;
+    background:#111;
+    color:white;
+}
+
+.task{
+    display:flex;
+    justify-content:space-between;
+    padding:10px;
+    border-bottom:1px solid #222;
+}
+
+.motivation{
+    text-align:center;
+    color:#ffb703;
+    font-weight:bold;
+    min-height:30px;
+}
+</style>
 </head>
 
 <body>
 
 <div class="container">
 
-```
-<header class="site-header">
-    <h1>Pomodoro MR</h1>
-</header>
+<h1>Pomodoro MR Lite ⏱️</h1>
 
-<!-- لوحة المؤقت -->
-<section class="panel timer-section">
+<div class="panel">
+    <h2 id="taskTitle">لا توجد مهمة</h2>
+    <div class="timer" id="timer">25:00</div>
 
-    <div class="session-modes">
-        <button class="mode-btn active" id="pomodoroMode" onclick="setMode('pomodoro')">
-            دورة تركيز ⏱️
-        </button>
-
-        <button class="mode-btn" id="shortBreakMode" onclick="setMode('short')">
-            استراحة ☕
-        </button>
-
-        <button class="mode-btn" id="longBreakMode" onclick="setMode('long')">
-            شحن طاقة 🚶‍♂️
-        </button>
-    </div>
-
-    <div class="current-task-title" id="currentTaskDisplay">
-        🎯 أضف مهمة للبدء التلقائي
-    </div>
-
-    <div class="timer-display" id="timer">
-        25:00
-    </div>
-
-    <div class="motivation-container" id="motivationDisplay">
-        🔥 ركّز الآن، البدايات تصنع الفارق العظيم!
-    </div>
-
-    <div class="session-counter">
-        الجلسات المكتملة اليوم:
-        <span id="sessionCountDisplay">0</span>
-        💎
-    </div>
+    <div class="motivation" id="motivation">ابدأ الآن، مستقبلك يُبنى هنا 🔥</div>
 
     <div class="controls">
-
-        <button
-            id="startBtn"
-            class="start-btn"
-            onclick="toggleTimer()">
-            ابدأ الجلسة 🚀
-        </button>
-
-        <button
-            class="reset-btn"
-            onclick="resetTimer()">
-            تصفير 🔄
-        </button>
-
+        <button class="start" onclick="toggleTimer()">ابدأ / إيقاف</button>
+        <button class="reset" onclick="resetTimer()">إعادة</button>
     </div>
-
-</section>
-
-<!-- المهام -->
-<section class="panel merged-todo-section">
-
-    <h3>قائمة المهام والعمليات اليومية 📋</h3>
-
-    <div class="input-row">
-
-        <input
-            type="text"
-            id="todoInput"
-            placeholder="عنوان الهدف اليومي..."
-        >
-
-        <div class="inputs-flex">
-
-            <input
-                type="number"
-                id="todoMinutesInput"
-                placeholder="الدقائق"
-                min="1"
-                max="180"
-            >
-
-            <input
-                type="number"
-                id="todoRoundsInput"
-                placeholder="الجولات"
-                min="1"
-                max="10"
-            >
-
-        </div>
-
-        <button
-            class="add-btn"
-            onclick="addTodo()">
-            إضافة
-        </button>
-
-    </div>
-
-    <div class="table-wrapper">
-
-        <table class="custom-table">
-
-            <thead>
-                <tr>
-                    <th>اسم المهمة</th>
-                    <th>الدقائق</th>
-                    <th>الجولات المتبقية</th>
-                    <th>التحكم</th>
-                </tr>
-            </thead>
-
-            <tbody id="todoTableBody">
-            </tbody>
-
-        </table>
-
-    </div>
-
-</section>
-
-<!-- القسم السفلي -->
-<div class="bottom-layout">
-
-    <!-- المتصدرون -->
-    <section class="panel">
-
-        <h3>ترتيب المسجلين 🏆</h3>
-
-        <div class="table-wrapper">
-
-            <table class="custom-table">
-
-                <thead>
-                    <tr>
-                        <th>المرتبة</th>
-                        <th>المسجل</th>
-                        <th>ساعات الالتزام</th>
-                        <th>الدرع المحصّل</th>
-                    </tr>
-                </thead>
-
-                <tbody id="leaderboardBody">
-
-                    <tr>
-                        <td colspan="4">
-                            جاري مزامنة المنظومة سحابياً...
-                        </td>
-                    </tr>
-
-                </tbody>
-
-            </table>
-
-        </div>
-
-    </section>
-
-    <!-- الملف الشخصي -->
-    <section class="panel profile-inline-section">
-
-        <h3>
-            تسجيل الاسم (اختياري) 👤
-        </h3>
-
-        <div id="loginForm" class="input-group">
-
-            <input
-                type="text"
-                id="usernameInput"
-                placeholder="اسمك ..."
-            >
-
-            <button onclick="registerUser()">
-                حفظ
-            </button>
-
-        </div>
-
-        <div id="userInfo" class="user-info">
-
-            <h4>
-                السحابة:
-                <span id="displayUsername">
-                    المستخدم
-                </span>
-                ⚡
-            </h4>
-
-            <p>
-                المنجز:
-                <span id="displayHours">
-                    0
-                </span>
-                ساعة
-            </p>
-
-        </div>
-
-        <div
-            class="badge-display"
-            id="badgeDisplay">
-
-            🌱 بداية الرحلة
-
-        </div>
-
-    </section>
-
 </div>
-```
+
+<div class="panel">
+    <h2>إضافة مهمة</h2>
+    <input id="taskInput" placeholder="اسم المهمة">
+    <input id="minutesInput" type="number" placeholder="عدد الدقائق (افتراضي 25)">
+    <button class="start" onclick="addTask()">إضافة</button>
+
+    <div id="tasks"></div>
+</div>
 
 </div>
 
-<footer class="site-footer">
+<script>
+let timer;
+let running = false;
+let timeLeft = 1500;
+let currentTask = null;
 
-```
-<p>
-    &copy; 2026 جميع الحقوق محفوظة |
-    تم التطوير بواسطة
-    <span class="copyright-name">
-        Mahmoud Rabaa
-    </span>
-    🛡️🚀
-</p>
-```
+const quotes = [
+"ركز الآن، النجاح يبدأ من هنا 🔥",
+"كل دقيقة تركيز تصنع فرقًا",
+"لا تؤجل حلمك",
+"أنت أقوى من المشتتات",
+"استمر، أنت على الطريق الصحيح"
+];
 
-</footer>
+function updateDisplay(){
+    let m = Math.floor(timeLeft/60);
+    let s = timeLeft%60;
+    document.getElementById("timer").innerText =
+    `${m<10?"0":""}${m}:${s<10?"0":""}${s}`;
+}
 
-<script src="app.js"></script>
+function toggleTimer(){
+    if(running){
+        clearInterval(timer);
+        running = false;
+        return;
+    }
+
+    running = true;
+
+    timer = setInterval(()=>{
+        timeLeft--;
+        updateDisplay();
+
+        if(timeLeft<=0){
+            clearInterval(timer);
+            running=false;
+            alert("انتهت الجلسة 🎉");
+        }
+    },1000);
+}
+
+function resetTimer(){
+    clearInterval(timer);
+    running=false;
+    timeLeft=1500;
+    updateDisplay();
+}
+
+function addTask(){
+    let name = document.getElementById("taskInput").value;
+    let mins = parseInt(document.getElementById("minutesInput").value)||25;
+
+    if(!name) return;
+
+    let taskDiv = document.createElement("div");
+    taskDiv.className="task";
+    taskDiv.innerHTML=`
+        <span>${name} (${mins}د)</span>
+        <button onclick="selectTask(${mins}, '${name}', this)">اختيار</button>
+    `;
+
+    document.getElementById("tasks").appendChild(taskDiv);
+
+    document.getElementById("taskInput").value="";
+    document.getElementById("minutesInput").value="";
+}
+
+function selectTask(mins, name, btn){
+    timeLeft = mins*60;
+    currentTask = name;
+    document.getElementById("taskTitle").innerText = name;
+    updateDisplay();
+}
+
+function setMotivation(){
+    let q = quotes[Math.floor(Math.random()*quotes.length)];
+    document.getElementById("motivation").innerText = q;
+}
+
+setInterval(setMotivation, 8000);
+updateDisplay();
+</script>
 
 </body>
 </html>
