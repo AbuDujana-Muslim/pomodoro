@@ -14,17 +14,7 @@ const resetBtn = document.getElementById("resetBtn");
 const plusBtn = document.getElementById("plusBtn");
 const nextBtn = document.getElementById("nextBtn");
 
-const sessionsCount = document.getElementById("sessionsCount");
-const focusHours = document.getElementById("focusHours");
-const streakCount = document.getElementById("streakCount");
-const completionRate = document.getElementById("completionRate");
-
-const motivationText = document.getElementById("motivationText");
-const historyList = document.getElementById("historyList");
-const dailyHours = document.getElementById("dailyHours");
-
 const alarm = document.getElementById("alarmSound");
-
 const ring = document.querySelector(".ring-progress");
 
 const RADIUS = 120;
@@ -32,17 +22,18 @@ const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
 ring.style.strokeDasharray = CIRCUMFERENCE;
 
-/* ================= DATA ================= */
+/* ================= STATE ================= */
 
 let tasks = JSON.parse(localStorage.getItem("pomodoroTasks")) || [];
 let history = JSON.parse(localStorage.getItem("pomodoroHistory")) || [];
+
 let totalFocusMinutes = JSON.parse(localStorage.getItem("focusMinutes")) || 0;
 let completedSessions = JSON.parse(localStorage.getItem("completedSessions")) || 0;
 
 let timer = null;
 
-let currentSeconds = 1500;
-let initialSeconds = 1500;
+let currentSeconds = 0;
+let initialSeconds = 0;
 
 let currentTaskIndex = 0;
 
@@ -50,18 +41,16 @@ let isBreak = false;
 let cycleCounter = 0;
 let finishedAllTasks = false;
 
-/* ================= QUOTES ================= */
+/* ================= FOCUS MODE ================= */
 
-const quotes = [
-"ابدأ الآن، لا يوجد وقت مثالي.",
-"كل جلسة تقربك من هدفك.",
-"المتفوقون لا ينتظرون الدافع.",
-"أنت تبني مستقبلك الآن.",
-"دقيقة تركيز أفضل من ساعة تسويف.",
-"استمر... الإنجاز يتراكم.",
-"لا تتوقف قبل أن تفخر بنفسك.",
-"جلسة جديدة = خطوة جديدة."
-];
+let focusMode = false;
+
+/* زر جديد (إن لم يكن موجودًا يتم تجاهله) */
+document.addEventListener("keydown",(e)=>{
+if(e.key === "F"){
+toggleFocusMode();
+}
+});
 
 /* ================= SAVE ================= */
 
@@ -72,39 +61,53 @@ localStorage.setItem("focusMinutes", JSON.stringify(totalFocusMinutes));
 localStorage.setItem("completedSessions", JSON.stringify(completedSessions));
 }
 
+/* ================= SMOOTH TIMER ================= */
+
+let lastTime = null;
+
+function smoothUpdate(timestamp){
+
+if(!lastTime) lastTime = timestamp;
+
+const delta = (timestamp - lastTime) / 1000;
+
+if(timer){
+
+currentSeconds -= delta;
+
+if(currentSeconds <= 0){
+currentSeconds = 0;
+finishSession();
+}
+
+updateTimer();
+}
+
+lastTime = timestamp;
+
+requestAnimationFrame(smoothUpdate);
+}
+
+/* ================= TIMER UI ================= */
+
+function updateTimer(){
+
+const min = Math.floor(currentSeconds/60);
+const sec = Math.floor(currentSeconds%60);
+
+timerElement.textContent =
+`${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+
+const progress = currentSeconds / initialSeconds;
+
+const offset =
+CIRCUMFERENCE - (progress * CIRCUMFERENCE);
+
+ring.style.strokeDashoffset =
+isNaN(offset) ? CIRCUMFERENCE : offset;
+}
+
 /* ================= TASKS ================= */
-
-function renderTasks(){
-taskList.innerHTML="";
-
-if(tasks.length===0){
-taskList.innerHTML="<p>لا توجد مهام بعد</p>";
-return;
-}
-
-tasks.forEach((task,index)=>{
-const div=document.createElement("div");
-div.className="task-item";
-
-div.innerHTML=`
-<div class="task-info">
-<h4>${task.name}</h4>
-<p>تركيز: ${task.focus} دقيقة | استراحة: ${task.break}</p>
-</div>
-<button class="delete-task" onclick="deleteTask(${index})">حذف</button>
-`;
-
-taskList.appendChild(div);
-});
-}
-
-window.deleteTask=(index)=>{
-tasks.splice(index,1);
-saveData();
-renderTasks();
-};
-
-/* ================= ADD TASK ================= */
 
 addTaskBtn.addEventListener("click",()=>{
 
@@ -113,12 +116,10 @@ const focus = parseInt(focusTime.value);
 
 if(!name || !focus) return;
 
-let breakTime = focus >= 50 ? 10 : 5;
-
 tasks.push({
 name,
 focus,
-break: breakTime
+break: focus >= 50 ? 10 : 5
 });
 
 taskName.value="";
@@ -127,7 +128,6 @@ focusTime.value="";
 saveData();
 renderTasks();
 
-/* إذا أول مهمة → تشغيل تلقائي */
 if(tasks.length===1){
 currentTaskIndex=0;
 loadTask();
@@ -135,253 +135,180 @@ loadTask();
 
 });
 
-/* ================= TIMER ================= */
+function renderTasks(){
 
-function updateTimer(){
+taskList.innerHTML="";
 
-const min = Math.floor(currentSeconds/60);
-const sec = currentSeconds%60;
-
-timerElement.textContent =
-`${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
-
-const progress = currentSeconds / initialSeconds;
-
-ring.style.strokeDashoffset =
-CIRCUMFERENCE - (progress * CIRCUMFERENCE);
+if(tasks.length===0){
+taskList.innerHTML="<p>لا توجد مهام</p>";
+return;
 }
 
-function startTimer(){
-if(timer) return;
+tasks.forEach((t,i)=>{
 
-timer=setInterval(()=>{
-currentSeconds--;
-updateTimer();
+const div=document.createElement("div");
+div.className="task-item";
 
-if(currentSeconds<=0){
-clearInterval(timer);
-timer=null;
-finishSession();
+div.innerHTML=`
+<div class="task-info">
+<h4>${t.name}</h4>
+<p>${t.focus} دقيقة</p>
+</div>
+`;
+
+taskList.appendChild(div);
+
+});
 }
 
-},1000);
-}
-
-function pauseTimer(){
-clearInterval(timer);
-timer=null;
-}
-
-function resetTimer(){
-pauseTimer();
-currentSeconds=initialSeconds;
-updateTimer();
-}
-
-/* ================= CONTROLS ================= */
-
-startBtn.onclick=()=>{
-
-if(finishedAllTasks){
-currentTaskIndex=0;
-finishedAllTasks=false;
-loadTask();
-}
-
-startTimer();
-};
-
-pauseBtn.onclick=pauseTimer;
-resetBtn.onclick=resetTimer;
-
-plusBtn.onclick=()=>{
-currentSeconds+=60;
-initialSeconds+=60;
-updateTimer();
-};
-
-nextBtn.onclick=finishSession;
-
-/* ================= CORE LOGIC ================= */
+/* ================= LOAD TASK ================= */
 
 function loadTask(){
 
 if(tasks.length===0){
 currentTask.textContent="لا توجد مهمة";
+
 currentSeconds=0;
-initialSeconds=1;
+initialSeconds=0;
+
 updateTimer();
 return;
 }
 
-const task = tasks[currentTaskIndex];
+const t = tasks[currentTaskIndex];
 
-currentTask.textContent = task.name;
-currentSeconds = task.focus * 60;
+currentTask.textContent = `${t.name} (${t.focus}m)`;
+
+currentSeconds = t.focus * 60;
 initialSeconds = currentSeconds;
 
-sessionType.textContent="تركيز 🎯";
+sessionType.textContent = "تركيز 🎯";
+
 updateTimer();
 }
 
+/* ================= START / PAUSE ================= */
+
+function startTimer(){
+
+if(!timer){
+timer = true;
+requestAnimationFrame(smoothUpdate);
+}
+}
+
+function pauseTimer(){
+timer = null;
+}
+
+/* ================= FOCUS MODE ================= */
+
+function toggleFocusMode(){
+
+focusMode = !focusMode;
+
+if(focusMode){
+document.documentElement.requestFullscreen?.();
+document.body.classList.add("focus-mode");
+}else{
+document.exitFullscreen?.();
+document.body.classList.remove("focus-mode");
+}
+
+}
+
+/* ================= CONTROLS ================= */
+
+startBtn.onclick = startTimer;
+pauseBtn.onclick = pauseTimer;
+
+resetBtn.onclick = ()=>{
+pauseTimer();
+currentSeconds = initialSeconds;
+updateTimer();
+};
+
+plusBtn.onclick = ()=>{
+currentSeconds += 60;
+initialSeconds += 60;
+updateTimer();
+};
+
+nextBtn.onclick = finishSession;
+
+/* ================= FINISH LOGIC ================= */
+
 function finishSession(){
 
-if(tasks.length===0) return;
-
+alarm.currentTime = 0;
+alarm.volume = 0.5;
 alarm.play();
+
 pauseTimer();
 
-/* ===== END FOCUS ===== */
 if(!isBreak){
 
-const task = tasks[currentTaskIndex];
+const t = tasks[currentTaskIndex];
 
 completedSessions++;
-totalFocusMinutes += task.focus;
+totalFocusMinutes += t.focus;
 
 history.unshift({
-text:`أنهيت ${task.name}`,
+text:`أنهيت ${t.name}`,
 time:new Date().toLocaleString()
 });
 
 cycleCounter++;
 
-let breakMinutes = (cycleCounter >= 3) ? 15 : task.break;
+let breakMin = (cycleCounter >= 3) ? 15 : t.break;
 
 if(cycleCounter >= 3) cycleCounter = 0;
+
+isBreak = true;
+
+currentSeconds = breakMin * 60;
+initialSeconds = currentSeconds;
 
 sessionType.textContent =
 (cycleCounter===0) ? "استراحة طويلة ☕" : "استراحة قصيرة ☕";
 
-currentSeconds = breakMinutes * 60;
-initialSeconds = currentSeconds;
-
-isBreak = true;
-
 saveData();
-updateStats();
-renderHistory();
-updateChart();
-updateTimer();
 startTimer();
 
 return;
 }
 
-/* ===== END BREAK ===== */
+/* نهاية الاستراحة */
 
 isBreak = false;
+
 currentTaskIndex++;
 
-/* انتهت كل المهام */
 if(currentTaskIndex >= tasks.length){
 
 finishedAllTasks = true;
 
-currentTask.textContent = "✅ انتهت جميع المهام";
-sessionType.textContent = "منجز";
 currentSeconds = 0;
-initialSeconds = 1;
+initialSeconds = 0;
+
+currentTask.textContent = "✔ انتهت المهام";
+sessionType.textContent = "منجز";
 
 updateTimer();
-saveData();
-updateStats();
-renderHistory();
-updateChart();
 
+saveData();
 return;
 }
 
-/* المهمة التالية */
 loadTask();
 saveData();
-updateStats();
-renderHistory();
-updateChart();
 
 startTimer();
-}
-
-/* ================= HISTORY ================= */
-
-function renderHistory(){
-
-historyList.innerHTML="";
-
-if(history.length===0){
-historyList.innerHTML="لا توجد جلسات بعد";
-return;
-}
-
-history.slice(0,20).forEach(item=>{
-const div=document.createElement("div");
-div.className="history-entry";
-div.innerHTML=`<b>${item.text}</b><br>${item.time}`;
-historyList.appendChild(div);
-});
-}
-
-/* ================= STATS ================= */
-
-function updateStats(){
-
-sessionsCount.textContent = completedSessions;
-focusHours.textContent = (totalFocusMinutes/60).toFixed(1);
-dailyHours.textContent = (totalFocusMinutes/60).toFixed(1)+" ساعة";
-streakCount.textContent = Math.floor(completedSessions/3);
-
-completionRate.textContent =
-tasks.length
-? Math.min(100, Math.round((completedSessions/tasks.length)*100))+"%"
-: "0%";
-}
-
-/* ================= MOTIVATION ================= */
-
-setInterval(()=>{
-motivationText.textContent =
-quotes[Math.floor(Math.random()*quotes.length)];
-},8000);
-
-/* ================= CHART ================= */
-
-const ctx = document.getElementById("focusChart");
-
-const chart = new Chart(ctx,{
-type:"bar",
-data:{
-labels:["الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت","الأحد"],
-datasets:[{
-label:"ساعات التركيز",
-data:[0,0,0,0,0,0,0]
-}]
-},
-options:{
-responsive:true,
-plugins:{
-legend:{labels:{color:"white"}}
-},
-scales:{
-x:{ticks:{color:"white"}},
-y:{ticks:{color:"white"}}
-}
-}
-});
-
-function updateChart(){
-let arr=[0,0,0,0,0,0,0];
-let day=new Date().getDay();
-arr[day]=(totalFocusMinutes/60).toFixed(1);
-
-chart.data.datasets[0].data=arr;
-chart.update();
 }
 
 /* ================= INIT ================= */
 
 renderTasks();
-renderHistory();
-updateStats();
 loadTask();
-updateChart();
 updateTimer();
+requestAnimationFrame(smoothUpdate);
