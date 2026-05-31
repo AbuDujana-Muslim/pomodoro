@@ -1,187 +1,189 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>NEURAL FOCUS OS // ULTIMATE</title>
+<title>NEURO FOCUS OS</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 
 <style>
 :root{
-  --bg:#04050a;
-  --panel:rgba(255,255,255,.05);
-  --stroke:rgba(255,255,255,.1);
+  --bg:#070A12;
+  --panel:#0d1222;
+  --stroke:rgba(255,255,255,.08);
+  --text:#eaf2ff;
+
   --cyan:#00e5ff;
   --purple:#9d4edd;
-  --pink:#ff2d75;
   --green:#3cff91;
-  --gold:#ffcc00;
+  --red:#ff3b5c;
 }
 
 *{box-sizing:border-box;font-family:Tajawal}
 
 body{
   margin:0;
-  background:radial-gradient(circle at top,#0b1020,#04050a 60%);
-  color:#fff;
-  overflow-x:hidden;
+  background:var(--bg);
+  color:var(--text);
 }
 
-/* background */
-.bg{
-  position:fixed;
-  inset:-60%;
-  background:
-    radial-gradient(circle at 20% 20%, rgba(0,229,255,.18), transparent 40%),
-    radial-gradient(circle at 70% 30%, rgba(157,78,221,.18), transparent 45%),
-    radial-gradient(circle at 50% 80%, rgba(255,45,117,.12), transparent 50%);
-  filter:blur(90px);
-  animation:move 14s infinite alternate;
-}
-@keyframes move{
-  from{transform:scale(1)}
-  to{transform:scale(1.3) translate(50px,30px)}
-}
-
-/* layout */
-.container{
-  max-width:1300px;
-  margin:auto;
-  padding:20px;
+/* APP LAYOUT */
+.app{
   display:grid;
-  grid-template-columns:340px 1fr 340px;
+  grid-template-columns:260px 1fr 320px;
+  height:100vh;
+}
+
+/* SIDEBAR */
+.sidebar{
+  background:var(--panel);
+  border-left:1px solid var(--stroke);
+  padding:15px;
+}
+
+.logo{
+  font-size:1.4rem;
+  font-weight:900;
+  color:var(--cyan);
+  margin-bottom:20px;
+}
+
+.task{
+  background:#11182c;
+  padding:10px;
+  border-radius:10px;
+  margin-top:8px;
+  border-right:3px solid var(--purple);
+  cursor:pointer;
+}
+
+.task:hover{
+  background:#141d35;
+}
+
+/* CENTER */
+.center{
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
   gap:15px;
 }
 
-/* glass */
-.card{
-  background:var(--panel);
-  border:1px solid var(--stroke);
-  border-radius:18px;
-  padding:16px;
-  backdrop-filter:blur(25px);
-  box-shadow:0 0 60px rgba(0,0,0,.6);
-}
-
-/* TIMER CORE */
 .timer{
   font-size:5rem;
-  text-align:center;
   font-weight:900;
   color:var(--cyan);
-  text-shadow:0 0 30px rgba(0,229,255,.4);
 }
 
-/* buttons */
-button{
+.panel{
   width:100%;
-  margin-top:8px;
+  max-width:500px;
+  background:var(--panel);
+  border:1px solid var(--stroke);
+  padding:15px;
+  border-radius:15px;
+}
+
+/* BUTTONS */
+button{
   padding:10px;
-  border-radius:12px;
+  border-radius:10px;
   border:1px solid var(--cyan);
   background:transparent;
   color:var(--cyan);
   cursor:pointer;
-  font-weight:700;
-  transition:.2s;
+  margin:5px;
 }
+
 button:hover{
   background:var(--cyan);
   color:#000;
 }
 
-/* task */
-.task{
-  display:flex;
-  justify-content:space-between;
-  padding:10px;
-  margin-top:6px;
-  background:#0b1020;
-  border-left:3px solid var(--purple);
-  border-radius:10px;
+/* RIGHT PANEL */
+.right{
+  background:var(--panel);
+  border-right:1px solid var(--stroke);
+  padding:15px;
 }
 
-/* stats */
+/* INPUTS */
+input{
+  width:100%;
+  padding:10px;
+  margin-top:6px;
+  border-radius:10px;
+  border:1px solid var(--stroke);
+  background:#0b1020;
+  color:white;
+}
+
+/* CHART */
+canvas{
+  width:100%;
+  height:150px;
+  background:#0b1020;
+  border-radius:10px;
+  margin-top:10px;
+}
+
+/* STATUS */
 .stat{
   background:#0b1020;
   padding:10px;
   border-radius:10px;
   margin-top:8px;
-  text-align:center;
-}
-
-/* progress */
-.bar{
-  height:10px;
-  background:#111;
-  border-radius:20px;
-  overflow:hidden;
-  margin-top:10px;
-}
-.fill{
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,var(--cyan),var(--purple));
-  transition:.3s;
-}
-
-/* chart */
-canvas{
-  width:100%;
-  height:160px;
-  background:#0b1020;
-  border-radius:12px;
-  margin-top:10px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="bg"></div>
+<div class="app">
 
-<div class="container">
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="logo">NEURO FOCUS</div>
 
-<!-- TASKS -->
-<div class="card">
-<h3>📌 المهام الذكية</h3>
+  <input id="name" placeholder="مهمة">
+  <input id="mins" type="number" placeholder="دقائق">
+  <input id="rounds" type="number" placeholder="جولات">
 
-<input id="name" placeholder="اسم المهمة">
-<input id="mins" type="number" placeholder="الدقائق">
-<input id="rounds" type="number" placeholder="الجولات">
+  <button onclick="addTask()">إضافة</button>
 
-<button onclick="addTask()">إضافة مهمة</button>
-
-<div id="tasks"></div>
+  <div id="tasks"></div>
 </div>
 
-<!-- TIMER -->
-<div class="card" style="text-align:center">
+<!-- CENTER -->
+<div class="center">
 
-<div class="timer" id="time">00:00</div>
+  <div class="timer" id="time">00:00</div>
 
-<button onclick="startTask()">ابدأ المهمة</button>
-<button onclick="pause()">إيقاف</button>
-<button onclick="reset()">إعادة</button>
+  <div>
+    <button onclick="start()">ابدأ</button>
+    <button onclick="pause()">إيقاف</button>
+    <button onclick="reset()">إعادة</button>
+  </div>
 
-<div class="bar"><div class="fill" id="fill"></div></div>
+  <div class="panel">
+    <div>المهمة النشطة: <b id="active">لا يوجد</b></div>
+    <div>الجلسات: <b id="sessions">0</b></div>
+    <div>الساعات: <b id="hours">0</b></div>
+    <div>الإنتاج: <b id="done">0</b></div>
+  </div>
 
-<canvas id="chart"></canvas>
+  <canvas id="chart"></canvas>
 
 </div>
 
-<!-- ENGINE -->
-<div class="card">
+<!-- RIGHT -->
+<div class="right">
 
-<h3>⚙️ محرك النظام</h3>
-
-<div class="stat">المهمة النشطة: <b id="active">لا يوجد</b></div>
-<div class="stat">الجلسات: <b id="sessions">0</b></div>
-<div class="stat">ساعات الإنجاز: <b id="hours">0</b></div>
-<div class="stat">المهام المكتملة: <b id="done">0</b></div>
-
-<div class="stat">رسالة: <span id="quote">ابدأ الآن</span></div>
+  <div class="stat">نظام التركيز: بومودورو متقدم</div>
+  <div class="stat">حالة الدماغ: <b id="focus">100%</b></div>
 
 </div>
 
@@ -189,13 +191,12 @@ canvas{
 
 <script>
 
-/* ---------------- CORE STATE ---------------- */
-
+/* STATE */
 let state={
   tasks:[],
   active:null,
   time:0,
-  running:false,
+  run:false,
   sessions:0,
   hours:0,
   done:0,
@@ -204,8 +205,7 @@ let state={
 
 let t;
 
-/* ---------------- TASK ENGINE ---------------- */
-
+/* ADD TASK */
 function addTask(){
   let n=document.getElementById("name").value;
   let m=+document.getElementById("mins").value||25;
@@ -213,39 +213,28 @@ function addTask(){
 
   if(!n)return;
 
-  state.tasks.push({
-    name:n,
-    mins:m,
-    rounds:r,
-    done:0
-  });
-
+  state.tasks.push({name:n,mins:m,rounds:r,done:0});
   render();
 }
 
-/* ---------------- START TASK ---------------- */
-
-function startTask(index=0){
+/* START TASK */
+function start(index=0){
 
   if(state.tasks.length===0)return;
 
-  state.active = state.tasks[index];
-
-  state.time = state.active.mins * 60;
-
-  state.running=true;
+  state.active=state.tasks[index];
+  state.time=state.active.mins*60;
 
   clearInterval(t);
+  state.run=true;
 
   t=setInterval(tick,1000);
 
   render();
 }
 
-/* ---------------- TIMER ENGINE ---------------- */
-
+/* TIMER ENGINE */
 function tick(){
-
   state.time--;
 
   if(state.time<=0){
@@ -254,40 +243,36 @@ function tick(){
     state.active.done++;
 
     if(state.active.done < state.active.rounds){
-      state.time = state.active.mins * 60;
+      state.time = state.active.mins*60;
     }else{
       state.done++;
-      state.active = null;
+      state.active=null;
       clearInterval(t);
     }
 
     beep();
   }
 
-  state.hours += 0.00027;
-
+  state.hours+=0.00027;
   state.history.push(state.sessions);
 
-  drawChart();
+  draw();
   render();
 }
 
-/* ---------------- CONTROL ---------------- */
-
+/* CONTROL */
 function pause(){
   clearInterval(t);
-  state.running=false;
+  state.run=false;
 }
 
 function reset(){
   clearInterval(t);
-  state.running=false;
   state.time=0;
   render();
 }
 
-/* ---------------- SOUND ---------------- */
-
+/* SOUND */
 function beep(){
   let a=new AudioContext();
   let o=a.createOscillator();
@@ -296,26 +281,21 @@ function beep(){
   o.stop(a.currentTime+0.2);
 }
 
-/* ---------------- CHART ---------------- */
-
-function drawChart(){
-
+/* CHART */
+function draw(){
   let c=document.getElementById("chart");
   let ctx=c.getContext("2d");
 
   c.width=300;
-  c.height=160;
+  c.height=150;
 
   ctx.clearRect(0,0,c.width,c.height);
-
   ctx.beginPath();
   ctx.strokeStyle="#00e5ff";
 
-  let data=state.history.slice(-30);
-
-  data.forEach((v,i)=>{
+  state.history.slice(-30).forEach((v,i)=>{
     let x=i*10;
-    let y=160 - v*3;
+    let y=150-v*3;
 
     if(i===0)ctx.moveTo(x,y);
     else ctx.lineTo(x,y);
@@ -324,17 +304,14 @@ function drawChart(){
   ctx.stroke();
 }
 
-/* ---------------- RENDER ---------------- */
-
+/* RENDER */
 function render(){
 
   let m=Math.floor(state.time/60);
   let s=state.time%60;
 
-  document.getElementById("time").innerText =
-  state.active
-    ? `${m}:${s.toString().padStart(2,"0")}`
-    : "00:00";
+  document.getElementById("time").innerText=
+  state.active ? `${m}:${s.toString().padStart(2,"0")}` : "00:00";
 
   document.getElementById("sessions").innerText=state.sessions;
   document.getElementById("hours").innerText=state.hours.toFixed(2);
@@ -345,35 +322,15 @@ function render(){
 
   document.getElementById("tasks").innerHTML=
   state.tasks.map((t,i)=>`
-    <div class="task">
-      <span>${t.name} (${t.done}/${t.rounds})</span>
-      <button onclick="startTask(${i})">تشغيل</button>
+    <div class="task" onclick="start(${i})">
+      ${t.name}
     </div>
   `).join("");
 
-  let p=state.active
-    ? ((state.active.mins*60 - state.time)/(state.active.mins*60))*100
-    : 0;
-
-  document.getElementById("fill").style.width=p+"%";
+  let focus=Math.max(50,100-state.sessions);
+  document.getElementById("focus").innerText=focus+"%";
 
 }
-
-/* ---------------- MOTIVATION ---------------- */
-
-setInterval(()=>{
-  const q=[
-    "التركيز هو القوة الحقيقية",
-    "أنت تبني نسخة أقوى منك",
-    "الوقت هو العملة الوحيدة",
-    "لا تشتت… فقط إنجاز",
-    "استمر حتى النهاية"
-  ];
-
-  document.getElementById("quote").innerText=
-  q[Math.floor(Math.random()*q.length)];
-
-},4000);
 
 render();
 
