@@ -1,340 +1,54 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>NEURO FOCUS OS</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+<div class="pomodoro-container">
+    <div class="task-input">
+        <input type="text" placeholder="ما هي مهمتك اليوم؟">
+    </div>
+    
+    <div class="timer-display" id="timer">25:00</div>
+    
+    <div class="controls">
+        <button onclick="changeTimerType('digital')">رقمي</button>
+        <button onclick="changeTimerType('classic')">كلاسيكي</button>
+    </div>
+</div>
 
 <style>
-:root{
-  --bg:#070A12;
-  --panel:#0d1222;
-  --stroke:rgba(255,255,255,.08);
-  --text:#eaf2ff;
-
-  --cyan:#00e5ff;
-  --purple:#9d4edd;
-  --green:#3cff91;
-  --red:#ff3b5c;
-}
-
-*{box-sizing:border-box;font-family:Tajawal}
-
-body{
-  margin:0;
-  background:var(--bg);
-  color:var(--text);
-}
-
-/* APP LAYOUT */
-.app{
-  display:grid;
-  grid-template-columns:260px 1fr 320px;
-  height:100vh;
-}
-
-/* SIDEBAR */
-.sidebar{
-  background:var(--panel);
-  border-left:1px solid var(--stroke);
-  padding:15px;
-}
-
-.logo{
-  font-size:1.4rem;
-  font-weight:900;
-  color:var(--cyan);
-  margin-bottom:20px;
-}
-
-.task{
-  background:#11182c;
-  padding:10px;
-  border-radius:10px;
-  margin-top:8px;
-  border-right:3px solid var(--purple);
-  cursor:pointer;
-}
-
-.task:hover{
-  background:#141d35;
-}
-
-/* CENTER */
-.center{
-  padding:20px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:15px;
-}
-
-.timer{
-  font-size:5rem;
-  font-weight:900;
-  color:var(--cyan);
-}
-
-.panel{
-  width:100%;
-  max-width:500px;
-  background:var(--panel);
-  border:1px solid var(--stroke);
-  padding:15px;
-  border-radius:15px;
-}
-
-/* BUTTONS */
-button{
-  padding:10px;
-  border-radius:10px;
-  border:1px solid var(--cyan);
-  background:transparent;
-  color:var(--cyan);
-  cursor:pointer;
-  margin:5px;
-}
-
-button:hover{
-  background:var(--cyan);
-  color:#000;
-}
-
-/* RIGHT PANEL */
-.right{
-  background:var(--panel);
-  border-right:1px solid var(--stroke);
-  padding:15px;
-}
-
-/* INPUTS */
-input{
-  width:100%;
-  padding:10px;
-  margin-top:6px;
-  border-radius:10px;
-  border:1px solid var(--stroke);
-  background:#0b1020;
-  color:white;
-}
-
-/* CHART */
-canvas{
-  width:100%;
-  height:150px;
-  background:#0b1020;
-  border-radius:10px;
-  margin-top:10px;
-}
-
-/* STATUS */
-.stat{
-  background:#0b1020;
-  padding:10px;
-  border-radius:10px;
-  margin-top:8px;
-}
-</style>
-</head>
-
-<body>
-
-<div class="app">
-
-<!-- SIDEBAR -->
-<div class="sidebar">
-  <div class="logo">NEURO FOCUS</div>
-
-  <input id="name" placeholder="مهمة">
-  <input id="mins" type="number" placeholder="دقائق">
-  <input id="rounds" type="number" placeholder="جولات">
-
-  <button onclick="addTask()">إضافة</button>
-
-  <div id="tasks"></div>
-</div>
-
-<!-- CENTER -->
-<div class="center">
-
-  <div class="timer" id="time">00:00</div>
-
-  <div>
-    <button onclick="start()">ابدأ</button>
-    <button onclick="pause()">إيقاف</button>
-    <button onclick="reset()">إعادة</button>
-  </div>
-
-  <div class="panel">
-    <div>المهمة النشطة: <b id="active">لا يوجد</b></div>
-    <div>الجلسات: <b id="sessions">0</b></div>
-    <div>الساعات: <b id="hours">0</b></div>
-    <div>الإنتاج: <b id="done">0</b></div>
-  </div>
-
-  <canvas id="chart"></canvas>
-
-</div>
-
-<!-- RIGHT -->
-<div class="right">
-
-  <div class="stat">نظام التركيز: بومودورو متقدم</div>
-  <div class="stat">حالة الدماغ: <b id="focus">100%</b></div>
-
-</div>
-
-</div>
-
-<script>
-
-/* STATE */
-let state={
-  tasks:[],
-  active:null,
-  time:0,
-  run:false,
-  sessions:0,
-  hours:0,
-  done:0,
-  history:[]
-};
-
-let t;
-
-/* ADD TASK */
-function addTask(){
-  let n=document.getElementById("name").value;
-  let m=+document.getElementById("mins").value||25;
-  let r=+document.getElementById("rounds").value||1;
-
-  if(!n)return;
-
-  state.tasks.push({name:n,mins:m,rounds:r,done:0});
-  render();
-}
-
-/* START TASK */
-function start(index=0){
-
-  if(state.tasks.length===0)return;
-
-  state.active=state.tasks[index];
-  state.time=state.active.mins*60;
-
-  clearInterval(t);
-  state.run=true;
-
-  t=setInterval(tick,1000);
-
-  render();
-}
-
-/* TIMER ENGINE */
-function tick(){
-  state.time--;
-
-  if(state.time<=0){
-
-    state.sessions++;
-    state.active.done++;
-
-    if(state.active.done < state.active.rounds){
-      state.time = state.active.mins*60;
-    }else{
-      state.done++;
-      state.active=null;
-      clearInterval(t);
+    :root {
+        --neon-color: #00f2ff;
+        --bg-color: #121212;
+    }
+    body { background: var(--bg-color); color: white; font-family: sans-serif; }
+    
+    .pomodoro-container {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 
-    beep();
-  }
+    .task-input input, .timer-display {
+        background: #1e1e1e;
+        border: 2px solid transparent;
+        box-shadow: 0 0 10px rgba(0, 242, 255, 0.2);
+        padding: 15px;
+        margin: 10px;
+        border-radius: 10px;
+        transition: 0.3s;
+    }
 
-  state.hours+=0.00027;
-  state.history.push(state.sessions);
+    /* تأثير النيون عند التفاعل */
+    .task-input input:focus, .timer-display:hover {
+        border-color: var(--neon-color);
+        box-shadow: 0 0 20px var(--neon-color);
+    }
+</style>
 
-  draw();
-  render();
-}
-
-/* CONTROL */
-function pause(){
-  clearInterval(t);
-  state.run=false;
-}
-
-function reset(){
-  clearInterval(t);
-  state.time=0;
-  render();
-}
-
-/* SOUND */
-function beep(){
-  let a=new AudioContext();
-  let o=a.createOscillator();
-  o.connect(a.destination);
-  o.start();
-  o.stop(a.currentTime+0.2);
-}
-
-/* CHART */
-function draw(){
-  let c=document.getElementById("chart");
-  let ctx=c.getContext("2d");
-
-  c.width=300;
-  c.height=150;
-
-  ctx.clearRect(0,0,c.width,c.height);
-  ctx.beginPath();
-  ctx.strokeStyle="#00e5ff";
-
-  state.history.slice(-30).forEach((v,i)=>{
-    let x=i*10;
-    let y=150-v*3;
-
-    if(i===0)ctx.moveTo(x,y);
-    else ctx.lineTo(x,y);
-  });
-
-  ctx.stroke();
-}
-
-/* RENDER */
-function render(){
-
-  let m=Math.floor(state.time/60);
-  let s=state.time%60;
-
-  document.getElementById("time").innerText=
-  state.active ? `${m}:${s.toString().padStart(2,"0")}` : "00:00";
-
-  document.getElementById("sessions").innerText=state.sessions;
-  document.getElementById("hours").innerText=state.hours.toFixed(2);
-  document.getElementById("done").innerText=state.done;
-
-  document.getElementById("active").innerText=
-  state.active ? state.active.name : "لا يوجد";
-
-  document.getElementById("tasks").innerHTML=
-  state.tasks.map((t,i)=>`
-    <div class="task" onclick="start(${i})">
-      ${t.name}
-    </div>
-  `).join("");
-
-  let focus=Math.max(50,100-state.sessions);
-  document.getElementById("focus").innerText=focus+"%";
-
-}
-
-render();
-
+<script>
+    function changeTimerType(type) {
+        const timer = document.getElementById('timer');
+        if(type === 'classic') {
+            timer.innerText = "00:25:00"; // تمثيل كلاسيكي
+        } else {
+            timer.innerText = "25:00";
+        }
+    }
 </script>
-
-</body>
-</html>
