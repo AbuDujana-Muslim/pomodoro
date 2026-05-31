@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pomodoro MR</title>
+<title>Pomodoro MR | CYBER FOCUS X</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 
 <style>
 :root{
-  --bg:#070A12;
+  --bg:#050712;
   --card:rgba(255,255,255,.06);
   --stroke:rgba(255,255,255,.1);
   --text:#EAF2FF;
@@ -21,313 +21,310 @@
   --green:#3CFF91;
 }
 
-*{margin:0;padding:0;box-sizing:border-box;font-family:Tajawal}
+*{box-sizing:border-box;font-family:Tajawal}
 
 body{
-  background:
-    radial-gradient(circle at top,#0C1020,#070A12 60%);
-  color:var(--text);
+  margin:0;
   min-height:100vh;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
+  background:radial-gradient(circle at top,#0C1020,#050712 60%);
+  color:var(--text);
+  overflow-x:hidden;
+}
+
+/* animated background */
+.bg{
+  position:fixed;
+  inset:-30%;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(0,229,255,.20), transparent 40%),
+    radial-gradient(circle at 70% 30%, rgba(157,78,221,.18), transparent 45%),
+    radial-gradient(circle at 50% 80%, rgba(60,255,145,.12), transparent 50%);
+  filter:blur(70px);
+  animation:move 10s ease-in-out infinite alternate;
+}
+
+@keyframes move{
+  from{transform:scale(1) translate(0,0)}
+  to{transform:scale(1.2) translate(30px,40px)}
+}
+
+/* header */
+header{
+  text-align:center;
   padding:20px;
 }
 
-/* HEADER */
-header{
-  text-align:center;
-  margin-bottom:10px;
-}
-
 .logo{
-  font-size:3.2rem;
+  font-size:3rem;
   font-weight:900;
-  letter-spacing:1px;
-  background:linear-gradient(45deg,var(--blue),var(--purple),var(--gold));
+  background:linear-gradient(90deg,var(--blue),var(--purple),var(--gold));
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
-  text-shadow:0 0 30px rgba(0,229,255,.15);
 }
 
-.subtitle{
-  font-size:.9rem;
-  color:#9fb3c8;
-}
-
-/* LAYOUT */
+/* layout */
 .container{
-  width:100%;
-  max-width:980px;
-  display:flex;
-  flex-direction:column;
+  max-width:1100px;
+  margin:auto;
+  display:grid;
+  grid-template-columns:1.2fr .8fr;
   gap:15px;
+  padding:10px;
 }
 
-/* GLASS CARD */
+/* glass */
 .card{
   background:var(--card);
   border:1px solid var(--stroke);
   border-radius:18px;
-  padding:18px;
-  backdrop-filter:blur(18px);
-  box-shadow:0 20px 40px rgba(0,0,0,.4);
+  padding:16px;
+  backdrop-filter:blur(25px);
+  box-shadow:0 0 60px rgba(0,0,0,.6);
 }
 
 /* TIMER */
 .timer{
-  font-size:4.8rem;
+  font-size:5rem;
   font-weight:900;
   text-align:center;
   color:var(--blue);
-  text-shadow:0 0 25px rgba(0,229,255,.35);
+  text-shadow:0 0 25px rgba(0,229,255,.4);
 }
 
-.mode{
-  display:flex;
-  justify-content:center;
-  gap:10px;
-  margin:10px 0;
+/* progress bar */
+.bar{
+  height:8px;
+  background:#0f172a;
+  border-radius:20px;
+  overflow:hidden;
+  margin-top:10px;
 }
 
-.mode button{
-  border:1px solid var(--stroke);
-  background:rgba(255,255,255,.03);
-  color:var(--text);
-  padding:8px 14px;
-  border-radius:12px;
-  cursor:pointer;
-  transition:.2s;
-}
-
-.mode .active{
-  background:linear-gradient(45deg,var(--blue),var(--purple));
-  border:none;
-  color:#000;
-  font-weight:700;
-}
-
-/* MOTIVATION */
-.motivation{
-  text-align:center;
-  color:var(--gold);
-  min-height:25px;
+.fill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--blue),var(--purple));
   transition:.3s;
-  font-weight:700;
 }
 
-/* INPUT ROW */
+/* inputs */
 .row{
-  display:flex;
-  gap:10px;
-  flex-wrap:wrap;
+  display:grid;
+  grid-template-columns:2fr 1fr 1fr auto;
+  gap:6px;
 }
 
 input{
-  flex:1;
   padding:10px;
-  border-radius:12px;
+  border-radius:10px;
   border:1px solid var(--stroke);
-  background:#0B1020;
-  color:var(--text);
-  outline:none;
+  background:#0b1020;
+  color:#fff;
 }
 
+/* buttons */
 button{
-  border:none;
-  border-radius:12px;
-  padding:10px 14px;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid var(--blue);
+  background:transparent;
+  color:var(--blue);
   cursor:pointer;
   font-weight:700;
-  transition:.2s;
 }
 
-.add{background:var(--green)}
-.start{background:var(--blue)}
-.reset{background:var(--red);color:white}
-
-button:hover{transform:scale(1.05)}
-
-/* TABLE */
-table{
-  width:100%;
-  margin-top:10px;
-  border-collapse:collapse;
+button:hover{
+  background:var(--blue);
+  color:#000;
 }
 
-th,td{
+/* task table */
+.task{
+  display:flex;
+  justify-content:space-between;
   padding:10px;
-  text-align:center;
-  border-bottom:1px solid rgba(255,255,255,.08);
+  margin-top:6px;
+  background:#0b1020;
+  border-left:3px solid var(--purple);
+  border-radius:10px;
 }
 
-th{
+/* stats */
+.stats{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:10px;
+}
+
+.stat{
+  background:#0b1020;
+  padding:10px;
+  border-radius:10px;
+  text-align:center;
+}
+
+/* motivation */
+.motivation{
+  text-align:center;
+  margin-top:10px;
   color:var(--gold);
-  font-weight:900;
-}
-
-tr:hover{
-  background:rgba(255,255,255,.03);
-}
-
-/* FOOTER */
-footer{
-  margin-top:15px;
-  font-size:.85rem;
-  color:#7f93ad;
-  text-align:center;
-  padding-top:10px;
-  border-top:1px solid rgba(255,255,255,.08);
 }
 </style>
 </head>
 
 <body>
 
+<div class="bg"></div>
+
 <header>
-  <div class="logo">Pomodoro MR</div>
-  <div class="subtitle">Focus • Discipline • Execution</div>
+  <div class="logo">Pomodoro MR // CYBER EDITION</div>
 </header>
 
 <div class="container">
 
-  <!-- TIMER -->
-  <div class="card">
-    <div class="mode">
-      <button class="active" onclick="setMode('work')" id="w">عمل</button>
-      <button onclick="setMode('short')" id="s">راحة</button>
-      <button onclick="setMode('long')" id="l">عميقة</button>
-    </div>
+<!-- LEFT -->
+<div class="card">
 
-    <div class="timer" id="timer">25:00</div>
+<div class="timer" id="timer">25:00</div>
 
-    <div class="motivation" id="motivation">
-      ركّز الآن… أنت تبني نسخة أقوى منك
-    </div>
+<div class="bar"><div class="fill" id="fill"></div></div>
 
-    <div style="text-align:center;margin-top:10px;">
-      <button class="start" onclick="toggle()">ابدأ / إيقاف</button>
-      <button class="reset" onclick="reset()">إعادة</button>
-    </div>
-  </div>
+<div style="display:flex;gap:10px;margin-top:10px">
+<button onclick="start()">START</button>
+<button onclick="pause()">PAUSE</button>
+<button onclick="reset()">RESET</button>
+</div>
 
-  <!-- TASKS -->
-  <div class="card">
-    <div class="row">
-      <input id="task" placeholder="المهمة">
-      <input id="min" type="number" placeholder="دقائق">
-      <input id="rounds" type="number" placeholder="جولات">
-      <button class="add" onclick="add()">إضافة</button>
-    </div>
+<div class="motivation" id="motivation">Focus is your real power</div>
 
-    <table>
-      <thead>
-        <tr>
-          <th>المهمة</th>
-          <th>الدقائق</th>
-          <th>الجولات</th>
-          <th>حذف</th>
-        </tr>
-      </thead>
-      <tbody id="list"></tbody>
-    </table>
-  </div>
+<div class="stats">
+  <div class="stat">Sessions<br><b id="sessions">0</b></div>
+  <div class="stat">Hours<br><b id="hours">0</b></div>
+</div>
 
 </div>
 
-<footer>
-© 2026 Pomodoro MR — Developed by Mahmod Rabaa
-</footer>
+<!-- RIGHT -->
+<div class="card">
+
+<h3>Task Engine</h3>
+
+<div class="row">
+<input id="t1" placeholder="Task">
+<input id="t2" type="number" placeholder="min">
+<input id="t3" type="number" placeholder="x">
+<button onclick="add()">+</button>
+</div>
+
+<div id="list"></div>
+
+</div>
+
+</div>
 
 <script>
 
-let modes = { work:25*60, short:5*60, long:15*60 };
-let mode="work";
-let time=modes[mode];
-let run=false;
-let interval;
+let state={
+  work:1500,
+  break:300,
+  long:900,
+  time:1500,
+  mode:"work",
+  run:false,
+  sessions:0,
+  hours:0,
+  cycles:0,
+  tasks:[]
+};
 
-const quotes=[
-"التركيز هو القوة الحقيقية",
-"كل دقيقة تصنع فرقاً",
-"النجاح يحتاج انضباط",
-"لا مشتتات… فقط إنجاز",
-"استمر… أنت تقترب"
-];
+let t;
 
-function update(){
-  let m=Math.floor(time/60);
-  let s=time%60;
-  document.getElementById("timer").innerText=
-  `${m<10?"0":""}${m}:${s<10?"0":""}${s}`;
+function tick(){
+
+state.time--;
+
+if(state.time<=0){
+
+state.cycles++;
+
+state.sessions++;
+
+if(state.cycles%3===0){
+state.time=state.long;
+}else{
+state.time=state.break;
 }
 
-function setMode(m){
-  mode=m;
-  time=modes[m];
-  update();
-
-  document.querySelectorAll(".mode button")
-  .forEach(b=>b.classList.remove("active"));
-
-  if(m==="work")document.getElementById("w").classList.add("active");
-  if(m==="short")document.getElementById("s").classList.add("active");
-  if(m==="long")document.getElementById("l").classList.add("active");
+beep();
 }
 
-function toggle(){
-  run=!run;
+state.hours+=0.00027;
 
-  if(run){
-    interval=setInterval(()=>{
-      time--;
-      update();
+render();
+}
 
-      if(time<=0){
-        clearInterval(interval);
-        run=false;
-        alert("انتهت الجلسة 🎉");
-        setMode("short");
-      }
-    },1000);
-  }else clearInterval(interval);
+function start(){
+if(state.run)return;
+state.run=true;
+t=setInterval(tick,1000);
+}
+
+function pause(){
+clearInterval(t);
+state.run=false;
 }
 
 function reset(){
-  clearInterval(interval);
-  run=false;
-  time=modes[mode];
-  update();
+clearInterval(t);
+state.run=false;
+state.time=state.work;
+render();
 }
 
 function add(){
-  let t=document.getElementById("task").value;
-  let m=document.getElementById("min").value||25;
-  let r=document.getElementById("rounds").value||1;
-
-  if(!t)return;
-
-  let row=document.createElement("tr");
-  row.innerHTML=`
-    <td>${t}</td>
-    <td>${m}</td>
-    <td>${r}</td>
-    <td><button onclick="this.closest('tr').remove()">❌</button></td>
-  `;
-
-  document.getElementById("list").appendChild(row);
-
-  document.getElementById("task").value="";
-  document.getElementById("min").value="";
-  document.getElementById("rounds").value="";
+let v=document.getElementById("t1").value;
+if(!v)return;
+state.tasks.push(v);
+document.getElementById("t1").value="";
+render();
 }
 
-setInterval(()=>{
-  document.getElementById("motivation").innerText=
-  quotes[Math.floor(Math.random()*quotes.length)];
-},6000);
+function beep(){
+let a=new AudioContext();
+let o=a.createOscillator();
+o.connect(a.destination);
+o.start();
+o.stop(a.currentTime+0.15);
+}
 
-update();
+function render(){
+
+let m=Math.floor(state.time/60);
+let s=state.time%60;
+
+document.getElementById("timer").innerText=
+`${m}:${s.toString().padStart(2,"0")}`;
+
+document.getElementById("sessions").innerText=state.sessions;
+document.getElementById("hours").innerText=state.hours.toFixed(2);
+
+document.getElementById("list").innerHTML=
+state.tasks.map(t=>`<div class="task">${t}</div>`).join("");
+
+let progress=((state.work-state.time)/state.work)*100;
+document.getElementById("fill").style.width=progress+"%";
+
+}
+
+/* auto motivation */
+setInterval(()=>{
+let m=["You are building discipline","Focus wins everything","No distractions allowed","Execution > motivation"];
+document.getElementById("motivation").innerText=
+m[Math.floor(Math.random()*m.length)];
+},5000);
+
+render();
 
 </script>
 
