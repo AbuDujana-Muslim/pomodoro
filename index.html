@@ -1,54 +1,222 @@
-<div class="pomodoro-container">
-    <div class="task-input">
-        <input type="text" placeholder="ما هي مهمتك اليوم؟">
-    </div>
-    
-    <div class="timer-display" id="timer">25:00</div>
-    
-    <div class="controls">
-        <button onclick="changeTimerType('digital')">رقمي</button>
-        <button onclick="changeTimerType('classic')">كلاسيكي</button>
-    </div>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Pomodoro MR Ultimate</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+<div class="background-glow"></div>
+
+<div class="container">
+
+<header class="hero">
+
+<div>
+<h1>🔥 Pomodoro MR Ultimate</h1>
+<p>نظام إنتاجية ذكي متكامل</p>
 </div>
 
-<style>
-    :root {
-        --neon-color: #00f2ff;
-        --bg-color: #121212;
-    }
-    body { background: var(--bg-color); color: white; font-family: sans-serif; }
-    
-    .pomodoro-container {
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
+<div class="daily-goal">
+<span>هدف اليوم</span>
+<h2 id="dailyHours">0 ساعة</h2>
+</div>
 
-    .task-input input, .timer-display {
-        background: #1e1e1e;
-        border: 2px solid transparent;
-        box-shadow: 0 0 10px rgba(0, 242, 255, 0.2);
-        padding: 15px;
-        margin: 10px;
-        border-radius: 10px;
-        transition: 0.3s;
-    }
+</header>
 
-    /* تأثير النيون عند التفاعل */
-    .task-input input:focus, .timer-display:hover {
-        border-color: var(--neon-color);
-        box-shadow: 0 0 20px var(--neon-color);
-    }
-</style>
+<div class="dashboard">
 
-<script>
-    function changeTimerType(type) {
-        const timer = document.getElementById('timer');
-        if(type === 'classic') {
-            timer.innerText = "00:25:00"; // تمثيل كلاسيكي
-        } else {
-            timer.innerText = "25:00";
-        }
-    }
-</script>
+<!-- المهام -->
+
+<section class="card tasks-card">
+
+<h2>📚 المهام</h2>
+
+<div class="task-form">
+
+<input
+id="taskName"
+type="text"
+placeholder="أدخل اسم المهمة">
+
+<input
+id="focusTime"
+type="number"
+placeholder="مدة التركيز بالدقائق">
+
+<button id="addTaskBtn">
+إضافة مهمة
+</button>
+
+</div>
+
+<div id="taskList" class="task-list"></div>
+
+</section>
+
+<!-- المؤقت -->
+
+<section class="card timer-card">
+
+<h2>⏳ المؤقت الذكي</h2>
+
+<div class="timer-wrapper">
+
+<svg class="progress-ring" width="280" height="280">
+
+<circle
+class="ring-bg"
+cx="140"
+cy="140"
+r="120">
+</circle>
+
+<circle
+class="ring-progress"
+cx="140"
+cy="140"
+r="120">
+</circle>
+
+</svg>
+
+<div class="timer-content">
+
+<div id="sessionType">
+تركيز
+</div>
+
+<div id="timer">
+25:00
+</div>
+
+<div id="taskCurrent">
+لا توجد مهمة
+</div>
+
+</div>
+
+</div>
+
+<div class="controls">
+
+<button id="startBtn">
+▶ تشغيل
+</button>
+
+<button id="pauseBtn">
+⏸ إيقاف
+</button>
+
+<button id="resetBtn">
+⏹ تصفير
+</button>
+
+<button id="plusBtn">
+➕ دقيقة
+</button>
+
+<button id="nextBtn">
+⏭ التالي
+</button>
+
+</div>
+
+</section>
+
+<!-- الإنجازات -->
+
+<section class="card achievements">
+
+<h2>🏆 الإنجازات</h2>
+
+<div class="stats-grid">
+
+<div class="stat-box">
+<span>الجلسات</span>
+<h3 id="sessionsCount">0</h3>
+</div>
+
+<div class="stat-box">
+<span>الساعات</span>
+<h3 id="focusHours">0</h3>
+</div>
+
+<div class="stat-box">
+<span>السلسلة</span>
+<h3 id="streakCount">0</h3>
+</div>
+
+<div class="stat-box">
+<span>الإكمال</span>
+<h3 id="completionRate">0%</h3>
+</div>
+
+</div>
+
+</section>
+
+<!-- التحفيز -->
+
+<section class="card motivation">
+
+<h2>⚡ التحفيز</h2>
+
+<div id="motivationText">
+
+ابدأ الآن... المستقبل لا يبنى بالتسويف.
+
+</div>
+
+</section>
+
+<!-- الرسم البياني -->
+
+<section class="card chart-card">
+
+<h2>📈 ساعات التركيز</h2>
+
+<canvas id="focusChart"></canvas>
+
+</section>
+
+<!-- السجل -->
+
+<section class="card history-card">
+
+<h2>📝 سجل الجلسات</h2>
+
+<div id="historyList">
+
+لا توجد جلسات بعد
+
+</div>
+
+</section>
+
+</div>
+
+</div>
+
+<audio id="alarmSound">
+<source src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg">
+</audio>
+
+<script src="script.js"></script>
+
+</body>
+</html>
