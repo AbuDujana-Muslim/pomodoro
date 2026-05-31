@@ -1,18 +1,17 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>NEURO FOCUS // Pomodoro OS</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>NEURO FOCUS // 3000 UI</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 
 <style>
 :root{
-  --bg:#05070f;
+  --bg:#050713;
   --panel:rgba(255,255,255,.05);
   --stroke:rgba(255,255,255,.1);
-
   --cyan:#00e5ff;
   --purple:#9d4edd;
   --pink:#ff2d75;
@@ -24,8 +23,7 @@
 
 body{
   margin:0;
-  min-height:100vh;
-  background:radial-gradient(circle at top,#0c1020,#05070f 60%);
+  background:radial-gradient(circle at top,#0b1020,#050713 60%);
   color:#fff;
   overflow-x:hidden;
 }
@@ -33,52 +31,50 @@ body{
 /* animated background */
 .bg{
   position:fixed;
-  inset:-40%;
+  inset:-50%;
   background:
     radial-gradient(circle at 20% 20%, rgba(0,229,255,.18), transparent 40%),
-    radial-gradient(circle at 80% 30%, rgba(157,78,221,.18), transparent 45%),
+    radial-gradient(circle at 70% 30%, rgba(157,78,221,.18), transparent 45%),
     radial-gradient(circle at 50% 80%, rgba(255,45,117,.12), transparent 50%);
-  filter:blur(70px);
-  animation:move 12s infinite alternate ease-in-out;
+  filter:blur(80px);
+  animation:move 12s infinite alternate;
 }
 @keyframes move{
   from{transform:scale(1)}
-  to{transform:scale(1.25) translate(40px,20px)}
+  to{transform:scale(1.25) translate(40px,30px)}
 }
 
-/* layout */
+/* LAYOUT */
 .container{
   max-width:1200px;
   margin:auto;
   padding:20px;
   display:grid;
-  grid-template-columns:1fr 1.4fr 1fr;
+  grid-template-columns:320px 1fr 320px;
   gap:15px;
 }
 
-/* glass card */
+/* PANELS */
 .card{
   background:var(--panel);
   border:1px solid var(--stroke);
   border-radius:18px;
   padding:16px;
   backdrop-filter:blur(20px);
-  box-shadow:0 0 50px rgba(0,0,0,.5);
+  box-shadow:0 0 40px rgba(0,0,0,.5);
 }
 
 /* TIMER */
 .timer{
   font-size:5rem;
-  font-weight:900;
   text-align:center;
+  font-weight:900;
   color:var(--cyan);
   text-shadow:0 0 25px rgba(0,229,255,.4);
 }
 
 /* buttons */
 button{
-  width:100%;
-  margin-top:8px;
   padding:10px;
   border-radius:12px;
   border:1px solid var(--cyan);
@@ -87,6 +83,7 @@ button{
   cursor:pointer;
   font-weight:700;
   transition:.2s;
+  margin-top:6px;
 }
 button:hover{
   background:var(--cyan);
@@ -94,7 +91,7 @@ button:hover{
 }
 
 /* inputs */
-input{
+input,select{
   width:100%;
   padding:10px;
   margin-top:6px;
@@ -115,36 +112,22 @@ input{
   border-radius:10px;
 }
 
-/* stats */
-.stat{
+/* CHART */
+canvas{
+  width:100%;
+  height:180px;
   background:#0b1020;
-  padding:10px;
-  border-radius:10px;
-  margin-top:8px;
-  text-align:center;
-}
-
-/* streak bar */
-.bar{
-  height:10px;
-  background:#111;
-  border-radius:20px;
-  overflow:hidden;
+  border-radius:12px;
   margin-top:10px;
 }
-.fill{
-  height:100%;
-  width:0%;
-  background:linear-gradient(90deg,var(--cyan),var(--purple));
-  transition:.3s;
-}
 
-/* quote */
+/* QUOTES */
 .quote{
   text-align:center;
   color:var(--gold);
   min-height:30px;
   margin-top:10px;
+  font-weight:700;
 }
 </style>
 </head>
@@ -155,20 +138,20 @@ input{
 
 <div class="container">
 
-<!-- LEFT: TASKS -->
+<!-- TASKS -->
 <div class="card">
-<h3>المهام الذكية</h3>
+<h3>لوحة المهام</h3>
 
 <input id="name" placeholder="اسم المهمة">
 <input id="mins" type="number" placeholder="الدقائق">
 <input id="rounds" type="number" placeholder="الجولات">
 
-<button onclick="addTask()">إضافة مهمة</button>
+<button onclick="addTask()">إضافة</button>
 
 <div id="tasks"></div>
 </div>
 
-<!-- CENTER: TIMER -->
+<!-- CENTER -->
 <div class="card" style="text-align:center">
 
 <div class="timer" id="time">25:00</div>
@@ -177,22 +160,26 @@ input{
 <button onclick="pause()">إيقاف</button>
 <button onclick="reset()">إعادة</button>
 
-<div class="quote" id="quote">التركيز هو القوة الحقيقية</div>
+<div class="quote" id="quote">الانضباط يصنع المعجزات</div>
 
-<div class="bar"><div class="fill" id="fill"></div></div>
-
-<div class="stat">الجلسات: <b id="sessions">0</b></div>
-<div class="stat">ساعات الإنجاز: <b id="hours">0</b></div>
-<div class="stat">السلسلة اليومية: <b id="streak">0</b></div>
+<canvas id="chart"></canvas>
 
 </div>
 
-<!-- RIGHT: ENGINE -->
+<!-- STATS -->
 <div class="card">
+
 <h3>محرك الإنتاجية</h3>
 
-<div class="stat">مستوى التركيز: <b id="focus">100%</b></div>
-<div class="stat">المهام المكتملة: <b id="done">0</b></div>
+<div>الجلسات: <b id="sessions">0</b></div>
+<div>ساعات: <b id="hours">0</b></div>
+<div>الإنجاز: <b id="done">0</b></div>
+
+<select id="mode" onchange="setMode()">
+<option value="work">تركيز</option>
+<option value="break">راحة</option>
+<option value="long">راحة طويلة</option>
+</select>
 
 </div>
 
@@ -205,28 +192,27 @@ let state={
   break:300,
   long:900,
   time:1500,
+  mode:"work",
   run:false,
-  cycles:0,
   sessions:0,
   hours:0,
-  streak:0,
   done:0,
-  tasks:[]
+  tasks:[],
+  history:[]
 };
 
 let t;
 
-/* TIMER ENGINE (auto break system) */
+/* TIMER ENGINE */
 function tick(){
   state.time--;
 
   if(state.time<=0){
-    state.cycles++;
     state.sessions++;
+    state.done++;
 
-    if(state.cycles%3===0){
+    if(state.sessions%3===0){
       state.time=state.long;
-      state.streak++;
     }else{
       state.time=state.break;
     }
@@ -234,7 +220,10 @@ function tick(){
     beep();
   }
 
-  state.hours += 0.00027;
+  state.hours+=0.00027;
+  state.history.push(state.sessions);
+
+  drawChart();
   render();
 }
 
@@ -257,28 +246,25 @@ function reset(){
   render();
 }
 
-/* TASKS (advanced structure) */
+/* TASKS */
 function addTask(){
   let n=document.getElementById("name").value;
-  let m=document.getElementById("mins").value||25;
-  let r=document.getElementById("rounds").value||1;
-
   if(!n)return;
 
-  state.tasks.push({
-    name:n,
-    mins:m,
-    rounds:r,
-    done:0
-  });
-
+  state.tasks.push(n);
   render();
 }
 
-/* COMPLETE TASK */
-function complete(i){
-  state.tasks[i].done++;
-  state.done++;
+/* MODE */
+function setMode(){
+  let v=document.getElementById("mode").value;
+
+  state.mode=v;
+
+  if(v==="work") state.time=state.work;
+  if(v==="break") state.time=state.break;
+  if(v==="long") state.time=state.long;
+
   render();
 }
 
@@ -291,14 +277,31 @@ function beep(){
   o.stop(a.currentTime+0.2);
 }
 
-/* MOTIVATION SYSTEM */
-const quotes=[
-"ركز الآن… المستقبل يُبنى هنا",
-"كل دقيقة تصنع فرقاً",
-"الانضباط أقوى من الدافع",
-"أنت في سباق مع نفسك فقط",
-"استمر حتى تصبح النسخة الأفضل"
-];
+/* CHART */
+function drawChart(){
+  let c=document.getElementById("chart");
+  let ctx=c.getContext("2d");
+
+  c.width=300;
+  c.height=180;
+
+  ctx.clearRect(0,0,c.width,c.height);
+
+  ctx.strokeStyle="#00e5ff";
+  ctx.beginPath();
+
+  let step=10;
+
+  state.history.slice(-30).forEach((v,i)=>{
+    let x=i*10;
+    let y=180-v*2;
+
+    if(i===0) ctx.moveTo(x,y);
+    else ctx.lineTo(x,y);
+  });
+
+  ctx.stroke();
+}
 
 /* RENDER */
 function render(){
@@ -311,32 +314,26 @@ document.getElementById("time").innerText=
 
 document.getElementById("sessions").innerText=state.sessions;
 document.getElementById("hours").innerText=state.hours.toFixed(2);
-document.getElementById("streak").innerText=state.streak;
 document.getElementById("done").innerText=state.done;
 
-/* tasks */
 document.getElementById("tasks").innerHTML=
-state.tasks.map((t,i)=>`
-<div class="task">
-<span>${t.name} (${t.done}/${t.rounds})</span>
-<button onclick="complete(${i})">✔</button>
-</div>
+state.tasks.map(t=>`
+<div class="task">${t}</div>
 `).join("");
-
-/* progress */
-let p=((state.work-state.time)/state.work)*100;
-document.getElementById("fill").style.width=p+"%";
-
-/* focus estimate */
-let focus=Math.max(50,100-Math.floor(state.cycles*2));
-document.getElementById("focus").innerText=focus+"%";
 
 }
 
-/* rotate quotes */
+/* MOTIVATION */
 setInterval(()=>{
+let q=[
+"ركز… أنت تبني عقلك",
+"الوقت سلاحك الوحيد",
+"لا تشتت، فقط إنجاز",
+"استمر حتى النهاية",
+"النجاح عادة"
+];
 document.getElementById("quote").innerText=
-quotes[Math.floor(Math.random()*quotes.length)];
+q[Math.floor(Math.random()*q.length)];
 },4000);
 
 render();
