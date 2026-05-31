@@ -6,53 +6,41 @@ font-family:'Cairo',sans-serif;
 }
 
 :root{
---bg:#050b14;
---card:rgba(255,255,255,0.06);
---border:rgba(255,255,255,0.12);
+--bg:#02030a;
+--card:rgba(10,15,25,0.75);
+--border:rgba(255,255,255,0.06);
 
---cyan:#00e5ff;
---blue:#2196f3;
---purple:#9c27b0;
+--cyan:#00c2ff;
+--blue:#1a6cff;
 
---text:#ffffff;
---muted:#a8b3c7;
+--text:#e6eefc;
+--muted:#8fa3bf;
 
---shadow:0 0 25px rgba(0,229,255,0.15);
+--shadow:0 0 25px rgba(0,0,0,0.7);
 }
+
+/* ===== BODY ===== */
 
 body{
 background:
-radial-gradient(circle at 15% 20%, rgba(0,229,255,0.15), transparent 35%),
-radial-gradient(circle at 85% 80%, rgba(156,39,176,0.18), transparent 40%),
-linear-gradient(135deg,#04070f,#071427,#050b14);
+radial-gradient(circle at 20% 20%, rgba(0,194,255,0.08), transparent 40%),
+radial-gradient(circle at 80% 80%, rgba(26,108,255,0.05), transparent 45%),
+linear-gradient(180deg,#01020a,#02050d,#02030a);
 
 color:var(--text);
 min-height:100vh;
 overflow-x:hidden;
-transition:0.4s;
 }
 
-/* ===== Background Glow ===== */
-
-.background-glow{
-position:fixed;
-inset:0;
-pointer-events:none;
-background:
-radial-gradient(circle at 30% 30%, rgba(0,229,255,0.12), transparent 40%),
-radial-gradient(circle at 70% 70%, rgba(156,39,176,0.12), transparent 45%);
-filter:blur(80px);
-}
-
-/* ===== Container ===== */
+/* ===== CONTAINER ===== */
 
 .container{
-width:min(1400px,95%);
+width:min(1200px,95%);
 margin:auto;
 padding:25px;
 }
 
-/* ===== Hero ===== */
+/* ===== HEADER ===== */
 
 .hero{
 display:flex;
@@ -74,16 +62,15 @@ margin-top:5px;
 .daily-goal{
 background:var(--card);
 border:1px solid var(--border);
-padding:16px 22px;
-border-radius:18px;
-backdrop-filter:blur(14px);
-box-shadow:var(--shadow);
+padding:14px 20px;
+border-radius:16px;
+backdrop-filter:blur(16px);
 text-align:center;
 }
 
 .daily-goal span{
 color:var(--muted);
-font-size:14px;
+font-size:13px;
 }
 
 .daily-goal h2{
@@ -91,36 +78,36 @@ color:var(--cyan);
 margin-top:6px;
 }
 
-/* ===== Dashboard ===== */
+/* ===== DASHBOARD ===== */
 
 .dashboard{
 display:grid;
-grid-template-columns:1.2fr 1fr;
-gap:20px;
+grid-template-columns:1fr 1fr;
+gap:18px;
 }
 
-/* ===== Cards ===== */
+/* ===== CARD ===== */
 
 .card{
 background:var(--card);
 border:1px solid var(--border);
-border-radius:22px;
-padding:22px;
+border-radius:20px;
+padding:20px;
 backdrop-filter:blur(18px);
-box-shadow:0 10px 30px rgba(0,0,0,0.25);
-transition:0.3s;
+box-shadow:var(--shadow);
+transition:0.25s;
 }
 
 .card:hover{
 transform:translateY(-3px);
-box-shadow:0 0 35px rgba(0,229,255,0.15);
+box-shadow:0 0 25px rgba(0,194,255,0.15);
 }
 
 .card h2{
 margin-bottom:15px;
 }
 
-/* ===== Tasks ===== */
+/* ===== TASKS ===== */
 
 .task-form{
 display:flex;
@@ -129,27 +116,30 @@ gap:10px;
 }
 
 .task-form input{
-padding:14px;
-border-radius:14px;
-border:1px solid rgba(255,255,255,0.12);
-background:rgba(255,255,255,0.05);
+padding:12px;
+border-radius:12px;
+border:1px solid rgba(255,255,255,0.08);
+background:rgba(255,255,255,0.04);
 color:white;
 outline:none;
 }
 
 .task-form input:focus{
 border-color:var(--cyan);
-box-shadow:0 0 12px rgba(0,229,255,0.25);
+box-shadow:0 0 10px rgba(0,194,255,0.2);
 }
 
 .task-form button{
-padding:14px;
+padding:12px;
 border:none;
-border-radius:14px;
+border-radius:12px;
 background:linear-gradient(135deg,var(--cyan),var(--blue));
+color:black;
 font-weight:700;
 cursor:pointer;
 }
+
+/* ===== TASK LIST ===== */
 
 .task-list{
 margin-top:15px;
@@ -161,15 +151,15 @@ overflow:auto;
 }
 
 .task-item{
-padding:14px;
-border-radius:16px;
-background:rgba(255,255,255,0.05);
-border:1px solid rgba(255,255,255,0.1);
+padding:12px;
+border-radius:14px;
+background:rgba(255,255,255,0.03);
+border:1px solid rgba(255,255,255,0.05);
 display:flex;
 justify-content:space-between;
 }
 
-/* ===== Timer ===== */
+/* ===== TIMER ===== */
 
 .timer-card{
 display:flex;
@@ -190,7 +180,7 @@ transform:rotate(-90deg);
 
 .ring-bg{
 fill:none;
-stroke:rgba(255,255,255,0.08);
+stroke:rgba(255,255,255,0.06);
 stroke-width:12;
 }
 
@@ -201,11 +191,9 @@ stroke-width:12;
 stroke-linecap:round;
 stroke-dasharray:754;
 stroke-dashoffset:754;
-filter:drop-shadow(0 0 12px var(--cyan));
+filter:drop-shadow(0 0 10px var(--cyan));
 transition:stroke-dashoffset 0.3s linear;
 }
-
-/* ===== Timer Text ===== */
 
 .timer-content{
 position:absolute;
@@ -218,7 +206,7 @@ justify-content:center;
 
 #sessionType{
 color:var(--cyan);
-margin-bottom:6px;
+margin-bottom:5px;
 }
 
 #timer{
@@ -228,27 +216,27 @@ font-weight:800;
 
 #taskCurrent{
 color:var(--muted);
-margin-top:8px;
+margin-top:6px;
 }
 
-/* ===== Controls ===== */
+/* ===== CONTROLS ===== */
 
 .controls{
 display:grid;
 grid-template-columns:repeat(3,1fr);
-gap:10px;
+gap:8px;
 width:100%;
-margin-top:18px;
+margin-top:15px;
 }
 
 .controls button{
-padding:12px;
+padding:10px;
 border:none;
-border-radius:12px;
-background:rgba(255,255,255,0.07);
+border-radius:10px;
+background:rgba(255,255,255,0.06);
 color:white;
 cursor:pointer;
-transition:0.25s;
+transition:0.2s;
 }
 
 .controls button:hover{
@@ -256,54 +244,37 @@ background:var(--cyan);
 color:black;
 }
 
-/* ===== Stats ===== */
+/* ===== MOTIVATION ===== */
 
-.stats-grid{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:12px;
-}
-
-.stat-box{
-padding:16px;
-border-radius:16px;
-background:rgba(255,255,255,0.05);
+.motivation{
 text-align:center;
 }
-
-.stat-box h3{
-color:var(--cyan);
-font-size:1.6rem;
-}
-
-/* ===== Motivation ===== */
 
 #motivationText{
-text-align:center;
-font-weight:700;
-line-height:1.7;
+color:var(--muted);
+font-weight:600;
+line-height:1.6;
 }
 
-/* ===== Chart ===== */
+/* ===== HISTORY ===== */
 
-.chart-card{
-grid-column:span 2;
-height:380px;
+.history-card{
+max-height:300px;
+overflow:auto;
 }
-
-/* ===== History ===== */
 
 .history-entry{
-padding:12px;
-border-radius:12px;
-background:rgba(255,255,255,0.05);
+padding:10px;
 margin-bottom:8px;
+border-radius:10px;
+background:rgba(255,255,255,0.03);
+border:1px solid rgba(255,255,255,0.05);
 }
 
-/* ===== Scrollbar ===== */
+/* ===== SCROLLBAR ===== */
 
 ::-webkit-scrollbar{
-width:8px;
+width:6px;
 }
 
 ::-webkit-scrollbar-thumb{
@@ -311,27 +282,11 @@ background:var(--cyan);
 border-radius:10px;
 }
 
-/* ===== ANIMATION ===== */
-
-@keyframes glow{
-0%{box-shadow:0 0 10px rgba(0,229,255,0.2);}
-50%{box-shadow:0 0 25px rgba(0,229,255,0.4);}
-100%{box-shadow:0 0 10px rgba(0,229,255,0.2);}
-}
-
-.timer-card{
-animation:glow 3s infinite;
-}
-
 /* ===== RESPONSIVE ===== */
 
-@media(max-width:1000px){
+@media(max-width:900px){
 .dashboard{
 grid-template-columns:1fr;
-}
-
-.chart-card{
-grid-column:auto;
 }
 
 .hero{
@@ -339,22 +294,4 @@ flex-direction:column;
 gap:10px;
 text-align:center;
 }
-}
-
-/* ===== FOCUS MODE ===== */
-
-.focus-mode .dashboard,
-.focus-mode .hero,
-.focus-mode .history-card,
-.focus-mode .chart-card,
-.focus-mode .daily-goal{
-display:none !important;
-}
-
-.focus-mode .timer-card{
-width:100%;
-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
 }
