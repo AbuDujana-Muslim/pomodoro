@@ -3,13 +3,13 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>NEURO FOCUS // 3000 UI</title>
+<title>NEURAL FOCUS OS // ULTIMATE</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 
 <style>
 :root{
-  --bg:#050713;
+  --bg:#04050a;
   --panel:rgba(255,255,255,.05);
   --stroke:rgba(255,255,255,.1);
   --cyan:#00e5ff;
@@ -23,58 +23,60 @@
 
 body{
   margin:0;
-  background:radial-gradient(circle at top,#0b1020,#050713 60%);
+  background:radial-gradient(circle at top,#0b1020,#04050a 60%);
   color:#fff;
   overflow-x:hidden;
 }
 
-/* animated background */
+/* background */
 .bg{
   position:fixed;
-  inset:-50%;
+  inset:-60%;
   background:
     radial-gradient(circle at 20% 20%, rgba(0,229,255,.18), transparent 40%),
     radial-gradient(circle at 70% 30%, rgba(157,78,221,.18), transparent 45%),
     radial-gradient(circle at 50% 80%, rgba(255,45,117,.12), transparent 50%);
-  filter:blur(80px);
-  animation:move 12s infinite alternate;
+  filter:blur(90px);
+  animation:move 14s infinite alternate;
 }
 @keyframes move{
   from{transform:scale(1)}
-  to{transform:scale(1.25) translate(40px,30px)}
+  to{transform:scale(1.3) translate(50px,30px)}
 }
 
-/* LAYOUT */
+/* layout */
 .container{
-  max-width:1200px;
+  max-width:1300px;
   margin:auto;
   padding:20px;
   display:grid;
-  grid-template-columns:320px 1fr 320px;
+  grid-template-columns:340px 1fr 340px;
   gap:15px;
 }
 
-/* PANELS */
+/* glass */
 .card{
   background:var(--panel);
   border:1px solid var(--stroke);
   border-radius:18px;
   padding:16px;
-  backdrop-filter:blur(20px);
-  box-shadow:0 0 40px rgba(0,0,0,.5);
+  backdrop-filter:blur(25px);
+  box-shadow:0 0 60px rgba(0,0,0,.6);
 }
 
-/* TIMER */
+/* TIMER CORE */
 .timer{
   font-size:5rem;
   text-align:center;
   font-weight:900;
   color:var(--cyan);
-  text-shadow:0 0 25px rgba(0,229,255,.4);
+  text-shadow:0 0 30px rgba(0,229,255,.4);
 }
 
 /* buttons */
 button{
+  width:100%;
+  margin-top:8px;
   padding:10px;
   border-radius:12px;
   border:1px solid var(--cyan);
@@ -83,25 +85,13 @@ button{
   cursor:pointer;
   font-weight:700;
   transition:.2s;
-  margin-top:6px;
 }
 button:hover{
   background:var(--cyan);
   color:#000;
 }
 
-/* inputs */
-input,select{
-  width:100%;
-  padding:10px;
-  margin-top:6px;
-  border-radius:10px;
-  border:1px solid var(--stroke);
-  background:#0b1020;
-  color:#fff;
-}
-
-/* TASKS */
+/* task */
 .task{
   display:flex;
   justify-content:space-between;
@@ -112,22 +102,37 @@ input,select{
   border-radius:10px;
 }
 
-/* CHART */
+/* stats */
+.stat{
+  background:#0b1020;
+  padding:10px;
+  border-radius:10px;
+  margin-top:8px;
+  text-align:center;
+}
+
+/* progress */
+.bar{
+  height:10px;
+  background:#111;
+  border-radius:20px;
+  overflow:hidden;
+  margin-top:10px;
+}
+.fill{
+  height:100%;
+  width:0%;
+  background:linear-gradient(90deg,var(--cyan),var(--purple));
+  transition:.3s;
+}
+
+/* chart */
 canvas{
   width:100%;
-  height:180px;
+  height:160px;
   background:#0b1020;
   border-radius:12px;
   margin-top:10px;
-}
-
-/* QUOTES */
-.quote{
-  text-align:center;
-  color:var(--gold);
-  min-height:30px;
-  margin-top:10px;
-  font-weight:700;
 }
 </style>
 </head>
@@ -140,46 +145,43 @@ canvas{
 
 <!-- TASKS -->
 <div class="card">
-<h3>لوحة المهام</h3>
+<h3>📌 المهام الذكية</h3>
 
 <input id="name" placeholder="اسم المهمة">
 <input id="mins" type="number" placeholder="الدقائق">
 <input id="rounds" type="number" placeholder="الجولات">
 
-<button onclick="addTask()">إضافة</button>
+<button onclick="addTask()">إضافة مهمة</button>
 
 <div id="tasks"></div>
 </div>
 
-<!-- CENTER -->
+<!-- TIMER -->
 <div class="card" style="text-align:center">
 
-<div class="timer" id="time">25:00</div>
+<div class="timer" id="time">00:00</div>
 
-<button onclick="start()">ابدأ</button>
+<button onclick="startTask()">ابدأ المهمة</button>
 <button onclick="pause()">إيقاف</button>
 <button onclick="reset()">إعادة</button>
 
-<div class="quote" id="quote">الانضباط يصنع المعجزات</div>
+<div class="bar"><div class="fill" id="fill"></div></div>
 
 <canvas id="chart"></canvas>
 
 </div>
 
-<!-- STATS -->
+<!-- ENGINE -->
 <div class="card">
 
-<h3>محرك الإنتاجية</h3>
+<h3>⚙️ محرك النظام</h3>
 
-<div>الجلسات: <b id="sessions">0</b></div>
-<div>ساعات: <b id="hours">0</b></div>
-<div>الإنجاز: <b id="done">0</b></div>
+<div class="stat">المهمة النشطة: <b id="active">لا يوجد</b></div>
+<div class="stat">الجلسات: <b id="sessions">0</b></div>
+<div class="stat">ساعات الإنجاز: <b id="hours">0</b></div>
+<div class="stat">المهام المكتملة: <b id="done">0</b></div>
 
-<select id="mode" onchange="setMode()">
-<option value="work">تركيز</option>
-<option value="break">راحة</option>
-<option value="long">راحة طويلة</option>
-</select>
+<div class="stat">رسالة: <span id="quote">ابدأ الآن</span></div>
 
 </div>
 
@@ -187,88 +189,105 @@ canvas{
 
 <script>
 
+/* ---------------- CORE STATE ---------------- */
+
 let state={
-  work:1500,
-  break:300,
-  long:900,
-  time:1500,
-  mode:"work",
-  run:false,
+  tasks:[],
+  active:null,
+  time:0,
+  running:false,
   sessions:0,
   hours:0,
   done:0,
-  tasks:[],
   history:[]
 };
 
 let t;
 
-/* TIMER ENGINE */
+/* ---------------- TASK ENGINE ---------------- */
+
+function addTask(){
+  let n=document.getElementById("name").value;
+  let m=+document.getElementById("mins").value||25;
+  let r=+document.getElementById("rounds").value||1;
+
+  if(!n)return;
+
+  state.tasks.push({
+    name:n,
+    mins:m,
+    rounds:r,
+    done:0
+  });
+
+  render();
+}
+
+/* ---------------- START TASK ---------------- */
+
+function startTask(index=0){
+
+  if(state.tasks.length===0)return;
+
+  state.active = state.tasks[index];
+
+  state.time = state.active.mins * 60;
+
+  state.running=true;
+
+  clearInterval(t);
+
+  t=setInterval(tick,1000);
+
+  render();
+}
+
+/* ---------------- TIMER ENGINE ---------------- */
+
 function tick(){
+
   state.time--;
 
   if(state.time<=0){
-    state.sessions++;
-    state.done++;
 
-    if(state.sessions%3===0){
-      state.time=state.long;
+    state.sessions++;
+    state.active.done++;
+
+    if(state.active.done < state.active.rounds){
+      state.time = state.active.mins * 60;
     }else{
-      state.time=state.break;
+      state.done++;
+      state.active = null;
+      clearInterval(t);
     }
 
     beep();
   }
 
-  state.hours+=0.00027;
+  state.hours += 0.00027;
+
   state.history.push(state.sessions);
 
   drawChart();
   render();
 }
 
-/* CONTROL */
-function start(){
-  if(state.run)return;
-  state.run=true;
-  t=setInterval(tick,1000);
-}
+/* ---------------- CONTROL ---------------- */
 
 function pause(){
   clearInterval(t);
-  state.run=false;
+  state.running=false;
 }
 
 function reset(){
   clearInterval(t);
-  state.run=false;
-  state.time=state.work;
+  state.running=false;
+  state.time=0;
   render();
 }
 
-/* TASKS */
-function addTask(){
-  let n=document.getElementById("name").value;
-  if(!n)return;
+/* ---------------- SOUND ---------------- */
 
-  state.tasks.push(n);
-  render();
-}
-
-/* MODE */
-function setMode(){
-  let v=document.getElementById("mode").value;
-
-  state.mode=v;
-
-  if(v==="work") state.time=state.work;
-  if(v==="break") state.time=state.break;
-  if(v==="long") state.time=state.long;
-
-  render();
-}
-
-/* SOUND */
 function beep(){
   let a=new AudioContext();
   let o=a.createOscillator();
@@ -277,63 +296,83 @@ function beep(){
   o.stop(a.currentTime+0.2);
 }
 
-/* CHART */
+/* ---------------- CHART ---------------- */
+
 function drawChart(){
+
   let c=document.getElementById("chart");
   let ctx=c.getContext("2d");
 
   c.width=300;
-  c.height=180;
+  c.height=160;
 
   ctx.clearRect(0,0,c.width,c.height);
 
-  ctx.strokeStyle="#00e5ff";
   ctx.beginPath();
+  ctx.strokeStyle="#00e5ff";
 
-  let step=10;
+  let data=state.history.slice(-30);
 
-  state.history.slice(-30).forEach((v,i)=>{
+  data.forEach((v,i)=>{
     let x=i*10;
-    let y=180-v*2;
+    let y=160 - v*3;
 
-    if(i===0) ctx.moveTo(x,y);
+    if(i===0)ctx.moveTo(x,y);
     else ctx.lineTo(x,y);
   });
 
   ctx.stroke();
 }
 
-/* RENDER */
+/* ---------------- RENDER ---------------- */
+
 function render(){
 
-let m=Math.floor(state.time/60);
-let s=state.time%60;
+  let m=Math.floor(state.time/60);
+  let s=state.time%60;
 
-document.getElementById("time").innerText=
-`${m}:${s.toString().padStart(2,"0")}`;
+  document.getElementById("time").innerText =
+  state.active
+    ? `${m}:${s.toString().padStart(2,"0")}`
+    : "00:00";
 
-document.getElementById("sessions").innerText=state.sessions;
-document.getElementById("hours").innerText=state.hours.toFixed(2);
-document.getElementById("done").innerText=state.done;
+  document.getElementById("sessions").innerText=state.sessions;
+  document.getElementById("hours").innerText=state.hours.toFixed(2);
+  document.getElementById("done").innerText=state.done;
 
-document.getElementById("tasks").innerHTML=
-state.tasks.map(t=>`
-<div class="task">${t}</div>
-`).join("");
+  document.getElementById("active").innerText=
+  state.active ? state.active.name : "لا يوجد";
+
+  document.getElementById("tasks").innerHTML=
+  state.tasks.map((t,i)=>`
+    <div class="task">
+      <span>${t.name} (${t.done}/${t.rounds})</span>
+      <button onclick="startTask(${i})">تشغيل</button>
+    </div>
+  `).join("");
+
+  let p=state.active
+    ? ((state.active.mins*60 - state.time)/(state.active.mins*60))*100
+    : 0;
+
+  document.getElementById("fill").style.width=p+"%";
 
 }
 
-/* MOTIVATION */
+/* ---------------- MOTIVATION ---------------- */
+
 setInterval(()=>{
-let q=[
-"ركز… أنت تبني عقلك",
-"الوقت سلاحك الوحيد",
-"لا تشتت، فقط إنجاز",
-"استمر حتى النهاية",
-"النجاح عادة"
-];
-document.getElementById("quote").innerText=
-q[Math.floor(Math.random()*q.length)];
+  const q=[
+    "التركيز هو القوة الحقيقية",
+    "أنت تبني نسخة أقوى منك",
+    "الوقت هو العملة الوحيدة",
+    "لا تشتت… فقط إنجاز",
+    "استمر حتى النهاية"
+  ];
+
+  document.getElementById("quote").innerText=
+  q[Math.floor(Math.random()*q.length)];
+
 },4000);
 
 render();
