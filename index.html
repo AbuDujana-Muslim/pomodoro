@@ -1,136 +1,400 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodoro MR - Advanced Dashboard</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
 
-<title>Pomodoro MR</title>
+        :root {
+            --bg-color: #050505;
+            --card-bg: #111111;
+            --neon-blue: #00f2ff;
+            --neon-purple: #b026ff;
+            --neon-green: #00ff88;
+            --neon-orange: #ffaa00;
+            --text-main: #ffffff;
+            --text-dim: #888888;
+        }
 
-<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Cairo', sans-serif;
+        }
 
-<link rel="stylesheet" href="style.css">
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        /* تصميم الخانات (Cards) مع النيون */
+        .card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 30px;
+            position: relative;
+            z-index: 1;
+            transition: 0.3s;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            z-index: -1;
+            border-radius: 22px;
+            opacity: 0.5;
+            transition: 0.3s;
+        }
+
+        .card:hover { transform: translateY(-5px); }
+
+        .timer-card::before { background: linear-gradient(45deg, var(--neon-blue), transparent); box-shadow: 0 0 20px rgba(0, 242, 255, 0.2); }
+        .tasks-card::before { background: linear-gradient(45deg, var(--neon-purple), transparent); box-shadow: 0 0 20px rgba(176, 38, 255, 0.2); }
+        .stats-card::before { background: linear-gradient(45deg, var(--neon-green), transparent); box-shadow: 0 0 20px rgba(0, 255, 136, 0.2); }
+        .quote-card::before { background: linear-gradient(45deg, var(--neon-orange), transparent); box-shadow: 0 0 20px rgba(255, 170, 0, 0.2); }
+
+        h2 {
+            font-size: 22px;
+            margin-bottom: 20px;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* 1. المؤقت */
+        .timer-container {
+            text-align: center;
+        }
+        .time-display {
+            font-size: 80px;
+            font-weight: 700;
+            color: var(--neon-blue);
+            text-shadow: 0 0 20px var(--neon-blue);
+            margin: 20px 0;
+            font-variant-numeric: tabular-nums;
+        }
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        .btn {
+            background: transparent;
+            border: 1px solid var(--text-dim);
+            color: var(--text-main);
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: 0.3s;
+        }
+        .btn:hover {
+            border-color: var(--neon-blue);
+            color: var(--neon-blue);
+            box-shadow: 0 0 10px rgba(0, 242, 255, 0.3);
+        }
+
+        /* 2. المهام */
+        .task-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        input, select {
+            background: #222;
+            border: 1px solid #333;
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            outline: none;
+        }
+        input { flex: 1; }
+        input:focus, select:focus { border-color: var(--neon-purple); box-shadow: 0 0 10px rgba(176, 38, 255, 0.3); }
+        
+        .task-list {
+            list-style: none;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+        .task-item {
+            background: #1a1a1a;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            border-left: 3px solid transparent;
+        }
+        .task-item.active {
+            border-left-color: var(--neon-purple);
+            background: #2a1a3a;
+        }
+
+        /* 3. الإحصائيات (الرسم البياني) */
+        .chart-container {
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            height: 200px;
+            padding-top: 20px;
+            border-bottom: 1px solid #333;
+        }
+        .bar-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 12%;
+            gap: 10px;
+        }
+        .bar {
+            width: 100%;
+            background: linear-gradient(to top, #004422, var(--neon-green));
+            border-radius: 5px 5px 0 0;
+            box-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+            transition: 1s;
+        }
+        .day-label { font-size: 12px; color: var(--text-dim); }
+
+        /* 4. التحفيز */
+        .quote-container {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+        .quote-text {
+            font-size: 26px;
+            font-weight: 700;
+            color: var(--neon-orange);
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+    </style>
 </head>
-
 <body>
 
-<!-- ===== TOP BRAND ===== -->
-<header class="top-brand">
-Pomodoro MR
-</header>
+    <div class="dashboard">
+        
+        <div class="card timer-card">
+            <h2>المؤقت</h2>
+            <div class="timer-container">
+                <p id="mode-text" style="color: var(--text-dim);">في انتظار بدء المهام...</p>
+                <div class="time-display" id="timer">00:00</div>
+                <div class="controls">
+                    <button class="btn" onclick="toggleTimer()" id="startBtn">تشغيل</button>
+                    <button class="btn" onclick="addMinute()">+ دقيقة</button>
+                    <button class="btn" onclick="resetTimer()">تصفير</button>
+                </div>
+            </div>
+        </div>
 
-<div class="container">
+        <div class="card tasks-card">
+            <h2>المهام المبرمجة</h2>
+            <div class="task-input-group">
+                <input type="text" id="taskName" placeholder="اسم المهمة...">
+                <select id="taskDuration">
+                    <option value="25">25 دقيقة</option>
+                    <option value="50">50 دقيقة</option>
+                </select>
+                <button class="btn" style="border-color: var(--neon-purple); color: var(--neon-purple);" onclick="addTask()">إضافة</button>
+            </div>
+            <ul class="task-list" id="taskList">
+                </ul>
+        </div>
 
-<!-- ===== HEADER ===== -->
-<header class="hero">
+        <div class="card stats-card">
+            <h2>تحليل الأداء (هذا الأسبوع)</h2>
+            <div class="chart-container">
+                <div class="bar-wrapper"><div class="bar" style="height: 40%;"></div><span class="day-label">الأحد</span></div>
+                <div class="bar-wrapper"><div class="bar" style="height: 70%;"></div><span class="day-label">الإثنين</span></div>
+                <div class="bar-wrapper"><div class="bar" style="height: 30%;"></div><span class="day-label">الثلاثاء</span></div>
+                <div class="bar-wrapper"><div class="bar" style="height: 90%;"></div><span class="day-label">الأربعاء</span></div>
+                <div class="bar-wrapper"><div class="bar" style="height: 50%;"></div><span class="day-label">الخميس</span></div>
+                <div class="bar-wrapper"><div class="bar" style="height: 20%;"></div><span class="day-label">الجمعة</span></div>
+                <div class="bar-wrapper"><div class="bar" style="height: 80%;"></div><span class="day-label">السبت</span></div>
+            </div>
+        </div>
 
-<div>
-<h1>🧠 وضع التركيز</h1>
-<p>بدون تشتيت — فقط إنجاز</p>
-</div>
+        <div class="card quote-card">
+            <h2>النبض</h2>
+            <div class="quote-container">
+                <p class="quote-text" id="quoteText">"أهلاً محمود! أضف مهامك لنبدأ في تحطيم الأهداف اليوم."</p>
+            </div>
+        </div>
 
-<div class="daily-goal">
-<span>جلسات اليوم</span>
-<h2 id="sessionsCount">0</h2>
-</div>
+    </div>
 
-</header>
+    <script>
+        // المتغيرات الأساسية
+        let tasks = [];
+        let currentTaskIndex = -1;
+        let timer;
+        let timeLeft = 0;
+        let isRunning = false;
+        let isBreak = false;
+        let sessionsCompleted = 0;
 
-<div class="dashboard">
+        // مراجع الواجهة
+        const timerDisplay = document.getElementById('timer');
+        const modeText = document.getElementById('mode-text');
+        const taskList = document.getElementById('taskList');
+        const startBtn = document.getElementById('startBtn');
+        const quoteText = document.getElementById('quoteText');
 
-<!-- ===== TASKS ===== -->
-<section class="card">
+        // تحديث الشاشة
+        function updateDisplay() {
+            let m = Math.floor(timeLeft / 60);
+            let s = timeLeft % 60;
+            timerDisplay.innerText = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+        }
 
-<h2>📚 المهام</h2>
+        // إضافة مهمة
+        function addTask() {
+            const name = document.getElementById('taskName').value;
+            const duration = parseInt(document.getElementById('taskDuration').value);
+            
+            if (name.trim() === '') return;
 
-<div class="task-form">
+            tasks.push({ name, duration, completed: false });
+            document.getElementById('taskName').value = '';
+            
+            if (currentTaskIndex === -1) {
+                currentTaskIndex = 0;
+                loadTask(currentTaskIndex);
+            }
+            
+            renderTasks();
+        }
 
-<input id="taskName" type="text" placeholder="اسم المهمة">
+        // رسم المهام في الجدول
+        function renderTasks() {
+            taskList.innerHTML = '';
+            tasks.forEach((task, index) => {
+                let li = document.createElement('li');
+                li.className = `task-item ${index === currentTaskIndex ? 'active' : ''}`;
+                li.innerHTML = `<span>${task.name}</span> <span style="color:var(--text-dim)">${task.duration} د</span>`;
+                taskList.appendChild(li);
+            });
+        }
 
-<input id="focusTime" type="number" placeholder="مدة التركيز بالدقائق">
+        // تحميل بيانات المهمة للمؤقت
+        function loadTask(index) {
+            if (index >= tasks.length) {
+                modeText.innerText = "🎉 تم إنجاز جميع المهام!";
+                timeLeft = 0;
+                updateDisplay();
+                quoteText.innerText = "عمل رائع يا محمود! خذ قسطاً طويلاً من الراحة.";
+                return;
+            }
+            isBreak = false;
+            timeLeft = tasks[index].duration * 60;
+            modeText.innerText = `التركيز الحالي: ${tasks[index].name}`;
+            quoteText.innerText = `ركز الآن يا محمود، ${tasks[index].duration} دقيقة من الإبداع المستمر!`;
+            updateDisplay();
+            renderTasks();
+        }
 
-<button id="addTaskBtn">إضافة مهمة</button>
+        // تشغيل / إيقاف
+        function toggleTimer() {
+            if (tasks.length === 0) {
+                alert("يرجى إضافة مهمة أولاً!");
+                return;
+            }
+            if (isRunning) {
+                clearInterval(timer);
+                startBtn.innerText = "تشغيل";
+            } else {
+                timer = setInterval(countdown, 1000);
+                startBtn.innerText = "إيقاف";
+            }
+            isRunning = !isRunning;
+        }
 
-</div>
+        // العد التنازلي والمنطق الذكي للاستراحة
+        function countdown() {
+            if (timeLeft > 0) {
+                timeLeft--;
+                updateDisplay();
+            } else {
+                clearInterval(timer);
+                isRunning = false;
+                startBtn.innerText = "تشغيل";
+                handleSessionEnd();
+            }
+        }
 
-<div id="taskList" class="task-list"></div>
+        // ماذا يحدث عند انتهاء الوقت؟
+        function handleSessionEnd() {
+            if (!isBreak) {
+                // انتهت جلسة العمل
+                sessionsCompleted++;
+                
+                let breakTime = 0;
+                if (sessionsCompleted % 3 === 0) {
+                    breakTime = 15; // استراحة طويلة بعد 3 جلسات
+                    quoteText.innerText = "استراحة ذهبية! 15 دقيقة لتجديد طاقتك يا بطل.";
+                } else {
+                    // استراحة حسب مدة المهمة
+                    breakTime = tasks[currentTaskIndex].duration === 50 ? 10 : 5;
+                    quoteText.innerText = "ممتاز يا محمود! استراحة قصيرة قبل العودة.";
+                }
 
-</section>
+                isBreak = true;
+                timeLeft = breakTime * 60;
+                modeText.innerText = "☕ وقت الاستراحة";
+                modeText.style.color = "var(--neon-green)";
+                updateDisplay();
+                
+                // تشغيل الاستراحة تلقائياً (اختياري)
+                toggleTimer();
 
-<!-- ===== TIMER ===== -->
-<section class="card timer-card">
+            } else {
+                // انتهت الاستراحة
+                tasks[currentTaskIndex].completed = true;
+                currentTaskIndex++;
+                modeText.style.color = "var(--text-dim)";
+                loadTask(currentTaskIndex);
+            }
+        }
 
-<h2>⏳ المؤقت</h2>
+        // زيادة دقيقة
+        function addMinute() {
+            timeLeft += 60;
+            updateDisplay();
+        }
 
-<div class="timer-wrapper">
-
-<svg class="progress-ring" width="240" height="240">
-
-<circle class="ring-bg" cx="120" cy="120" r="120"></circle>
-
-<circle class="ring-progress" cx="120" cy="120" r="120"></circle>
-
-</svg>
-
-<div class="timer-content">
-
-<div id="sessionType">جاهز</div>
-
-<div id="timer">00:00</div>
-
-<div id="taskCurrent">لا توجد مهمة</div>
-
-</div>
-
-</div>
-
-<div class="controls">
-
-<button id="startBtn">▶ تشغيل</button>
-<button id="pauseBtn">⏸ إيقاف</button>
-<button id="resetBtn">⏹ تصفير</button>
-<button id="plusBtn">+ دقيقة</button>
-<button id="nextBtn">⏭ التالي</button>
-
-</div>
-
-</section>
-
-<!-- ===== MOTIVATION ===== -->
-<section class="card">
-
-<h2>⚡ تحفيز</h2>
-
-<div id="motivationText">
-ابدأ الآن... خطوة واحدة تكفي.
-</div>
-
-</section>
-
-<!-- ===== HISTORY ===== -->
-<section class="card">
-
-<h2>📝 السجل</h2>
-
-<div id="historyList">لا توجد جلسات بعد</div>
-
-</section>
-
-</div>
-
-</div>
-
-<!-- ===== FOOTER ===== -->
-<footer class="footer">
-© جميع الحقوق محفوظة - من تطوير Mahmod Rabaa
-</footer>
-
-<!-- ===== SOUND ===== -->
-<audio id="alarmSound" preload="auto">
-<source src="https://actions.google.com/sounds/v1/alarms/soft_bell_ring.ogg" type="audio/ogg">
-</audio>
-
-<script src="script.js"></script>
-
+        // تصفير
+        function resetTimer() {
+            clearInterval(timer);
+            isRunning = false;
+            startBtn.innerText = "تشغيل";
+            if (currentTaskIndex !== -1 && currentTaskIndex < tasks.length) {
+                loadTask(currentTaskIndex);
+            } else {
+                timeLeft = 0;
+                updateDisplay();
+            }
+        }
+    </script>
 </body>
 </html>
