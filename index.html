@@ -1,121 +1,150 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pomodoro MR | FOCUS OS</title>
+<title>NEURO FOCUS // Pomodoro OS</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 
 <style>
 :root{
-  --bg:#05060a;
-  --a:#00e5ff;
-  --b:#ff2d75;
-  --c:#7c4dff;
-  --glass:rgba(255,255,255,0.05);
+  --bg:#05070f;
+  --panel:rgba(255,255,255,.05);
+  --stroke:rgba(255,255,255,.1);
+
+  --cyan:#00e5ff;
+  --purple:#9d4edd;
+  --pink:#ff2d75;
+  --green:#3cff91;
+  --gold:#ffcc00;
 }
 
-*{box-sizing:border-box;font-family:system-ui}
+*{box-sizing:border-box;font-family:Tajawal}
 
 body{
   margin:0;
   min-height:100vh;
-  background:radial-gradient(circle at top,#0b1020,#05060a);
+  background:radial-gradient(circle at top,#0c1020,#05070f 60%);
   color:#fff;
+  overflow-x:hidden;
 }
 
-/* background */
+/* animated background */
 .bg{
   position:fixed;
   inset:-40%;
   background:
-    radial-gradient(circle at 20% 20%, rgba(0,229,255,.25), transparent 40%),
-    radial-gradient(circle at 80% 30%, rgba(255,45,117,.18), transparent 45%),
-    radial-gradient(circle at 50% 70%, rgba(124,77,255,.15), transparent 50%);
-  filter:blur(80px);
+    radial-gradient(circle at 20% 20%, rgba(0,229,255,.18), transparent 40%),
+    radial-gradient(circle at 80% 30%, rgba(157,78,221,.18), transparent 45%),
+    radial-gradient(circle at 50% 80%, rgba(255,45,117,.12), transparent 50%);
+  filter:blur(70px);
+  animation:move 12s infinite alternate ease-in-out;
+}
+@keyframes move{
+  from{transform:scale(1)}
+  to{transform:scale(1.25) translate(40px,20px)}
 }
 
 /* layout */
-.app{
-  position:relative;
-  max-width:1100px;
+.container{
+  max-width:1200px;
   margin:auto;
   padding:20px;
   display:grid;
-  grid-template-columns:1fr 1.3fr;
+  grid-template-columns:1fr 1.4fr 1fr;
   gap:15px;
 }
 
-/* card */
+/* glass card */
 .card{
-  background:var(--glass);
-  border:1px solid rgba(255,255,255,0.1);
-  border-radius:16px;
+  background:var(--panel);
+  border:1px solid var(--stroke);
+  border-radius:18px;
   padding:16px;
-  backdrop-filter:blur(25px);
+  backdrop-filter:blur(20px);
+  box-shadow:0 0 50px rgba(0,0,0,.5);
 }
 
-/* timer */
+/* TIMER */
 .timer{
   font-size:5rem;
-  text-align:center;
   font-weight:900;
-  color:var(--a);
-}
-
-/* inputs */
-.grid{
-  display:grid;
-  grid-template-columns:2fr 1fr 1fr;
-  gap:6px;
-}
-
-input{
-  padding:10px;
-  border-radius:10px;
-  border:1px solid #222;
-  background:#0b1020;
-  color:#fff;
+  text-align:center;
+  color:var(--cyan);
+  text-shadow:0 0 25px rgba(0,229,255,.4);
 }
 
 /* buttons */
 button{
+  width:100%;
+  margin-top:8px;
   padding:10px;
-  border-radius:10px;
-  border:1px solid var(--a);
+  border-radius:12px;
+  border:1px solid var(--cyan);
   background:transparent;
-  color:var(--a);
+  color:var(--cyan);
   cursor:pointer;
+  font-weight:700;
+  transition:.2s;
 }
-
 button:hover{
-  background:var(--a);
+  background:var(--cyan);
   color:#000;
 }
 
-/* task */
+/* inputs */
+input{
+  width:100%;
+  padding:10px;
+  margin-top:6px;
+  border-radius:10px;
+  border:1px solid var(--stroke);
+  background:#0b1020;
+  color:#fff;
+}
+
+/* TASKS */
 .task{
   display:flex;
   justify-content:space-between;
   padding:10px;
   margin-top:6px;
   background:#0b1020;
-  border-left:3px solid var(--b);
+  border-left:3px solid var(--purple);
   border-radius:10px;
 }
 
-/* progress */
+/* stats */
+.stat{
+  background:#0b1020;
+  padding:10px;
+  border-radius:10px;
+  margin-top:8px;
+  text-align:center;
+}
+
+/* streak bar */
 .bar{
-  height:6px;
+  height:10px;
   background:#111;
   border-radius:20px;
   overflow:hidden;
   margin-top:10px;
 }
-
 .fill{
   height:100%;
   width:0%;
-  background:linear-gradient(90deg,var(--a),var(--c));
+  background:linear-gradient(90deg,var(--cyan),var(--purple));
+  transition:.3s;
+}
+
+/* quote */
+.quote{
+  text-align:center;
+  color:var(--gold);
+  min-height:30px;
+  margin-top:10px;
 }
 </style>
 </head>
@@ -124,38 +153,46 @@ button:hover{
 
 <div class="bg"></div>
 
-<div class="app">
+<div class="container">
 
-<!-- LEFT -->
+<!-- LEFT: TASKS -->
 <div class="card">
-<h3>FOCUS ENGINE</h3>
+<h3>المهام الذكية</h3>
+
+<input id="name" placeholder="اسم المهمة">
+<input id="mins" type="number" placeholder="الدقائق">
+<input id="rounds" type="number" placeholder="الجولات">
+
+<button onclick="addTask()">إضافة مهمة</button>
+
+<div id="tasks"></div>
+</div>
+
+<!-- CENTER: TIMER -->
+<div class="card" style="text-align:center">
 
 <div class="timer" id="time">25:00</div>
 
+<button onclick="start()">ابدأ</button>
+<button onclick="pause()">إيقاف</button>
+<button onclick="reset()">إعادة</button>
+
+<div class="quote" id="quote">التركيز هو القوة الحقيقية</div>
+
 <div class="bar"><div class="fill" id="fill"></div></div>
 
-<button onclick="start()">START</button>
-<button onclick="pause()">PAUSE</button>
-<button onclick="reset()">RESET</button>
+<div class="stat">الجلسات: <b id="sessions">0</b></div>
+<div class="stat">ساعات الإنجاز: <b id="hours">0</b></div>
+<div class="stat">السلسلة اليومية: <b id="streak">0</b></div>
 
-<div id="mode">WORK</div>
-<div id="stats"></div>
 </div>
 
-<!-- RIGHT -->
+<!-- RIGHT: ENGINE -->
 <div class="card">
+<h3>محرك الإنتاجية</h3>
 
-<h3>TASK SYSTEM</h3>
-
-<div class="grid">
-<input id="name" placeholder="task">
-<input id="mins" type="number" placeholder="min">
-<input id="rounds" type="number" placeholder="x">
-</div>
-
-<button onclick="add()">ADD</button>
-
-<div id="list"></div>
+<div class="stat">مستوى التركيز: <b id="focus">100%</b></div>
+<div class="stat">المهام المكتملة: <b id="done">0</b></div>
 
 </div>
 
@@ -164,142 +201,143 @@ button:hover{
 <script>
 
 let state={
-  mode:"work",
   work:1500,
   break:300,
   long:900,
   time:1500,
-  running:false,
+  run:false,
   cycles:0,
   sessions:0,
-  start:null,
-  tasks:JSON.parse(localStorage.getItem("tasks")||"[]"),
-  completedMinutes:0
+  hours:0,
+  streak:0,
+  done:0,
+  tasks:[]
 };
 
-function format(t){
-let m=Math.floor(t/60);
-let s=t%60;
-return `${m}:${s.toString().padStart(2,'0')}`;
-}
+let t;
 
-/* REAL TIMER (NO DRIFT) */
+/* TIMER ENGINE (auto break system) */
 function tick(){
-if(!state.running) return;
+  state.time--;
 
-let now=Date.now();
-let diff=Math.floor((now-state.start)/1000);
+  if(state.time<=0){
+    state.cycles++;
+    state.sessions++;
 
-let total=
-state.mode==="work"?state.work:
-state.mode==="break"?state.break:state.long;
+    if(state.cycles%3===0){
+      state.time=state.long;
+      state.streak++;
+    }else{
+      state.time=state.break;
+    }
 
-state.time = total - diff;
+    beep();
+  }
 
-if(state.time<=0){
-switchMode();
-notify();
-}
-
-render();
-requestAnimationFrame(tick);
-}
-
-function switchMode(){
-
-if(state.mode==="work"){
-state.sessions++;
-state.completedMinutes+=25;
-state.cycles++;
-
-if(state.cycles%3===0){
-state.mode="long";
-state.time=state.long;
-}else{
-state.mode="break";
-state.time=state.break;
-}
-}else{
-state.mode="work";
-state.time=state.work;
-}
-
-state.start=Date.now();
-save();
+  state.hours += 0.00027;
+  render();
 }
 
 /* CONTROL */
 function start(){
-state.running=true;
-state.start=Date.now()-( (state.work-state.time)*1000 );
-requestAnimationFrame(tick);
+  if(state.run)return;
+  state.run=true;
+  t=setInterval(tick,1000);
 }
 
 function pause(){
-state.running=false;
+  clearInterval(t);
+  state.run=false;
 }
 
 function reset(){
-state.running=false;
-state.mode="work";
-state.time=state.work;
-render();
+  clearInterval(t);
+  state.run=false;
+  state.time=state.work;
+  render();
 }
 
-/* TASKS */
-function add(){
-let n=document.getElementById("name").value;
-let m=document.getElementById("mins").value;
-let r=document.getElementById("rounds").value;
+/* TASKS (advanced structure) */
+function addTask(){
+  let n=document.getElementById("name").value;
+  let m=document.getElementById("mins").value||25;
+  let r=document.getElementById("rounds").value||1;
 
-if(!n) return;
+  if(!n)return;
 
-state.tasks.push({n,m,r});
-save();
-render();
+  state.tasks.push({
+    name:n,
+    mins:m,
+    rounds:r,
+    done:0
+  });
+
+  render();
 }
 
-function save(){
-localStorage.setItem("tasks",JSON.stringify(state.tasks));
+/* COMPLETE TASK */
+function complete(i){
+  state.tasks[i].done++;
+  state.done++;
+  render();
 }
 
-/* NOTIFY */
-function notify(){
-try{
-navigator.vibrate?.(200);
-new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg").play();
-Notification.requestPermission().then(p=>{
-if(p==="granted"){
-new Notification("Session Complete 🔥");
+/* SOUND */
+function beep(){
+  let a=new AudioContext();
+  let o=a.createOscillator();
+  o.connect(a.destination);
+  o.start();
+  o.stop(a.currentTime+0.2);
 }
-});
-}catch(e){}
-}
+
+/* MOTIVATION SYSTEM */
+const quotes=[
+"ركز الآن… المستقبل يُبنى هنا",
+"كل دقيقة تصنع فرقاً",
+"الانضباط أقوى من الدافع",
+"أنت في سباق مع نفسك فقط",
+"استمر حتى تصبح النسخة الأفضل"
+];
 
 /* RENDER */
 function render(){
 
-document.getElementById("time").innerText=format(Math.max(0,state.time));
+let m=Math.floor(state.time/60);
+let s=state.time%60;
 
-document.getElementById("mode").innerText=state.mode.toUpperCase();
+document.getElementById("time").innerText=
+`${m}:${s.toString().padStart(2,"0")}`;
 
-document.getElementById("stats").innerText=
-`Sessions: ${state.sessions} | Focus min: ${state.completedMinutes}`;
+document.getElementById("sessions").innerText=state.sessions;
+document.getElementById("hours").innerText=state.hours.toFixed(2);
+document.getElementById("streak").innerText=state.streak;
+document.getElementById("done").innerText=state.done;
 
-let total=state.mode==="work"?state.work:
-state.mode==="break"?state.break:state.long;
-
-let progress=((total-state.time)/total)*100;
-document.getElementById("fill").style.width=progress+"%";
-
-document.getElementById("list").innerHTML=
-state.tasks.map(t=>`
+/* tasks */
+document.getElementById("tasks").innerHTML=
+state.tasks.map((t,i)=>`
 <div class="task">
-<span>${t.n}</span>
-<span>${t.m}m × ${t.r}</span>
+<span>${t.name} (${t.done}/${t.rounds})</span>
+<button onclick="complete(${i})">✔</button>
 </div>
 `).join("");
+
+/* progress */
+let p=((state.work-state.time)/state.work)*100;
+document.getElementById("fill").style.width=p+"%";
+
+/* focus estimate */
+let focus=Math.max(50,100-Math.floor(state.cycles*2));
+document.getElementById("focus").innerText=focus+"%";
+
 }
+
+/* rotate quotes */
+setInterval(()=>{
+document.getElementById("quote").innerText=
+quotes[Math.floor(Math.random()*quotes.length)];
+},4000);
 
 render();
 
