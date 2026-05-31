@@ -3,26 +3,29 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Neon Focus System</title>
+<title>Pomodoro MR</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 
 <style>
 :root{
-  --bg:#05070b;
-  --card:rgba(18,22,40,.6);
-  --blue:#00e5ff;
-  --purple:#9d4edd;
-  --gold:#ffcc00;
-  --red:#ff3355;
-  --green:#39ff88;
-  --text:#eaf2ff;
+  --bg:#070A12;
+  --card:rgba(255,255,255,.06);
+  --stroke:rgba(255,255,255,.1);
+  --text:#EAF2FF;
+
+  --blue:#00E5FF;
+  --purple:#9D4EDD;
+  --gold:#FFCC00;
+  --red:#FF3B5C;
+  --green:#3CFF91;
 }
 
 *{margin:0;padding:0;box-sizing:border-box;font-family:Tajawal}
 
 body{
-  background: radial-gradient(circle at top,#0d1020,#05070b);
+  background:
+    radial-gradient(circle at top,#0C1020,#070A12 60%);
   color:var(--text);
   min-height:100vh;
   display:flex;
@@ -31,40 +34,53 @@ body{
   padding:20px;
 }
 
-header h1{
-  font-size:3rem;
-  font-weight:900;
-  background:linear-gradient(45deg,var(--blue),var(--purple),var(--gold));
-  -webkit-background-clip:text;
-  -webkit-text-fill-color:transparent;
+/* HEADER */
+header{
   text-align:center;
   margin-bottom:10px;
 }
 
+.logo{
+  font-size:3.2rem;
+  font-weight:900;
+  letter-spacing:1px;
+  background:linear-gradient(45deg,var(--blue),var(--purple),var(--gold));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-shadow:0 0 30px rgba(0,229,255,.15);
+}
+
+.subtitle{
+  font-size:.9rem;
+  color:#9fb3c8;
+}
+
+/* LAYOUT */
 .container{
   width:100%;
-  max-width:950px;
+  max-width:980px;
   display:flex;
   flex-direction:column;
   gap:15px;
 }
 
-/* CARDS */
+/* GLASS CARD */
 .card{
   background:var(--card);
-  border:1px solid rgba(255,255,255,.08);
+  border:1px solid var(--stroke);
   border-radius:18px;
   padding:18px;
-  backdrop-filter:blur(12px);
+  backdrop-filter:blur(18px);
+  box-shadow:0 20px 40px rgba(0,0,0,.4);
 }
 
 /* TIMER */
 .timer{
-  font-size:4.5rem;
+  font-size:4.8rem;
   font-weight:900;
   text-align:center;
   color:var(--blue);
-  text-shadow:0 0 25px rgba(0,229,255,.4);
+  text-shadow:0 0 25px rgba(0,229,255,.35);
 }
 
 .mode{
@@ -75,15 +91,21 @@ header h1{
 }
 
 .mode button{
+  border:1px solid var(--stroke);
+  background:rgba(255,255,255,.03);
+  color:var(--text);
   padding:8px 14px;
-  border:none;
-  border-radius:10px;
+  border-radius:12px;
   cursor:pointer;
-  background:#111a30;
-  color:white;
+  transition:.2s;
 }
 
-.mode .active{background:var(--blue);color:#000}
+.mode .active{
+  background:linear-gradient(45deg,var(--blue),var(--purple));
+  border:none;
+  color:#000;
+  font-weight:700;
+}
 
 /* MOTIVATION */
 .motivation{
@@ -91,9 +113,10 @@ header h1{
   color:var(--gold);
   min-height:25px;
   transition:.3s;
+  font-weight:700;
 }
 
-/* TASKS */
+/* INPUT ROW */
 .row{
   display:flex;
   gap:10px;
@@ -103,24 +126,29 @@ header h1{
 input{
   flex:1;
   padding:10px;
-  border-radius:10px;
-  border:1px solid rgba(255,255,255,.1);
-  background:#0b0f1c;
-  color:white;
+  border-radius:12px;
+  border:1px solid var(--stroke);
+  background:#0B1020;
+  color:var(--text);
+  outline:none;
 }
 
 button{
-  padding:10px 14px;
   border:none;
-  border-radius:10px;
+  border-radius:12px;
+  padding:10px 14px;
   cursor:pointer;
-  font-weight:bold;
+  font-weight:700;
+  transition:.2s;
 }
 
 .add{background:var(--green)}
 .start{background:var(--blue)}
 .reset{background:var(--red);color:white}
 
+button:hover{transform:scale(1.05)}
+
+/* TABLE */
 table{
   width:100%;
   margin-top:10px;
@@ -133,17 +161,23 @@ th,td{
   border-bottom:1px solid rgba(255,255,255,.08);
 }
 
-th{color:var(--gold)}
-
-.activeTask{
-  background:rgba(0,229,255,.08);
+th{
+  color:var(--gold);
+  font-weight:900;
 }
 
+tr:hover{
+  background:rgba(255,255,255,.03);
+}
+
+/* FOOTER */
 footer{
-  text-align:center;
   margin-top:15px;
-  color:#aaa;
-  font-size:.9rem;
+  font-size:.85rem;
+  color:#7f93ad;
+  text-align:center;
+  padding-top:10px;
+  border-top:1px solid rgba(255,255,255,.08);
 }
 </style>
 </head>
@@ -151,7 +185,8 @@ footer{
 <body>
 
 <header>
-  <h1>⚡ Neon Focus System</h1>
+  <div class="logo">Pomodoro MR</div>
+  <div class="subtitle">Focus • Discipline • Execution</div>
 </header>
 
 <div class="container">
@@ -159,14 +194,16 @@ footer{
   <!-- TIMER -->
   <div class="card">
     <div class="mode">
-      <button onclick="setMode('work')" class="active" id="m1">عمل</button>
-      <button onclick="setMode('short')" id="m2">راحة قصيرة</button>
-      <button onclick="setMode('long')" id="m3">راحة طويلة</button>
+      <button class="active" onclick="setMode('work')" id="w">عمل</button>
+      <button onclick="setMode('short')" id="s">راحة</button>
+      <button onclick="setMode('long')" id="l">عميقة</button>
     </div>
 
     <div class="timer" id="timer">25:00</div>
 
-    <div class="motivation" id="motivation">ابدأ الآن… المستقبل يُبنى هنا</div>
+    <div class="motivation" id="motivation">
+      ركّز الآن… أنت تبني نسخة أقوى منك
+    </div>
 
     <div style="text-align:center;margin-top:10px;">
       <button class="start" onclick="toggle()">ابدأ / إيقاف</button>
@@ -178,8 +215,8 @@ footer{
   <div class="card">
     <div class="row">
       <input id="task" placeholder="المهمة">
-      <input id="min" type="number" placeholder="الدقائق">
-      <input id="rounds" type="number" placeholder="الجولات">
+      <input id="min" type="number" placeholder="دقائق">
+      <input id="rounds" type="number" placeholder="جولات">
       <button class="add" onclick="add()">إضافة</button>
     </div>
 
@@ -187,8 +224,8 @@ footer{
       <thead>
         <tr>
           <th>المهمة</th>
-          <th>دقائق</th>
-          <th>جولات</th>
+          <th>الدقائق</th>
+          <th>الجولات</th>
           <th>حذف</th>
         </tr>
       </thead>
@@ -198,75 +235,67 @@ footer{
 
 </div>
 
-<footer>© 2026 Neon Focus | جميع الحقوق محفوظة</footer>
+<footer>
+© 2026 Pomodoro MR — Developed by Mahmod Rabaa
+</footer>
 
 <script>
-let modes = {
-  work: 25*60,
-  short: 5*60,
-  long: 15*60
-};
 
-let mode = "work";
-let time = modes[mode];
-let running = false;
+let modes = { work:25*60, short:5*60, long:15*60 };
+let mode="work";
+let time=modes[mode];
+let run=false;
 let interval;
-let currentTask = -1;
 
-const phrases = [
-"ركز… أنت تصنع نسخة أقوى منك",
-"كل ثانية = خطوة نحو القمة",
-"لا تشتت… فقط تقدم",
-"انضباطك هو سلاحك الحقيقي",
-"النجاح لا ينتظر أحد"
+const quotes=[
+"التركيز هو القوة الحقيقية",
+"كل دقيقة تصنع فرقاً",
+"النجاح يحتاج انضباط",
+"لا مشتتات… فقط إنجاز",
+"استمر… أنت تقترب"
 ];
 
 function update(){
-  let m = Math.floor(time/60);
-  let s = time%60;
-  document.getElementById("timer").innerText =
+  let m=Math.floor(time/60);
+  let s=time%60;
+  document.getElementById("timer").innerText=
   `${m<10?"0":""}${m}:${s<10?"0":""}${s}`;
 }
 
 function setMode(m){
-  mode = m;
-  time = modes[m];
+  mode=m;
+  time=modes[m];
   update();
 
   document.querySelectorAll(".mode button")
   .forEach(b=>b.classList.remove("active"));
 
-  if(m==="work") document.getElementById("m1").classList.add("active");
-  if(m==="short") document.getElementById("m2").classList.add("active");
-  if(m==="long") document.getElementById("m3").classList.add("active");
+  if(m==="work")document.getElementById("w").classList.add("active");
+  if(m==="short")document.getElementById("s").classList.add("active");
+  if(m==="long")document.getElementById("l").classList.add("active");
 }
 
 function toggle(){
-  running = !running;
+  run=!run;
 
-  if(running){
-    interval = setInterval(()=>{
+  if(run){
+    interval=setInterval(()=>{
       time--;
       update();
 
       if(time<=0){
         clearInterval(interval);
-        running=false;
+        run=false;
         alert("انتهت الجلسة 🎉");
-
-        if(mode==="work"){
-          setMode("short");
-        }
+        setMode("short");
       }
     },1000);
-  } else {
-    clearInterval(interval);
-  }
+  }else clearInterval(interval);
 }
 
 function reset(){
   clearInterval(interval);
-  running=false;
+  run=false;
   time=modes[mode];
   update();
 }
@@ -276,10 +305,9 @@ function add(){
   let m=document.getElementById("min").value||25;
   let r=document.getElementById("rounds").value||1;
 
-  if(!t) return;
+  if(!t)return;
 
   let row=document.createElement("tr");
-
   row.innerHTML=`
     <td>${t}</td>
     <td>${m}</td>
@@ -295,11 +323,12 @@ function add(){
 }
 
 setInterval(()=>{
-  document.getElementById("motivation").innerText =
-  phrases[Math.floor(Math.random()*phrases.length)];
-},7000);
+  document.getElementById("motivation").innerText=
+  quotes[Math.floor(Math.random()*quotes.length)];
+},6000);
 
 update();
+
 </script>
 
 </body>
