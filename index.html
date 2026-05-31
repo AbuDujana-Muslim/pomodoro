@@ -5,13 +5,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Pomodoro MR Ultimate</title>
+<title>Focus Pomodoro</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="style.css">
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -24,13 +22,13 @@
 <header class="hero">
 
 <div>
-<h1>🔥 Pomodoro MR Ultimate</h1>
-<p>نظام إنتاجية ذكي احترافي</p>
+<h1>🧠 Focus Mode</h1>
+<p>التركيز الكامل بدون تشتيت</p>
 </div>
 
 <div class="daily-goal">
-<span>هدف اليوم</span>
-<h2 id="dailyHours">0 ساعة</h2>
+<span>جلسات اليوم</span>
+<h2 id="sessionsCount">0</h2>
 </div>
 
 </header>
@@ -59,7 +57,7 @@
 <!-- ===== TIMER ===== -->
 <section class="card timer-card">
 
-<h2>⏳ المؤقت الذكي</h2>
+<h2>⏳ المؤقت</h2>
 
 <div class="timer-wrapper">
 
@@ -95,79 +93,21 @@
 
 </section>
 
-<!-- ===== ANALYTICS (NEW) ===== -->
-<section class="card analytics">
-
-<h2>📊 التحليل الرياضي للأداء</h2>
-
-<div class="analytics-grid">
-
-<div class="metric">
-<div class="label">إجمالي الجلسات</div>
-<div class="value" id="sessionsCount">0</div>
-<div class="bar"><div id="sessionsBar"></div></div>
-</div>
-
-<div class="metric">
-<div class="label">ساعات التركيز</div>
-<div class="value" id="focusHours">0</div>
-<div class="formula">H = Σ(minutes) ÷ 60</div>
-</div>
-
-<div class="metric">
-<div class="label">معدل الإنجاز</div>
-<div class="value" id="completionRate">0%</div>
-<div class="bar"><div id="completionBar"></div></div>
-</div>
-
-<div class="metric">
-<div class="label">سلسلة الإنتاجية</div>
-<div class="value" id="streakCount">0</div>
-<div class="formula">S = sessions ÷ 3</div>
-</div>
-
-</div>
-
-<div class="radial-summary">
-
-<svg width="160" height="160">
-<circle cx="80" cy="80" r="65" class="circle-bg"></circle>
-<circle cx="80" cy="80" r="65" class="circle-progress"></circle>
-</svg>
-
-<div class="radial-text">
-<p>مستوى التركيز</p>
-<h3 id="focusLevel">0%</h3>
-</div>
-
-</div>
-
-</section>
-
 <!-- ===== MOTIVATION ===== -->
 <section class="card motivation">
 
-<h2>⚡ التحفيز</h2>
+<h2>⚡ تحفيز</h2>
 
 <div id="motivationText">
-ابدأ الآن... لا تنتظر الدافع.
+ابدأ الآن... خطوة واحدة تكفي.
 </div>
-
-</section>
-
-<!-- ===== CHART ===== -->
-<section class="card chart-card">
-
-<h2>📈 الرسم البياني</h2>
-
-<canvas id="focusChart"></canvas>
 
 </section>
 
 <!-- ===== HISTORY ===== -->
 <section class="card history-card">
 
-<h2>📝 سجل الجلسات</h2>
+<h2>📝 السجل</h2>
 
 <div id="historyList">لا توجد جلسات بعد</div>
 
