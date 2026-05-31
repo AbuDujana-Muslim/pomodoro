@@ -17,12 +17,23 @@ const nextBtn = document.getElementById("nextBtn");
 const alarm = document.getElementById("alarmSound");
 const ring = document.querySelector(".ring-progress");
 
+const sessionsCount = document.getElementById("sessionsCount");
+const focusHours = document.getElementById("focusHours");
+const streakCount = document.getElementById("streakCount");
+const completionRate = document.getElementById("completionRate");
+
+const motivationText = document.getElementById("motivationText");
+const historyList = document.getElementById("historyList");
+const dailyHours = document.getElementById("dailyHours");
+
+const focusLevel = document.getElementById("focusLevel");
+
 const RADIUS = 120;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
 ring.style.strokeDasharray = CIRCUMFERENCE;
 
-/* ================= STATE ================= */
+/* ===== STATE ===== */
 
 let tasks = JSON.parse(localStorage.getItem("pomodoroTasks")) || [];
 let history = JSON.parse(localStorage.getItem("pomodoroHistory")) || [];
@@ -41,18 +52,18 @@ let isBreak = false;
 let cycleCounter = 0;
 let finishedAllTasks = false;
 
-/* ================= FOCUS MODE ================= */
+/* ===== MOTIVATION ===== */
 
-let focusMode = false;
+const quotes = [
+"ابدأ الآن، لا يوجد وقت مثالي.",
+"كل جلسة تقربك من هدفك.",
+"دقيقة تركيز أفضل من ساعة تسويف.",
+"استمر... النجاح يتراكم.",
+"أنت تبني مستقبلك الآن.",
+"لا تؤجل ما يمكنك إنجازه الآن."
+];
 
-/* زر جديد (إن لم يكن موجودًا يتم تجاهله) */
-document.addEventListener("keydown",(e)=>{
-if(e.key === "F"){
-toggleFocusMode();
-}
-});
-
-/* ================= SAVE ================= */
+/* ===== SAVE ===== */
 
 function saveData(){
 localStorage.setItem("pomodoroTasks", JSON.stringify(tasks));
@@ -61,53 +72,7 @@ localStorage.setItem("focusMinutes", JSON.stringify(totalFocusMinutes));
 localStorage.setItem("completedSessions", JSON.stringify(completedSessions));
 }
 
-/* ================= SMOOTH TIMER ================= */
-
-let lastTime = null;
-
-function smoothUpdate(timestamp){
-
-if(!lastTime) lastTime = timestamp;
-
-const delta = (timestamp - lastTime) / 1000;
-
-if(timer){
-
-currentSeconds -= delta;
-
-if(currentSeconds <= 0){
-currentSeconds = 0;
-finishSession();
-}
-
-updateTimer();
-}
-
-lastTime = timestamp;
-
-requestAnimationFrame(smoothUpdate);
-}
-
-/* ================= TIMER UI ================= */
-
-function updateTimer(){
-
-const min = Math.floor(currentSeconds/60);
-const sec = Math.floor(currentSeconds%60);
-
-timerElement.textContent =
-`${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
-
-const progress = currentSeconds / initialSeconds;
-
-const offset =
-CIRCUMFERENCE - (progress * CIRCUMFERENCE);
-
-ring.style.strokeDashoffset =
-isNaN(offset) ? CIRCUMFERENCE : offset;
-}
-
-/* ================= TASKS ================= */
+/* ===== TASKS ===== */
 
 addTaskBtn.addEventListener("click",()=>{
 
@@ -159,13 +124,15 @@ div.innerHTML=`
 taskList.appendChild(div);
 
 });
+
 }
 
-/* ================= LOAD TASK ================= */
+/* ===== LOAD TASK ===== */
 
 function loadTask(){
 
 if(tasks.length===0){
+
 currentTask.textContent="لا توجد مهمة";
 
 currentSeconds=0;
@@ -187,46 +154,68 @@ sessionType.textContent = "تركيز 🎯";
 updateTimer();
 }
 
-/* ================= START / PAUSE ================= */
+/* ===== TIMER (SMOOTH) ===== */
+
+function updateTimer(){
+
+const min = Math.floor(currentSeconds / 60);
+const sec = Math.floor(currentSeconds % 60);
+
+timerElement.textContent =
+`${String(min).padStart(2,"0")}:${String(sec).padStart(2,"0")}`;
+
+const progress = currentSeconds / initialSeconds;
+
+const offset =
+CIRCUMFERENCE - (progress * CIRCUMFERENCE);
+
+ring.style.strokeDashoffset =
+isNaN(offset) ? CIRCUMFERENCE : offset;
+}
+
+/* ===== START ===== */
 
 function startTimer(){
 
-if(!timer){
-timer = true;
-requestAnimationFrame(smoothUpdate);
-}
+if(timer) return;
+
+timer = setInterval(()=>{
+
+currentSeconds -= 1;
+
+if(currentSeconds <= 0){
+currentSeconds = 0;
+updateTimer();
+finishSession();
+return;
 }
 
+updateTimer();
+
+},1000);
+
+}
+
+/* ===== PAUSE ===== */
+
 function pauseTimer(){
+clearInterval(timer);
 timer = null;
 }
 
-/* ================= FOCUS MODE ================= */
+/* ===== RESET ===== */
 
-function toggleFocusMode(){
-
-focusMode = !focusMode;
-
-if(focusMode){
-document.documentElement.requestFullscreen?.();
-document.body.classList.add("focus-mode");
-}else{
-document.exitFullscreen?.();
-document.body.classList.remove("focus-mode");
-}
-
-}
-
-/* ================= CONTROLS ================= */
-
-startBtn.onclick = startTimer;
-pauseBtn.onclick = pauseTimer;
-
-resetBtn.onclick = ()=>{
+function resetTimer(){
 pauseTimer();
 currentSeconds = initialSeconds;
 updateTimer();
-};
+}
+
+/* ===== CONTROLS ===== */
+
+startBtn.onclick = startTimer;
+pauseBtn.onclick = pauseTimer;
+resetBtn.onclick = resetTimer;
 
 plusBtn.onclick = ()=>{
 currentSeconds += 60;
@@ -236,7 +225,7 @@ updateTimer();
 
 nextBtn.onclick = finishSession;
 
-/* ================= FINISH LOGIC ================= */
+/* ===== FINISH SESSION ===== */
 
 function finishSession(){
 
@@ -270,20 +259,25 @@ currentSeconds = breakMin * 60;
 initialSeconds = currentSeconds;
 
 sessionType.textContent =
-(cycleCounter===0) ? "استراحة طويلة ☕" : "استراحة قصيرة ☕";
+(breakMin === 15) ? "استراحة طويلة ☕" : "استراحة قصيرة ☕";
 
 saveData();
-startTimer();
+updateStats();
+renderHistory();
+updateChart();
+updateTimer();
 
+startTimer();
 return;
 }
 
-/* نهاية الاستراحة */
+/* ===== BREAK DONE ===== */
 
 isBreak = false;
 
 currentTaskIndex++;
 
+/* انتهت المهام */
 if(currentTaskIndex >= tasks.length){
 
 finishedAllTasks = true;
@@ -291,24 +285,151 @@ finishedAllTasks = true;
 currentSeconds = 0;
 initialSeconds = 0;
 
-currentTask.textContent = "✔ انتهت المهام";
+currentTask.textContent = "✔ انتهت جميع المهام";
 sessionType.textContent = "منجز";
 
 updateTimer();
-
 saveData();
+updateStats();
+renderHistory();
+updateChart();
+
 return;
 }
 
 loadTask();
 saveData();
+updateStats();
+renderHistory();
+updateChart();
 
 startTimer();
+
 }
 
-/* ================= INIT ================= */
+/* ===== HISTORY ===== */
+
+function renderHistory(){
+
+historyList.innerHTML="";
+
+if(history.length===0){
+historyList.innerHTML="لا توجد جلسات بعد";
+return;
+}
+
+history.slice(0,20).forEach(h=>{
+
+const div=document.createElement("div");
+div.className="history-entry";
+
+div.innerHTML = `<b>${h.text}</b><br>${h.time}`;
+
+historyList.appendChild(div);
+
+});
+
+}
+
+/* ===== ANALYTICS ===== */
+
+function updateStats(){
+
+sessionsCount.textContent = completedSessions;
+
+focusHours.textContent =
+(totalFocusMinutes / 60).toFixed(1);
+
+streakCount.textContent =
+Math.floor(completedSessions / 3);
+
+const rate = tasks.length
+? (completedSessions / tasks.length) * 100
+: 0;
+
+completionRate.textContent =
+Math.min(100, Math.round(rate)) + "%";
+
+/* Bars */
+document.getElementById("sessionsBar").style.width =
+Math.min(100, completedSessions * 5) + "%";
+
+document.getElementById("completionBar").style.width =
+rate + "%";
+
+/* Radial */
+const level =
+Math.min(100,
+Math.round(rate + (totalFocusMinutes / 10))
+);
+
+focusLevel.textContent = level + "%";
+
+const circle =
+document.querySelector(".circle-progress");
+
+const radius = 65;
+const circumference = 2 * Math.PI * radius;
+
+const offset =
+circumference - (level / 100) * circumference;
+
+circle.style.strokeDasharray = circumference;
+circle.style.strokeDashoffset = offset;
+
+}
+
+/* ===== CHART ===== */
+
+const ctx = document.getElementById("focusChart");
+
+const chart = new Chart(ctx,{
+type:"bar",
+data:{
+labels:["الإثنين","الثلاثاء","الأربعاء","الخميس","الجمعة","السبت","الأحد"],
+datasets:[{
+label:"ساعات التركيز",
+data:[0,0,0,0,0,0,0]
+}]
+},
+options:{
+responsive:true,
+plugins:{
+legend:{labels:{color:"white"}}
+},
+scales:{
+x:{ticks:{color:"white"}},
+y:{ticks:{color:"white"}}
+}
+}
+});
+
+function updateChart(){
+
+let arr=[0,0,0,0,0,0,0];
+let d = new Date().getDay();
+
+arr[d] = (totalFocusMinutes / 60).toFixed(1);
+
+chart.data.datasets[0].data = arr;
+chart.update();
+
+}
+
+/* ===== MOTIVATION ===== */
+
+setInterval(()=>{
+
+motivationText.textContent =
+quotes[Math.floor(Math.random()*quotes.length)];
+
+},8000);
+
+/* ===== INIT ===== */
 
 renderTasks();
+renderHistory();
+updateStats();
 loadTask();
+updateChart();
 updateTimer();
-requestAnimationFrame(smoothUpdate);
