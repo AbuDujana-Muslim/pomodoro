@@ -1,202 +1,266 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pomodoro MR Lite</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Pomodoro Focus Pro</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 
 <style>
+:root{
+  --bg:#05070b;
+  --card:rgba(20,25,40,.65);
+  --blue:#00e5ff;
+  --purple:#9b5cff;
+  --gold:#ffcc00;
+  --red:#ff3b5c;
+  --text:#eaf2ff;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;font-family:Tajawal}
+
 body{
-    margin:0;
-    font-family:tajawal;
-    background:linear-gradient(135deg,#05070b,#0f1123);
-    color:white;
-    display:flex;
-    justify-content:center;
-    padding:20px;
+  background: radial-gradient(circle at top,#0d1020,#05070b);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:20px;
+}
+
+header{
+  text-align:center;
+  margin-bottom:15px;
+}
+header h1{
+  font-size:3rem;
+  font-weight:900;
+  background:linear-gradient(45deg,var(--blue),var(--purple),var(--gold));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
 }
 
 .container{
-    width:100%;
-    max-width:900px;
-    display:flex;
-    flex-direction:column;
-    gap:20px;
+  width:100%;
+  max-width:900px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
 }
 
-.panel{
-    background:rgba(15,22,36,.75);
-    padding:20px;
-    border-radius:15px;
-    backdrop-filter:blur(10px);
-    border:1px solid rgba(0,243,255,.15);
-}
-
-h1,h2{
-    text-align:center;
-    color:#ffb703;
+.card{
+  background:var(--card);
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,.08);
+  border-radius:18px;
+  padding:20px;
+  box-shadow:0 0 25px rgba(0,0,0,.4);
 }
 
 .timer{
-    font-size:60px;
-    text-align:center;
-    font-weight:bold;
+  text-align:center;
+  font-size:4rem;
+  font-weight:900;
+  letter-spacing:2px;
+  color:var(--blue);
+  text-shadow:0 0 20px rgba(0,229,255,.4);
 }
 
-.controls{
-    display:flex;
-    justify-content:center;
-    gap:10px;
-    flex-wrap:wrap;
+.buttons{
+  display:flex;
+  gap:10px;
+  justify-content:center;
+  flex-wrap:wrap;
 }
 
 button{
-    padding:10px 15px;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
+  padding:10px 18px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:bold;
+  transition:.2s;
 }
 
-.start{background:#00f3ff;color:#000;}
-.reset{background:#ff1744;color:#fff;}
+.start{background:var(--blue)}
+.reset{background:var(--red);color:white}
+.add{background:var(--gold)}
+
+button:hover{transform:scale(1.05)}
 
 input{
-    width:100%;
-    padding:10px;
-    border-radius:8px;
-    border:none;
-    margin-bottom:10px;
-    background:#111;
-    color:white;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.1);
+  background:#0b0f1c;
+  color:white;
+  outline:none;
 }
 
-.task{
-    display:flex;
-    justify-content:space-between;
-    padding:10px;
-    border-bottom:1px solid #222;
+.row{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
 }
+
+.row input{flex:1}
+
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:10px;
+}
+
+th,td{
+  padding:10px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  text-align:center;
+}
+
+th{color:var(--gold)}
 
 .motivation{
-    text-align:center;
-    color:#ffb703;
-    font-weight:bold;
-    min-height:30px;
+  text-align:center;
+  font-size:1.1rem;
+  color:var(--gold);
+  min-height:30px;
+  transition:.4s;
+}
+
+footer{
+  margin-top:20px;
+  font-size:.9rem;
+  color:#aaa;
+  text-align:center;
 }
 </style>
 </head>
 
 <body>
 
+<header>
+  <h1>⚡ Pomodoro Focus Pro</h1>
+</header>
+
 <div class="container">
 
-<h1>Pomodoro MR Lite ⏱️</h1>
-
-<div class="panel">
-    <h2 id="taskTitle">لا توجد مهمة</h2>
+  <!-- TIMER -->
+  <div class="card">
     <div class="timer" id="timer">25:00</div>
 
-    <div class="motivation" id="motivation">ابدأ الآن، مستقبلك يُبنى هنا 🔥</div>
-
-    <div class="controls">
-        <button class="start" onclick="toggleTimer()">ابدأ / إيقاف</button>
-        <button class="reset" onclick="resetTimer()">إعادة</button>
+    <div class="motivation" id="motivation">
+      ركّز الآن… كل ثانية تصنع فرقاً
     </div>
+
+    <div class="buttons">
+      <button class="start" onclick="startTimer()">ابدأ / إيقاف</button>
+      <button class="reset" onclick="resetTimer()">إعادة</button>
+    </div>
+  </div>
+
+  <!-- ADD TASK -->
+  <div class="card">
+    <div class="row">
+      <input id="task" placeholder="اسم المهمة">
+      <input id="minutes" type="number" placeholder="الدقائق">
+      <input id="rounds" type="number" placeholder="الجولات">
+      <button class="add" onclick="addTask()">إضافة</button>
+    </div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>المهمة</th>
+          <th>الدقائق</th>
+          <th>الجولات</th>
+          <th>حذف</th>
+        </tr>
+      </thead>
+      <tbody id="list"></tbody>
+    </table>
+  </div>
+
 </div>
 
-<div class="panel">
-    <h2>إضافة مهمة</h2>
-    <input id="taskInput" placeholder="اسم المهمة">
-    <input id="minutesInput" type="number" placeholder="عدد الدقائق (افتراضي 25)">
-    <button class="start" onclick="addTask()">إضافة</button>
-
-    <div id="tasks"></div>
-</div>
-
-</div>
+<footer>
+  © 2026 Focus System | جميع الحقوق محفوظة
+</footer>
 
 <script>
-let timer;
+let time = 25 * 60;
 let running = false;
-let timeLeft = 1500;
-let currentTask = null;
+let interval;
 
-const quotes = [
-"ركز الآن، النجاح يبدأ من هنا 🔥",
-"كل دقيقة تركيز تصنع فرقًا",
-"لا تؤجل حلمك",
-"أنت أقوى من المشتتات",
-"استمر، أنت على الطريق الصحيح"
+const phrases = [
+"ركز… أنت تبني مستقبلك الآن",
+"كل دقيقة تركيز = خطوة للأمام",
+"لا مشتتات… فقط تقدم",
+"استمر، النجاح قريب",
+"انضباطك هو قوتك"
 ];
 
-function updateDisplay(){
-    let m = Math.floor(timeLeft/60);
-    let s = timeLeft%60;
-    document.getElementById("timer").innerText =
-    `${m<10?"0":""}${m}:${s<10?"0":""}${s}`;
+function update(){
+  let m = Math.floor(time/60);
+  let s = time%60;
+  document.getElementById("timer").innerText =
+  `${m<10?"0":""}${m}:${s<10?"0":""}${s}`;
 }
 
-function toggleTimer(){
-    if(running){
-        clearInterval(timer);
-        running = false;
-        return;
-    }
+function startTimer(){
+  running = !running;
 
-    running = true;
+  if(running){
+    interval = setInterval(()=>{
+      time--;
+      update();
 
-    timer = setInterval(()=>{
-        timeLeft--;
-        updateDisplay();
-
-        if(timeLeft<=0){
-            clearInterval(timer);
-            running=false;
-            alert("انتهت الجلسة 🎉");
-        }
+      if(time<=0){
+        clearInterval(interval);
+        running=false;
+        alert("انتهت الجلسة 🎉");
+      }
     },1000);
+  } else {
+    clearInterval(interval);
+  }
 }
 
 function resetTimer(){
-    clearInterval(timer);
-    running=false;
-    timeLeft=1500;
-    updateDisplay();
+  clearInterval(interval);
+  running=false;
+  time=25*60;
+  update();
 }
 
 function addTask(){
-    let name = document.getElementById("taskInput").value;
-    let mins = parseInt(document.getElementById("minutesInput").value)||25;
+  let t = document.getElementById("task").value;
+  let m = document.getElementById("minutes").value || 25;
+  let r = document.getElementById("rounds").value || 1;
 
-    if(!name) return;
+  if(!t) return;
 
-    let taskDiv = document.createElement("div");
-    taskDiv.className="task";
-    taskDiv.innerHTML=`
-        <span>${name} (${mins}د)</span>
-        <button onclick="selectTask(${mins}, '${name}', this)">اختيار</button>
-    `;
+  let row = `<tr>
+    <td>${t}</td>
+    <td>${m}</td>
+    <td>${r}</td>
+    <td><button onclick="this.parentElement.parentElement.remove()">❌</button></td>
+  </tr>`;
 
-    document.getElementById("tasks").appendChild(taskDiv);
+  document.getElementById("list").innerHTML += row;
 
-    document.getElementById("taskInput").value="";
-    document.getElementById("minutesInput").value="";
+  document.getElementById("task").value="";
+  document.getElementById("minutes").value="";
+  document.getElementById("rounds").value="";
 }
 
-function selectTask(mins, name, btn){
-    timeLeft = mins*60;
-    currentTask = name;
-    document.getElementById("taskTitle").innerText = name;
-    updateDisplay();
-}
+setInterval(()=>{
+  let p = phrases[Math.floor(Math.random()*phrases.length)];
+  document.getElementById("motivation").innerText = p;
+},8000);
 
-function setMotivation(){
-    let q = quotes[Math.floor(Math.random()*quotes.length)];
-    document.getElementById("motivation").innerText = q;
-}
-
-setInterval(setMotivation, 8000);
-updateDisplay();
+update();
 </script>
 
 </body>
