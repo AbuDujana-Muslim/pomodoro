@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Pomodoro Focus Pro</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Neon Focus System</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
 
 <style>
 :root{
   --bg:#05070b;
-  --card:rgba(20,25,40,.65);
+  --card:rgba(18,22,40,.6);
   --blue:#00e5ff;
-  --purple:#9b5cff;
+  --purple:#9d4edd;
   --gold:#ffcc00;
-  --red:#ff3b5c;
+  --red:#ff3355;
+  --green:#39ff88;
   --text:#eaf2ff;
 }
 
@@ -30,110 +31,119 @@ body{
   padding:20px;
 }
 
-header{
-  text-align:center;
-  margin-bottom:15px;
-}
 header h1{
   font-size:3rem;
   font-weight:900;
   background:linear-gradient(45deg,var(--blue),var(--purple),var(--gold));
   -webkit-background-clip:text;
   -webkit-text-fill-color:transparent;
+  text-align:center;
+  margin-bottom:10px;
 }
 
 .container{
   width:100%;
-  max-width:900px;
+  max-width:950px;
   display:flex;
   flex-direction:column;
-  gap:18px;
+  gap:15px;
 }
 
+/* CARDS */
 .card{
   background:var(--card);
-  backdrop-filter:blur(12px);
   border:1px solid rgba(255,255,255,.08);
   border-radius:18px;
-  padding:20px;
-  box-shadow:0 0 25px rgba(0,0,0,.4);
+  padding:18px;
+  backdrop-filter:blur(12px);
 }
 
+/* TIMER */
 .timer{
-  text-align:center;
-  font-size:4rem;
+  font-size:4.5rem;
   font-weight:900;
-  letter-spacing:2px;
+  text-align:center;
   color:var(--blue);
-  text-shadow:0 0 20px rgba(0,229,255,.4);
+  text-shadow:0 0 25px rgba(0,229,255,.4);
 }
 
-.buttons{
+.mode{
   display:flex;
-  gap:10px;
   justify-content:center;
-  flex-wrap:wrap;
+  gap:10px;
+  margin:10px 0;
 }
 
-button{
-  padding:10px 18px;
+.mode button{
+  padding:8px 14px;
   border:none;
   border-radius:10px;
   cursor:pointer;
-  font-weight:bold;
-  transition:.2s;
-}
-
-.start{background:var(--blue)}
-.reset{background:var(--red);color:white}
-.add{background:var(--gold)}
-
-button:hover{transform:scale(1.05)}
-
-input{
-  padding:10px;
-  border-radius:10px;
-  border:1px solid rgba(255,255,255,.1);
-  background:#0b0f1c;
+  background:#111a30;
   color:white;
-  outline:none;
 }
 
+.mode .active{background:var(--blue);color:#000}
+
+/* MOTIVATION */
+.motivation{
+  text-align:center;
+  color:var(--gold);
+  min-height:25px;
+  transition:.3s;
+}
+
+/* TASKS */
 .row{
   display:flex;
   gap:10px;
   flex-wrap:wrap;
 }
 
-.row input{flex:1}
+input{
+  flex:1;
+  padding:10px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,.1);
+  background:#0b0f1c;
+  color:white;
+}
+
+button{
+  padding:10px 14px;
+  border:none;
+  border-radius:10px;
+  cursor:pointer;
+  font-weight:bold;
+}
+
+.add{background:var(--green)}
+.start{background:var(--blue)}
+.reset{background:var(--red);color:white}
 
 table{
   width:100%;
-  border-collapse:collapse;
   margin-top:10px;
+  border-collapse:collapse;
 }
 
 th,td{
   padding:10px;
-  border-bottom:1px solid rgba(255,255,255,.08);
   text-align:center;
+  border-bottom:1px solid rgba(255,255,255,.08);
 }
 
 th{color:var(--gold)}
 
-.motivation{
-  text-align:center;
-  font-size:1.1rem;
-  color:var(--gold);
-  min-height:30px;
-  transition:.4s;
+.activeTask{
+  background:rgba(0,229,255,.08);
 }
 
 footer{
-  margin-top:20px;
-  font-size:.9rem;
-  color:#aaa;
   text-align:center;
+  margin-top:15px;
+  color:#aaa;
+  font-size:.9rem;
 }
 </style>
 </head>
@@ -141,40 +151,44 @@ footer{
 <body>
 
 <header>
-  <h1>⚡ Pomodoro Focus Pro</h1>
+  <h1>⚡ Neon Focus System</h1>
 </header>
 
 <div class="container">
 
   <!-- TIMER -->
   <div class="card">
-    <div class="timer" id="timer">25:00</div>
-
-    <div class="motivation" id="motivation">
-      ركّز الآن… كل ثانية تصنع فرقاً
+    <div class="mode">
+      <button onclick="setMode('work')" class="active" id="m1">عمل</button>
+      <button onclick="setMode('short')" id="m2">راحة قصيرة</button>
+      <button onclick="setMode('long')" id="m3">راحة طويلة</button>
     </div>
 
-    <div class="buttons">
-      <button class="start" onclick="startTimer()">ابدأ / إيقاف</button>
-      <button class="reset" onclick="resetTimer()">إعادة</button>
+    <div class="timer" id="timer">25:00</div>
+
+    <div class="motivation" id="motivation">ابدأ الآن… المستقبل يُبنى هنا</div>
+
+    <div style="text-align:center;margin-top:10px;">
+      <button class="start" onclick="toggle()">ابدأ / إيقاف</button>
+      <button class="reset" onclick="reset()">إعادة</button>
     </div>
   </div>
 
-  <!-- ADD TASK -->
+  <!-- TASKS -->
   <div class="card">
     <div class="row">
-      <input id="task" placeholder="اسم المهمة">
-      <input id="minutes" type="number" placeholder="الدقائق">
+      <input id="task" placeholder="المهمة">
+      <input id="min" type="number" placeholder="الدقائق">
       <input id="rounds" type="number" placeholder="الجولات">
-      <button class="add" onclick="addTask()">إضافة</button>
+      <button class="add" onclick="add()">إضافة</button>
     </div>
 
     <table>
       <thead>
         <tr>
           <th>المهمة</th>
-          <th>الدقائق</th>
-          <th>الجولات</th>
+          <th>دقائق</th>
+          <th>جولات</th>
           <th>حذف</th>
         </tr>
       </thead>
@@ -184,21 +198,27 @@ footer{
 
 </div>
 
-<footer>
-  © 2026 Focus System | جميع الحقوق محفوظة
-</footer>
+<footer>© 2026 Neon Focus | جميع الحقوق محفوظة</footer>
 
 <script>
-let time = 25 * 60;
+let modes = {
+  work: 25*60,
+  short: 5*60,
+  long: 15*60
+};
+
+let mode = "work";
+let time = modes[mode];
 let running = false;
 let interval;
+let currentTask = -1;
 
 const phrases = [
-"ركز… أنت تبني مستقبلك الآن",
-"كل دقيقة تركيز = خطوة للأمام",
-"لا مشتتات… فقط تقدم",
-"استمر، النجاح قريب",
-"انضباطك هو قوتك"
+"ركز… أنت تصنع نسخة أقوى منك",
+"كل ثانية = خطوة نحو القمة",
+"لا تشتت… فقط تقدم",
+"انضباطك هو سلاحك الحقيقي",
+"النجاح لا ينتظر أحد"
 ];
 
 function update(){
@@ -208,7 +228,20 @@ function update(){
   `${m<10?"0":""}${m}:${s<10?"0":""}${s}`;
 }
 
-function startTimer(){
+function setMode(m){
+  mode = m;
+  time = modes[m];
+  update();
+
+  document.querySelectorAll(".mode button")
+  .forEach(b=>b.classList.remove("active"));
+
+  if(m==="work") document.getElementById("m1").classList.add("active");
+  if(m==="short") document.getElementById("m2").classList.add("active");
+  if(m==="long") document.getElementById("m3").classList.add("active");
+}
+
+function toggle(){
   running = !running;
 
   if(running){
@@ -220,6 +253,10 @@ function startTimer(){
         clearInterval(interval);
         running=false;
         alert("انتهت الجلسة 🎉");
+
+        if(mode==="work"){
+          setMode("short");
+        }
       }
     },1000);
   } else {
@@ -227,38 +264,40 @@ function startTimer(){
   }
 }
 
-function resetTimer(){
+function reset(){
   clearInterval(interval);
   running=false;
-  time=25*60;
+  time=modes[mode];
   update();
 }
 
-function addTask(){
-  let t = document.getElementById("task").value;
-  let m = document.getElementById("minutes").value || 25;
-  let r = document.getElementById("rounds").value || 1;
+function add(){
+  let t=document.getElementById("task").value;
+  let m=document.getElementById("min").value||25;
+  let r=document.getElementById("rounds").value||1;
 
   if(!t) return;
 
-  let row = `<tr>
+  let row=document.createElement("tr");
+
+  row.innerHTML=`
     <td>${t}</td>
     <td>${m}</td>
     <td>${r}</td>
-    <td><button onclick="this.parentElement.parentElement.remove()">❌</button></td>
-  </tr>`;
+    <td><button onclick="this.closest('tr').remove()">❌</button></td>
+  `;
 
-  document.getElementById("list").innerHTML += row;
+  document.getElementById("list").appendChild(row);
 
   document.getElementById("task").value="";
-  document.getElementById("minutes").value="";
+  document.getElementById("min").value="";
   document.getElementById("rounds").value="";
 }
 
 setInterval(()=>{
-  let p = phrases[Math.floor(Math.random()*phrases.length)];
-  document.getElementById("motivation").innerText = p;
-},8000);
+  document.getElementById("motivation").innerText =
+  phrases[Math.floor(Math.random()*phrases.length)];
+},7000);
 
 update();
 </script>
