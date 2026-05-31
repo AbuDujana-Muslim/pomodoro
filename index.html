@@ -9,11 +9,9 @@
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap');
 
         :root {
-            /* متغيرات الثيم الأساسية */
             --bg-main: #0c0d12;
             --bg-panel: #161821;
-            --theme-color: #5ddc67; /* النيون الافتراضي */
-            
+            --theme-color: #5ddc67; 
             --text-light: #f0f0f0;
             --text-muted: #888c99;
             --border-color: #2a2d3d;
@@ -50,13 +48,11 @@
         /* --- Main Content --- */
         .main-content { flex: 1; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1.2fr 0.8fr; gap: 15px; }
 
-        /* Plant Area */
         .plant-view-card { grid-column: 1; grid-row: 1; position: relative; background: radial-gradient(circle at center, #1f2425 0%, var(--bg-panel) 70%); display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .speech-bubble { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; font-size: 13px; text-align: center; margin-bottom: 20px; backdrop-filter: blur(10px); transition: 0.3s; }
         .plant-emoji-container { font-size: 110px; filter: drop-shadow(0 0 25px color-mix(in srgb, var(--theme-color) 40%, transparent)); animation: breathe 3s infinite ease-in-out; transition: transform 0.5s ease, opacity 0.3s ease; user-select: none; }
         @keyframes breathe { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-10px) scale(1.05); } }
 
-        /* Timer Area */
         .timer-card { grid-column: 2; grid-row: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .timer-circle {
             position: relative; width: 220px; height: 220px; display: flex; align-items: center; justify-content: center;
@@ -76,7 +72,6 @@
         .btn-icon { background: var(--border-color); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: 0.2s; }
         .btn-icon:hover { background: #3a3d52; }
 
-        /* Task Input Area */
         .level-card { grid-column: 1; grid-row: 2; display: flex; flex-direction: column; justify-content: space-between; }
         .level-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 12px; }
         .level-bar-bg { width: 100%; height: 6px; background: var(--border-color); border-radius: 5px; overflow: hidden; margin-bottom: 15px; }
@@ -90,7 +85,6 @@
         .btn-add-task { background: transparent; border: 1px dashed var(--theme-color); color: var(--theme-color); padding: 8px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 12px; }
         .btn-add-task:hover { background: var(--theme-color); color: black; }
 
-        /* Tasks List Area */
         .tasks-card { grid-column: 2; grid-row: 2; overflow-y: auto; }
         .tasks-header { font-size: 14px; font-weight: bold; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
         .task-list { list-style: none; }
@@ -98,12 +92,10 @@
         .task-item.active { border-color: var(--theme-color); background: color-mix(in srgb, var(--theme-color) 5%, transparent); box-shadow: 0 0 10px color-mix(in srgb, var(--theme-color) 20%, transparent) inset;}
         .task-item.completed { opacity: 0.6; text-decoration: line-through; }
         
-        /* Check Circle */
         .check-circle { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 12px; color: transparent; cursor: pointer; transition: 0.3s; }
         .check-circle:hover { border-color: var(--theme-color); }
         .task-item.completed .check-circle { background: var(--theme-color); border-color: var(--theme-color); color: #000; box-shadow: 0 0 8px var(--theme-color); }
 
-        /* --- Right Sidebar (Expanded Panels) --- */
         .right-sidebar { width: 280px; gap: 15px; padding: 0; background: transparent; border: none; box-shadow: none; display: flex; flex-direction: column; }
         .mini-panel { background: var(--bg-panel); border-radius: 15px; border: 1px solid var(--border-color); padding: 15px; flex: 1; display: flex; flex-direction: column; justify-content: center; transition: 0.5s; }
         
@@ -132,7 +124,13 @@
                     <li class="active"><i class="fa-regular fa-clock"></i> الوقت</li>
                 </ul>
             </div>
-            </aside>
+            
+            <!-- قسم الحقوق -->
+            <div style="font-size: 11px; color: var(--text-muted); text-align: center; border-top: 1px solid var(--border-color); padding-top: 15px;">
+                <p>جميع الحقوق محفوظة © 2026</p>
+                <p>تطوير: Mahmod Rabaa 👨‍💻</p>
+            </div>
+        </aside>
 
         <main class="main-content">
             
@@ -221,11 +219,9 @@
                 </ul>
             </div>
         </aside>
-
     </div>
 
     <script>
-        // --- إعدادات النظام وتخصيص المظهر ---
         function setThemeColor(color, el) {
             document.documentElement.style.setProperty('--theme-color', color);
             document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
@@ -239,7 +235,6 @@
             el.classList.add('active');
         }
 
-        // --- مولد الصوت النقي (جرس هادئ) ---
         let audioCtx;
         function playSoftBell() {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -261,7 +256,6 @@
             osc.stop(audioCtx.currentTime + 3);
         }
 
-        // --- متغيرات المهام والمؤقت ---
         let tasks = [];
         let currentTaskIndex = -1;
         let currentRound = 1;
