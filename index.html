@@ -60,7 +60,7 @@
         .sidebar.collapsed .nav-menu li.active { border-bottom: 4px solid var(--theme-color); }
 
         .copyright-section { font-size: 11px; color: var(--text-muted); text-align: center; border-top: 1px solid var(--border-color); padding-top: 15px; transition: opacity 0.3s; white-space: nowrap; }
-        .sidebar.collapsed .copyright-section { display: none; }
+        .sidebar.collapsed { display: none !important; } .sidebar.collapsed .copyright-section { display: none; }
 
         /* --- Main Content & Views --- */
         .views-container { flex: 1; position: relative; height: 100%; }
@@ -72,6 +72,23 @@
         /* View 1: Timer (Grid) */
         #view-timer.active { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1.2fr 0.8fr; gap: 15px; }
 
+        /* الغلاف الموحد للنبتة والمؤقت */
+        .unified-top-wrapper {
+            grid-column: 1 / 3;
+            grid-row: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            position: relative;
+        }
+
+        /* زر ملء الشاشة */
+        .btn-fullscreen {
+            position: absolute; top: 20px; right: 20px; background: transparent; border: none;
+            color: var(--text-muted); font-size: 18px; cursor: pointer; transition: 0.2s; z-index: 10;
+        }
+        .btn-fullscreen:hover { color: var(--theme-color); transform: scale(1.2); }
+
         /* View 2: History (Flex) */
         #view-history { flex-direction: column; gap: 15px; }
         
@@ -79,12 +96,13 @@
         #view-settings { flex-direction: column; gap: 15px; align-items: center; justify-content: center; }
 
         /* --- Internal Components --- */
-        .plant-view-card { grid-column: 1; grid-row: 1; position: relative; background: radial-gradient(circle at center, #1f2425 0%, var(--bg-panel) 70%); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .plant-view-card { position: relative; background: radial-gradient(circle at center, #1f2425 0%, var(--bg-panel) 70%); display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .speech-bubble { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; font-size: 13px; text-align: center; margin-bottom: 20px; backdrop-filter: blur(10px); transition: 0.3s; }
         .plant-emoji-container { font-size: 110px; filter: drop-shadow(0 0 25px color-mix(in srgb, var(--theme-color) 40%, transparent)); animation: breathe 3s infinite ease-in-out; transition: transform 0.5s ease, opacity 0.3s ease; user-select: none; }
         @keyframes breathe { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-10px) scale(1.05); } }
 
-        .timer-card { grid-column: 2; grid-row: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .timer-card { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        
         .timer-circle {
             position: relative; width: 220px; height: 220px; display: flex; align-items: center; justify-content: center;
             background: conic-gradient(var(--theme-color) 0%, #333 50%, var(--border-color) 50%);
@@ -96,11 +114,11 @@
         .time-text { font-size: 48px; font-weight: 900; letter-spacing: 2px; }
         .session-badge { background: color-mix(in srgb, var(--theme-color) 15%, transparent); color: var(--theme-color); padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; margin-top: 5px; display: inline-block; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: 0.3s; }
         
-        .timer-controls { display: flex; gap: 15px; align-items: center; }
+        .timer-controls { display: flex; gap: 12px; align-items: center; }
         .btn-play { background: var(--theme-color); color: #000; border: none; padding: 12px 30px; border-radius: 25px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 0 15px color-mix(in srgb, var(--theme-color) 50%, transparent); transition: 0.2s; }
         .btn-play:hover { transform: translateY(-2px); box-shadow: 0 0 25px var(--theme-color); }
         .btn-play:disabled { background: var(--border-color); color: #888; box-shadow: none; cursor: not-allowed; }
-        .btn-icon { background: var(--border-color); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: 0.2s; }
+        .btn-icon { background: var(--border-color); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
         .btn-icon:hover { background: #3a3d52; }
 
         .level-card { grid-column: 1; grid-row: 2; display: flex; flex-direction: column; justify-content: space-between; }
@@ -141,6 +159,43 @@
         .color-dot.active { border-color: white; transform: scale(1.2); }
         .bg-box { width: 80px; height: 50px; border-radius: 8px; cursor: pointer; border: 3px solid transparent; transition: 0.2s; }
         .bg-box.active { border-color: var(--theme-color); }
+
+        /* --- قوانين وضع ملء الشاشة المطور كخانة واحدة دون نيون --- */
+        .app-container.fullscreen-timer .sidebar { display: none !important; }
+        .app-container.fullscreen-timer .level-card, 
+        .app-container.fullscreen-timer .tasks-card { display: none !important; }
+
+        .app-container.fullscreen-timer #view-timer.active {
+            display: flex; 
+            width: 100%; height: 100%;
+        }
+
+        .app-container.fullscreen-timer .unified-top-wrapper {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            background-color: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-radius: 20px;
+            padding: 40px;
+        }
+
+        .app-container.fullscreen-timer .plant-view-card,
+        .app-container.fullscreen-timer .timer-card {
+            background: transparent !important; 
+            border: none !important; 
+            box-shadow: none !important;
+            width: 50%; height: auto;
+        }
+
+        .app-container.fullscreen-timer .btn-fullscreen { top: 10px; right: 10px; font-size: 24px; }
+        .app-container.fullscreen-timer .plant-view-card .plant-emoji-container { font-size: 180px; }
+        .app-container.fullscreen-timer .timer-circle { width: 350px; height: 350px; }
+        .app-container.fullscreen-timer .time-text { font-size: 70px; }
         
     </style>
 </head>
@@ -176,31 +231,42 @@
         <main class="views-container">
             
             <div id="view-timer" class="view-section active">
-                <div class="panel plant-view-card">
-                    <div class="speech-bubble" id="plantSpeech">أهلاً بك يا بطل! لنبدأ جلسة تركيز قوية 🌿</div>
-                    <div id="mainPlantDisplay" class="plant-emoji-container">🌱</div>
-                </div>
-
-                <div class="panel timer-card">
-                    <div class="timer-circle" id="timerRing">
-                        <div class="timer-display">
-                            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 5px;" id="timerLabel">وقت التركيز</div>
-                            <div class="time-text" id="timerDisplay">00:00</div>
-                            <div class="session-badge" id="sessionCounter">في انتظار المهام... 📭</div>
-                        </div>
-                    </div>
+                
+                <!-- الغلاف الموحد الذي يجمع النبتة والمؤقت -->
+                <div class="unified-top-wrapper">
                     
-                    <div class="timer-controls">
-                        <button class="btn-icon" onclick="skipRound()" title="تخطي"><i class="fa-solid fa-forward-step"></i></button>
-                        <button class="btn-play" id="startBtn" onclick="toggleTimer()" disabled>ابدأ ▶</button>
-                        <button class="btn-icon" onclick="resetTimer()" title="إعادة ضبط"><i class="fa-solid fa-rotate-right"></i></button>
+                    <div class="panel plant-view-card">
+                        <div class="speech-bubble" id="plantSpeech">أهلاً بك يا بطل! لنبدأ جلسة تركيز قوية 🌿</div>
+                        <div id="mainPlantDisplay" class="plant-emoji-container">🌱</div>
+                    </div>
+
+                    <div class="panel timer-card">
+                        <!-- زر ملء الشاشة داخل زاوية خانة المؤقت -->
+                        <button class="btn-fullscreen" onclick="toggleFullscreenTimer()" title="ملء الشاشة">
+                            <i class="fa-solid fa-expand"></i>
+                        </button>
+
+                        <div class="timer-circle" id="timerRing">
+                            <div class="timer-display">
+                                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 5px;" id="timerLabel">وقت التركيز</div>
+                                <div class="time-text" id="timerDisplay">00:00</div>
+                                <div class="session-badge" id="sessionCounter">في انتظار المهام... 📭</div>
+                            </div>
+                        </div>
+                        
+                        <div class="timer-controls">
+                            <button class="btn-icon" onclick="skipRound()" title="تخطي"><i class="fa-solid fa-forward-step"></i></button>
+                            <button class="btn-play" id="startBtn" onclick="toggleTimer()" disabled>ابدأ ▶</button>
+                            <button class="btn-icon" onclick="addMinute()" title="زيادة دقيقة ⏱️"><i class="fa-solid fa-plus"></i></button>
+                            <button class="btn-icon" onclick="resetTimer()" title="إعادة ضبط"><i class="fa-solid fa-rotate-right"></i></button>
+                        </div>
                     </div>
                 </div>
 
                 <div class="panel level-card">
                     <div>
                         <div class="level-header">
-                            <span style="font-weight: bold; font-size: 16px;" id="plantLevelDisplay">Lv. 1</span>
+                            <span style="font-weight: bold; font-size: 16px;" id="userLevelDisplay">مستوى المستخدم Lv. 1</span>
                             <span>الخبرة <span style="color: var(--text-muted);" id="xpDisplay">0 / 1000 XP</span></span>
                         </div>
                         <div class="level-bar-bg"><div class="level-bar-fill" id="xpBar"></div></div>
@@ -243,9 +309,9 @@
                         <div class="val" style="color: var(--theme-color);" id="statFocus">ممتاز</div>
                     </div>
                     <div class="stat-box">
-                        <i class="fa-solid fa-leaf"></i>
-                        <div style="color: var(--text-muted); font-size: 12px;">مستوى النبتة</div>
-                        <div class="val" id="statPlant">Lv. 1</div>
+                        <i class="fa-solid fa-user-astronaut"></i>
+                        <div style="color: var(--text-muted); font-size: 12px;">مستوى المستخدم</div>
+                        <div class="val" id="statUser">Lv. 1</div>
                     </div>
                 </div>
 
@@ -254,8 +320,7 @@
                         <span>المهام المكتملة</span>
                         <span id="completedTasksCount" style="font-size: 11px; color: var(--theme-color);">0 مهام</span>
                     </div>
-                    <ul class="task-list" id="completedTaskList">
-                        </ul>
+                    <ul class="task-list" id="completedTaskList"></ul>
                 </div>
             </div>
 
@@ -314,6 +379,20 @@
             saveData(); 
         }
 
+        // --- نظام التحكم بملء الشاشة المطور ---
+        function toggleFullscreenTimer() {
+            const container = document.querySelector('.app-container');
+            const icon = document.querySelector('.btn-fullscreen i');
+            
+            container.classList.toggle('fullscreen-timer');
+            
+            if(container.classList.contains('fullscreen-timer')) {
+                icon.className = 'fa-solid fa-compress';
+            } else {
+                icon.className = 'fa-solid fa-expand';
+            }
+        }
+
         // --- نظام العداد والمهام المحدث ---
         let audioCtx;
         function playSoftBell() {
@@ -357,6 +436,38 @@
             let m = Math.floor(timeLeft / 60);
             let s = timeLeft % 60;
             display.textContent = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
+            updatePlantEvolution(); 
+        }
+
+        function addMinute() {
+            if (currentTaskIndex !== -1 && timeLeft >= 0) {
+                timeLeft += 60;
+                updateDisplay();
+            }
+        }
+
+        function updatePlantEvolution() {
+            const plantDisplay = document.getElementById('mainPlantDisplay');
+            if (currentTaskIndex === -1) {
+                plantDisplay.textContent = '🌱';
+                return;
+            }
+
+            let task = tasks[currentTaskIndex];
+            let totalSecondsPerRound = task.minutes * 60;
+            
+            let currentRoundProgress = (totalSecondsPerRound - timeLeft) / totalSecondsPerRound;
+            if (isBreakTime) currentRoundProgress = 1; 
+
+            let totalProgress = ((currentRound - 1) + currentRoundProgress) / task.rounds;
+            
+            if (totalProgress > 1) totalProgress = 1;
+            if (totalProgress < 0) totalProgress = 0;
+
+            const stages = ['🌱', '🪴', '🌿', '🌸', '🌳'];
+            let stageIndex = Math.floor(totalProgress * (stages.length - 1));
+            
+            plantDisplay.textContent = stages[stageIndex];
         }
 
         function addNewTask() {
@@ -464,6 +575,7 @@
                 startBtn.disabled = true;
                 timerLabel.innerText = "انتهى العمل";
                 document.getElementById('plantSpeech').innerText = "عمل رائع! لقد أنجزت كل المهام المدرجة 🌟";
+                document.getElementById('mainPlantDisplay').textContent = '🌳'; 
             }
             updateDisplay();
             renderTasks();
@@ -560,13 +672,13 @@
             let currentLevelXP = totalXP % 1000;
             let percentage = (currentLevelXP / 1000) * 100;
 
-            document.getElementById('plantLevelDisplay').innerText = `Lv. ${lvl}`;
-            document.getElementById('statPlant').innerText = `Lv. ${lvl}`;
+            document.getElementById('userLevelDisplay').innerText = `مستوى المستخدم Lv. ${lvl}`;
+            document.getElementById('statUser').innerText = `Lv. ${lvl}`;
             document.getElementById('xpBar').style.width = `${percentage}%`;
             document.getElementById('xpDisplay').innerText = `${currentLevelXP} / 1000 XP`;
         }
 
-        // --- نظام التخزين المحلي (LocalStorage) ---
+        // --- التخزين المحلي ---
         function saveData() {
             const data = {
                 tasks: tasks,
@@ -582,37 +694,25 @@
         function loadData() {
             const savedData = localStorage.getItem('pomodoroMR_Data');
             if (savedData) {
-                const data = JSON.parse(savedData);
+                const parsed = JSON.parse(savedData);
+                tasks = parsed.tasks || [];
+                totalXP = parsed.totalXP || 0;
+                statRoundsCount = parsed.statRounds || 0;
                 
-                tasks = data.tasks || [];
-                totalXP = data.totalXP || 0;
-                statRoundsCount = data.statRounds || 0;
+                if(parsed.themeColor) document.documentElement.style.setProperty('--theme-color', parsed.themeColor);
+                if(parsed.themeMainBg) document.documentElement.style.setProperty('--bg-main', parsed.themeMainBg);
+                if(parsed.themePanelBg) document.documentElement.style.setProperty('--bg-panel', parsed.themePanelBg);
                 
                 document.getElementById('statRounds').innerText = statRoundsCount;
                 updateXPUI();
                 renderTasks();
-                
-                if (data.themeColor) {
-                    document.documentElement.style.setProperty('--theme-color', data.themeColor);
-                    document.querySelectorAll('.color-dot').forEach(d => {
-                        d.classList.remove('active');
-                        if(d.dataset.color === data.themeColor) d.classList.add('active');
-                    });
-                }
-                if (data.themeMainBg) {
-                    document.documentElement.style.setProperty('--bg-main', data.themeMainBg);
-                    document.documentElement.style.setProperty('--bg-panel', data.themePanelBg);
-                    document.querySelectorAll('.bg-box').forEach(b => {
-                        b.classList.remove('active');
-                        if(b.dataset.main === data.themeMainBg) b.classList.add('active');
-                    });
-                }
-                
                 loadNextIncompleteTask(0);
             }
         }
 
-        window.onload = loadData;
+        window.onload = function() {
+            loadData();
+        };
     </script>
 </body>
 </html>
