@@ -36,7 +36,6 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        /* --- القائمة الجانبية المحدثة بمرونة الطي --- */
         .sidebar { width: 240px; justify-content: space-between; overflow: hidden; flex-shrink: 0; transition: width 0.3s ease; }
         .sidebar.collapsed { width: 85px; }
         
@@ -62,17 +61,14 @@
         .copyright-section { font-size: 11px; color: var(--text-muted); text-align: center; border-top: 1px solid var(--border-color); padding-top: 15px; transition: opacity 0.2s; white-space: nowrap; }
         .sidebar.collapsed .copyright-section { display: none; }
 
-        /* --- واجهة العرض الرئيسية والشبكة الأساسية --- */
         .views-container { flex: 1; position: relative; height: 100%; }
         .view-section { display: none; width: 100%; height: 100%; animation: fadeIn 0.4s ease-in-out; }
         .view-section.active { display: flex; }
         
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* تقسيم الشاشة والنسب الأصلية تماماً للعلب */
         #view-timer.active { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1.2fr 0.8fr; gap: 15px; }
 
-        /* الغلاف الموحد للنبتة والمؤقت */
         .unified-top-wrapper {
             grid-column: 1 / 3;
             grid-row: 1;
@@ -82,7 +78,6 @@
             position: relative;
         }
 
-        /* زر ملء الشاشة المتواجد دائماً في علبة المؤقت */
         .btn-fullscreen {
             position: absolute; top: 20px; right: 20px; background: transparent; border: none;
             color: var(--text-muted); font-size: 18px; cursor: pointer; transition: 0.2s; z-index: 10;
@@ -92,7 +87,6 @@
         #view-history { flex-direction: column; gap: 15px; }
         #view-settings { flex-direction: column; gap: 15px; align-items: center; justify-content: center; }
 
-        /* العلب الداخلية وتأثيراتها البسيطة */
         .plant-view-card { position: relative; background: radial-gradient(circle at center, #1f2425 0%, var(--bg-panel) 70%); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; }
         .speech-bubble { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; font-size: 13px; text-align: center; margin-bottom: 20px; backdrop-filter: blur(10px); transition: 0.3s; }
         .plant-emoji-container { font-size: 110px; filter: drop-shadow(0 0 25px color-mix(in srgb, var(--theme-color) 40%, transparent)); animation: breathe 3s infinite ease-in-out; transition: transform 0.5s ease, opacity 0.3s ease; user-select: none; }
@@ -118,7 +112,6 @@
         .btn-icon { background: var(--border-color); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
         .btn-icon:hover { background: #3a3d52; }
 
-        /* علب المستوى والمهام السفلية ونسبها الأصلية */
         .level-card { grid-column: 1; grid-row: 2; display: flex; flex-direction: column; justify-content: space-between; }
         .level-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 12px; }
         .level-bar-bg { width: 100%; height: 6px; background: var(--border-color); border-radius: 5px; overflow: hidden; margin-bottom: 15px; }
@@ -157,13 +150,11 @@
         .bg-box { width: 80px; height: 50px; border-radius: 8px; cursor: pointer; border: 3px solid transparent; transition: 0.2s; }
         .bg-box.active { border-color: var(--theme-color); }
 
-        /* خيارات التشغيل التلقائي */
         .toggle-options-container { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; max-width: 280px; margin: 20px auto 0; text-align: right; }
         .toggle-label { display: flex; align-items: center; gap: 12px; cursor: pointer; color: var(--text-light); font-size: 13px; width: 100%; transition: 0.2s; }
         .toggle-label:hover { color: white; }
         .toggle-label input[type="checkbox"] { accent-color: var(--theme-color); width: 18px; height: 18px; cursor: pointer; }
 
-        /* --- وضع ملء الشاشة الموحد --- */
         .app-container.fullscreen-timer .sidebar { display: none !important; }
         .app-container.fullscreen-timer .level-card, 
         .app-container.fullscreen-timer .tasks-card { display: none !important; }
@@ -335,7 +326,6 @@
                         <div class="bg-box active" data-main="#0c0d12" style="background: #161821;" onclick="setThemeBg('#0c0d12', '#161821', this)"></div>
                     </div>
 
-                    <!-- الأزرار الجديدة للتحكم بالتشغيل التلقائي -->
                     <div style="color: white; font-size: 16px; font-weight: bold; margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 20px;">خيارات التشغيل التلقائي</div>
                     <div class="toggle-options-container">
                         <label class="toggle-label">
@@ -426,7 +416,6 @@
         let totalXP = 0;
         let statRoundsCount = 0;
 
-        // متغيرات الميزات الجديدة
         let autoStartBreak = false;
         let autoStartSession = false;
         
@@ -689,15 +678,18 @@
             updateXPUI();
         }
 
+        // الدالة الجديدة المحدثة لنظام حساب الـ XP التصاعدي
         function updateXPUI() {
-            let lvl = Math.floor(totalXP / 1000) + 1;
-            let currentLevelXP = totalXP % 1000;
-            let percentage = (currentLevelXP / 1000) * 100;
+            let lvl = Math.floor((1 + Math.sqrt(1 + 0.008 * totalXP)) / 2);
+            let xpForCurrentLvl = 500 * lvl * (lvl - 1);
+            let xpNeededForNextLvl = lvl * 1000;
+            let currentLevelXP = totalXP - xpForCurrentLvl;
+            let percentage = (currentLevelXP / xpNeededForNextLvl) * 100;
 
             document.getElementById('userLevelDisplay').innerText = `مستوى المستخدم Lv. ${lvl}`;
             document.getElementById('statUser').innerText = `Lv. ${lvl}`;
             document.getElementById('xpBar').style.width = `${percentage}%`;
-            document.getElementById('xpDisplay').innerText = `${currentLevelXP} / 1000 XP`;
+            document.getElementById('xpDisplay').innerText = `${currentLevelXP} / ${xpNeededForNextLvl} XP`;
         }
 
         function saveData() {
@@ -735,6 +727,9 @@
                 updateXPUI();
                 renderTasks();
                 loadNextIncompleteTask(0);
+            } else {
+                // استدعاء الدالة لأول مرة في حال عدم وجود بيانات محفوظة
+                updateXPUI();
             }
         }
 
