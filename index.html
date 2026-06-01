@@ -39,10 +39,30 @@
         .sidebar { width: 240px; justify-content: space-between; overflow: hidden; flex-shrink: 0; transition: width 0.3s ease; }
         .sidebar.collapsed { width: 85px; }
         
-        .logo-container { display: flex; align-items: center; gap: 10px; margin-bottom: 30px; transition: justify-content 0.3s; }
-        .leaf-icon { color: var(--theme-color); font-size: 24px; text-shadow: 0 0 10px var(--theme-color); cursor: pointer; transition: transform 0.3s; }
-        .leaf-icon:hover { transform: scale(1.1); }
-        .logo-text { font-size: 18px; font-weight: 900; color: white; letter-spacing: 1px; white-space: nowrap; transition: opacity 0.2s; opacity: 1; }
+        .logo-container { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; transition: justify-content 0.3s; }
+        
+        /* تصميم شعار MR: حرفان مضيئان فقط بلون أخضر نباتي خفيف وثابت وبدون أي إطار أو خلفية */
+        .logo-mr-icon { 
+            color: #7aa982; /* لون أخضر نباتي ناعم وثابت */
+            font-size: 22px; 
+            font-weight: 900; 
+            text-shadow: 0 0 8px rgba(122, 169, 130, 0.4); /* إضاءة خفيفة وناعمة */
+            cursor: pointer; 
+            transition: transform 0.3s, text-shadow 0.3s, color 0.3s; 
+            user-select: none;
+            letter-spacing: 0.5px;
+            background: none; /* إزالة الخلفية */
+            padding: 0; /* إزالة الحشو الداخلي */
+            border: none; /* إزالة الإطار */
+            border-radius: 0;
+        }
+        .logo-mr-icon:hover { 
+            transform: scale(1.08); 
+            color: #8cbfa4; /* تفتيح نباتي بسيط جداً عند التمرير */
+            text-shadow: 0 0 12px rgba(140, 191, 164, 0.6); 
+        }
+        
+        .logo-text { font-size: 16px; font-weight: 900; color: white; letter-spacing: 1px; white-space: nowrap; transition: opacity 0.2s; opacity: 1; }
         
         .sidebar.collapsed .logo-text { opacity: 0; display: none; }
         .sidebar.collapsed .logo-container { justify-content: center; }
@@ -89,7 +109,8 @@
 
         .plant-view-card { position: relative; background: radial-gradient(circle at center, #1f2425 0%, var(--bg-panel) 70%); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; }
         .speech-bubble { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; font-size: 13px; text-align: center; margin-bottom: 20px; backdrop-filter: blur(10px); transition: 0.3s; }
-        .plant-emoji-container { font-size: 110px; filter: drop-shadow(0 0 25px color-mix(in srgb, var(--theme-color) 40%, transparent)); animation: breathe 3s infinite ease-in-out; transition: transform 0.5s ease, opacity 0.3s ease; user-select: none; }
+        
+        .plant-emoji-container { font-size: 110px; filter: drop-shadow(0 0 25px color-mix(in srgb, var(--theme-color) 40%, transparent)); animation: breathe 3s infinite ease-in-out; transition: transform 0.5s ease, opacity 0.3s ease, font-size 0.5s ease; user-select: none; }
         @keyframes breathe { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-10px) scale(1.05); } }
 
         .timer-card { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; width: 100%; height: 100%; }
@@ -143,19 +164,22 @@
         .stat-box i { font-size: 24px; color: var(--theme-color); margin-bottom: 10px; }
         .stat-box .val { font-size: 20px; font-weight: bold; color: white; margin-top: 5px; }
 
-        .settings-card { width: 50%; text-align: center; padding: 40px; margin: 0 auto; }
-        .color-options, .bg-options { display: flex; gap: 15px; justify-content: center; margin: 20px 0 30px; }
-        .color-dot { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: 0.2s; }
-        .color-dot.active { border-color: white; transform: scale(1.2); }
-        .bg-box { width: 80px; height: 50px; border-radius: 8px; cursor: pointer; border: 3px solid transparent; transition: 0.2s; }
-        .bg-box.active { border-color: var(--theme-color); }
+        .settings-card { width: 60%; text-align: center; padding: 35px; margin: 0 auto; }
+        
+        .color-options { display: flex; gap: 12px; justify-content: center; margin: 15px 0 25px; flex-wrap: wrap; }
+        .color-dot { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: 0.2s; }
+        .color-dot.active { border-color: white; transform: scale(1.15); }
+        
+        .bg-options { display: flex; gap: 12px; justify-content: center; margin: 15px 0 25px; flex-wrap: wrap; }
+        .bg-box { width: 85px; height: 48px; border-radius: 10px; cursor: pointer; border: 3px solid transparent; transition: 0.2s; font-size: 11px; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.3); font-weight: bold; }
+        .bg-box.active { border-color: var(--theme-color); color: white; }
 
         .toggle-options-container { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; max-width: 280px; margin: 20px auto 0; text-align: right; }
         .toggle-label { display: flex; align-items: center; gap: 12px; cursor: pointer; color: var(--text-light); font-size: 13px; width: 100%; transition: 0.2s; }
         .toggle-label:hover { color: white; }
         .toggle-label input[type="checkbox"] { accent-color: var(--theme-color); width: 18px; height: 18px; cursor: pointer; }
 
-        /* تعديل كود ملء الشاشة لإخفاء النبتة وتوسيط المؤقت */
+        /* وضع ملء الشاشة */
         .app-container.fullscreen-timer .sidebar { display: none !important; }
         .app-container.fullscreen-timer .level-card, 
         .app-container.fullscreen-timer .tasks-card { display: none !important; }
@@ -192,8 +216,8 @@
         <aside class="panel sidebar" id="mainSidebar">
             <div>
                 <div class="logo-container">
-                    <i class="fa-solid fa-leaf leaf-icon" onclick="toggleSidebar()" title="طي / توسيع القائمة"></i>
-                    <span class="logo-text">POMODORO MR</span>
+                    <span class="logo-mr-icon" onclick="toggleSidebar()" title="طي / توسيع القائمة">MR</span>
+                    <span class="logo-text">POMODORO </span>
                 </div>
                 <ul class="nav-menu">
                     <li class="active" onclick="switchView('view-timer', this)">
@@ -310,26 +334,33 @@
 
             <div id="view-settings" class="view-section">
                 <div class="panel settings-card">
-                    <h2 style="margin-bottom: 10px;">إعدادات المظهر <i class="fa-solid fa-palette" style="color: var(--theme-color)"></i></h2>
-                    <p style="color: var(--text-muted); margin-bottom: 30px;">قم بتخصيص بيئة عملك بما يتناسب مع ذوقك</p>
+                    <h2 style="margin-bottom: 5px;">إعدادات المظهر <i class="fa-solid fa-palette" style="color: var(--theme-color)"></i></h2>
+                    <p style="color: var(--text-muted); margin-bottom: 25px;">قم بتخصيص بيئة عملك بألوان وخلفيات مريحة ومضادة لإرهاق العين</p>
 
-                    <div style="color: white; font-size: 16px; font-weight: bold;">الألوان الأساسية</div>
+                    <div style="color: white; font-size: 15px; font-weight: bold;">الألوان الأساسية</div>
                     <div class="color-options" id="colorPicker">
-                        <div class="color-dot" data-color="#f5a623" style="background: #f5a623;" onclick="setThemeColor('#f5a623', this)"></div>
-                        <div class="color-dot" data-color="#ff2a6d" style="background: #ff2a6d;" onclick="setThemeColor('#ff2a6d', this)"></div>
-                        <div class="color-dot" data-color="#bd10e0" style="background: #bd10e0;" onclick="setThemeColor('#bd10e0', this)"></div>
-                        <div class="color-dot" data-color="#4a90e2" style="background: #4a90e2;" onclick="setThemeColor('#4a90e2', this)"></div>
-                        <div class="color-dot active" data-color="#5ddc67" style="background: #5ddc67;" onclick="setThemeColor('#5ddc67', this)"></div>
+                        <div class="color-dot" data-color="#77947d" style="background: #77947d;" onclick="setThemeColor('#77947d', this)" title="أخضر حكيمي"></div>
+                        <div class="color-dot" data-color="#5a8fbc" style="background: #5a8fbc;" onclick="setThemeColor('#5a8fbc', this)" title="أزرق محيطي"></div>
+                        <div class="color-dot" data-color="#7b7cb5" style="background: #7b7cb5;" onclick="setThemeColor('#7b7cb5', this)" title="خزامي ناعم"></div>
+                        <div class="color-dot" data-color="#c38191" style="background: #c38191;" onclick="setThemeColor('#c38191', this)" title="وردي غباري"></div>
+                        <div class="color-dot" data-color="#c68a64" style="background: #c68a64;" onclick="setThemeColor('#c68a64', this)" title="ترابي دافئ"></div>
+                        <div class="color-dot" data-color="#a3966a" style="background: #a3966a;" onclick="setThemeColor('#a3966a', this)" title="زيتوني كلاسيكي"></div>
+                        <div class="color-dot" data-color="#68b09b" style="background: #68b09b;" onclick="setThemeColor('#68b09b', this)" title="نعناعي بارد"></div>
+                        <div class="color-dot" data-color="#4b8f96" style="background: #4b8f96;" onclick="setThemeColor('#4b8f96', this)" title="تيل عميق"></div>
+                        <div class="color-dot" data-color="#bfa78f" style="background: #bfa78f;" onclick="setThemeColor('#bfa78f', this)" title="رمال ناعمة"></div>
+                        <div class="color-dot active" data-color="#5ddc67" style="background: #5ddc67;" onclick="setThemeColor('#5ddc67', this)" title="أخضر مشع"></div>
                     </div>
 
-                    <div style="color: white; font-size: 16px; font-weight: bold; margin-top: 20px;">خلفية التطبيق</div>
+                    <div style="color: white; font-size: 15px; font-weight: bold; margin-top: 15px;">خلفية التطبيق</div>
                     <div class="bg-options" id="bgPicker">
-                        <div class="bg-box" data-main="#1e2029" style="background: #2a2d3d;" onclick="setThemeBg('#1e2029', '#2a2d3d', this)"></div>
-                        <div class="bg-box" data-main="#000000" style="background: #111;" onclick="setThemeBg('#000000', '#111', this)"></div>
-                        <div class="bg-box active" data-main="#0c0d12" style="background: #161821;" onclick="setThemeBg('#0c0d12', '#161821', this)"></div>
+                        <div class="bg-box" data-main="#1e2029" style="background: #2a2d3d;" onclick="setThemeBg('#1e2029', '#2a2d3d', this)">رمادي</div>
+                        <div class="bg-box" data-main="#000000" style="background: #111;" onclick="setThemeBg('#000000', '#111', this)">فحم</div>
+                        <div class="bg-box active" data-main="#0c0d12" style="background: #161821;" onclick="setThemeBg('#0c0d12', '#161821', this)">داكن</div>
+                        <div class="bg-box" data-main="#0f1411" style="background: #171f1a;" onclick="setThemeBg('#0f1411', '#171f1a', this)">غابوي</div>
+                        <div class="bg-box" data-main="#12161a" style="background: #1b2126;" onclick="setThemeBg('#12161a', '#1b2126', this)">ليلي</div>
                     </div>
 
-                    <div style="color: white; font-size: 16px; font-weight: bold; margin-top: 25px; border-top: 1px solid var(--border-color); padding-top: 20px;">خيارات التشغيل التلقائي</div>
+                    <div style="color: white; font-size: 15px; font-weight: bold; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 15px;">خيارات التشغيل التلقائي</div>
                     <div class="toggle-options-container">
                         <label class="toggle-label">
                             <input type="checkbox" id="autoBreakToggle" onchange="toggleAutoBreak(this.checked)">
@@ -456,6 +487,7 @@
             const plantDisplay = document.getElementById('mainPlantDisplay');
             if (currentTaskIndex === -1) {
                 plantDisplay.textContent = '🌱';
+                plantDisplay.style.fontSize = '110px'; 
                 return;
             }
 
@@ -468,9 +500,17 @@
             if (totalProgress > 1) totalProgress = 1;
             if (totalProgress < 0) totalProgress = 0;
 
-            const stages = ['🌱', '🪴', '🌿', '🌸', '🌳'];
+            const stages = ['🌱', '🌿', '🪴', '🌳'];
             let stageIndex = Math.floor(totalProgress * (stages.length - 1));
+            if (totalProgress >= 1) stageIndex = stages.length - 1;
+
             plantDisplay.textContent = stages[stageIndex];
+
+            if (stageIndex === stages.length - 1) {
+                plantDisplay.style.fontSize = '160px';
+            } else {
+                plantDisplay.style.fontSize = '110px';
+            }
         }
 
         function addNewTask() {
@@ -578,7 +618,10 @@
                 startBtn.disabled = true;
                 timerLabel.innerText = "انتهى العمل";
                 document.getElementById('plantSpeech').innerText = "عمل رائع! لقد أنجزت كل المهام المدرجة 🌟";
-                document.getElementById('mainPlantDisplay').textContent = '🌳'; 
+                
+                const plantDisplay = document.getElementById('mainPlantDisplay');
+                plantDisplay.textContent = '🌳'; 
+                plantDisplay.style.fontSize = '160px'; 
             }
             updateDisplay();
             renderTasks();
