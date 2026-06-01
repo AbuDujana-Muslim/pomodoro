@@ -32,22 +32,53 @@
 
         .panel {
             background-color: var(--bg-panel); border-radius: 20px; border: 1px solid var(--border-color);
-            padding: 20px; display: flex; flex-direction: column; transition: background-color 0.5s;
+            padding: 20px; display: flex; flex-direction: column; transition: background-color 0.5s, width 0.3s;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
         /* --- Left Sidebar --- */
-        .sidebar { width: 240px; justify-content: space-between; }
-        .logo { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 900; color: white; margin-bottom: 30px; letter-spacing: 1px; }
-        .logo i { color: var(--theme-color); font-size: 24px; text-shadow: 0 0 10px var(--theme-color); transition: 0.3s; }
+        .sidebar { width: 240px; justify-content: space-between; overflow: hidden; flex-shrink: 0; }
+        .sidebar.collapsed { width: 85px; }
+        
+        .logo-container { display: flex; align-items: center; gap: 10px; margin-bottom: 30px; }
+        .leaf-icon { color: var(--theme-color); font-size: 24px; text-shadow: 0 0 10px var(--theme-color); cursor: pointer; transition: transform 0.3s; }
+        .leaf-icon:hover { transform: scale(1.1); }
+        .logo-text { font-size: 18px; font-weight: 900; color: white; letter-spacing: 1px; white-space: nowrap; transition: opacity 0.3s; }
+        
+        .sidebar.collapsed .logo-text { opacity: 0; display: none; }
+        .sidebar.collapsed .logo-container { justify-content: center; }
+
         .nav-menu { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-        .nav-menu li { padding: 12px 15px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 12px; color: var(--text-muted); transition: 0.3s; font-weight: 500; }
+        .nav-menu li { padding: 12px 15px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 12px; color: var(--text-muted); transition: 0.3s; font-weight: 500; white-space: nowrap; }
         .nav-menu li:hover, .nav-menu li.active { background-color: color-mix(in srgb, var(--theme-color) 10%, transparent); color: white; }
         .nav-menu li.active { border-right: 4px solid var(--theme-color); }
+        .nav-menu li i { font-size: 18px; min-width: 20px; text-align: center; }
+        
+        .nav-text { transition: opacity 0.3s; }
+        .sidebar.collapsed .nav-text { display: none; }
+        .sidebar.collapsed .nav-menu li { padding: 12px 0; justify-content: center; border-right: none; border-bottom: 4px solid transparent; }
+        .sidebar.collapsed .nav-menu li.active { border-bottom: 4px solid var(--theme-color); }
 
-        /* --- Main Content --- */
-        .main-content { flex: 1; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1.2fr 0.8fr; gap: 15px; }
+        .copyright-section { font-size: 11px; color: var(--text-muted); text-align: center; border-top: 1px solid var(--border-color); padding-top: 15px; transition: opacity 0.3s; white-space: nowrap; }
+        .sidebar.collapsed .copyright-section { display: none; }
 
+        /* --- Main Content & Views --- */
+        .views-container { flex: 1; position: relative; height: 100%; }
+        .view-section { display: none; width: 100%; height: 100%; animation: fadeIn 0.4s ease-in-out; }
+        .view-section.active { display: flex; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* View 1: Timer (Grid) */
+        #view-timer.active { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1.2fr 0.8fr; gap: 15px; }
+
+        /* View 2: History (Flex) */
+        #view-history { flex-direction: column; gap: 15px; }
+        
+        /* View 3: Settings (Flex) */
+        #view-settings { flex-direction: column; gap: 15px; align-items: center; justify-content: center; }
+
+        /* --- Internal Components --- */
         .plant-view-card { grid-column: 1; grid-row: 1; position: relative; background: radial-gradient(circle at center, #1f2425 0%, var(--bg-panel) 70%); display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .speech-bubble { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; font-size: 13px; text-align: center; margin-bottom: 20px; backdrop-filter: blur(10px); transition: 0.3s; }
         .plant-emoji-container { font-size: 110px; filter: drop-shadow(0 0 25px color-mix(in srgb, var(--theme-color) 40%, transparent)); animation: breathe 3s infinite ease-in-out; transition: transform 0.5s ease, opacity 0.3s ease; user-select: none; }
@@ -86,155 +117,204 @@
         .btn-add-task:hover { background: var(--theme-color); color: black; }
 
         .tasks-card { grid-column: 2; grid-row: 2; overflow-y: auto; }
-        .tasks-header { font-size: 14px; font-weight: bold; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
+        .tasks-header { font-size: 14px; font-weight: bold; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
         .task-list { list-style: none; }
         .task-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: rgba(0,0,0,0.2); border-radius: 10px; margin-bottom: 8px; transition: 0.3s; border: 1px solid transparent; }
         .task-item.active { border-color: var(--theme-color); background: color-mix(in srgb, var(--theme-color) 5%, transparent); box-shadow: 0 0 10px color-mix(in srgb, var(--theme-color) 20%, transparent) inset;}
-        .task-item.completed { opacity: 0.6; text-decoration: line-through; }
         
         .check-circle { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 12px; color: transparent; cursor: pointer; transition: 0.3s; }
         .check-circle:hover { border-color: var(--theme-color); }
-        .task-item.completed .check-circle { background: var(--theme-color); border-color: var(--theme-color); color: #000; box-shadow: 0 0 8px var(--theme-color); }
-
-        .right-sidebar { width: 280px; gap: 15px; padding: 0; background: transparent; border: none; box-shadow: none; display: flex; flex-direction: column; }
-        .mini-panel { background: var(--bg-panel); border-radius: 15px; border: 1px solid var(--border-color); padding: 15px; flex: 1; display: flex; flex-direction: column; justify-content: center; transition: 0.5s; }
         
-        .theme-panel { font-size: 12px; }
-        .color-options { display: flex; gap: 10px; margin: 15px 0 25px; }
-        .color-dot { width: 22px; height: 22px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+        /* History & Settings Specifics */
+        .history-card { flex: 1; overflow-y: auto; }
+        .completed-task { opacity: 0.7; border-color: var(--theme-color); background: rgba(0,0,0,0.3); }
+        .completed-task .check-circle { background: var(--theme-color); border-color: var(--theme-color); color: #000; box-shadow: 0 0 8px var(--theme-color); cursor: default; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 15px; }
+        .stat-box { background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: 15px; padding: 20px; text-align: center; }
+        .stat-box i { font-size: 24px; color: var(--theme-color); margin-bottom: 10px; }
+        .stat-box .val { font-size: 20px; font-weight: bold; color: white; margin-top: 5px; }
+
+        .settings-card { width: 50%; text-align: center; padding: 40px; margin: 0 auto; }
+        .color-options, .bg-options { display: flex; gap: 15px; justify-content: center; margin: 20px 0 30px; }
+        .color-dot { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: 0.2s; }
         .color-dot.active { border-color: white; transform: scale(1.2); }
-
-        .bg-options { display: flex; gap: 8px; margin-top: 15px; }
-        .bg-box { width: 50px; height: 35px; border-radius: 5px; cursor: pointer; border: 2px solid transparent; transition: 0.2s; }
+        .bg-box { width: 80px; height: 50px; border-radius: 8px; cursor: pointer; border: 3px solid transparent; transition: 0.2s; }
         .bg-box.active { border-color: var(--theme-color); }
-
-        .stats-list { list-style: none; font-size: 13px; margin-top: 15px; display: flex; flex-direction: column; gap: 18px; }
-        .stats-list li { display: flex; justify-content: space-between; color: var(--text-muted); }
-        .stats-list li span:last-child { color: white; font-weight: bold; font-size: 14px; }
+        
     </style>
 </head>
 <body>
 
     <div class="app-container">
         
-        <aside class="panel sidebar">
+        <aside class="panel sidebar" id="mainSidebar">
             <div>
-                <div class="logo"><i class="fa-solid fa-leaf"></i> POMODORO MR</div>
+                <div class="logo-container">
+                    <i class="fa-solid fa-leaf leaf-icon" onclick="toggleSidebar()" title="طي / توسيع"></i>
+                    <span class="logo-text">POMODORO MR</span>
+                </div>
                 <ul class="nav-menu">
-                    <li class="active"><i class="fa-regular fa-clock"></i> الوقت</li>
+                    <li class="active" onclick="switchView('view-timer', this)">
+                        <i class="fa-regular fa-clock"></i> <span class="nav-text">الوقت</span>
+                    </li>
+                    <li onclick="switchView('view-history', this)">
+                        <i class="fa-solid fa-book-journal-whills"></i> <span class="nav-text">سجل التركيز</span>
+                    </li>
+                    <li onclick="switchView('view-settings', this)">
+                        <i class="fa-solid fa-palette"></i> <span class="nav-text">تخصيص المظهر</span>
+                    </li>
                 </ul>
             </div>
             
-            <!-- قسم الحقوق -->
-            <div style="font-size: 11px; color: var(--text-muted); text-align: center; border-top: 1px solid var(--border-color); padding-top: 15px;">
+            <div class="copyright-section">
                 <p>جميع الحقوق محفوظة © 2026</p>
                 <p>تطوير: Mahmod Rabaa 👨‍💻</p>
             </div>
         </aside>
 
-        <main class="main-content">
+        <main class="views-container">
             
-            <div class="panel plant-view-card">
-                <div class="speech-bubble" id="plantSpeech">أهلاً بك يا بطل! لنبدأ جلسة تركيز قوية 🌿</div>
-                <div id="mainPlantDisplay" class="plant-emoji-container">🌱</div>
-            </div>
+            <div id="view-timer" class="view-section active">
+                <div class="panel plant-view-card">
+                    <div class="speech-bubble" id="plantSpeech">أهلاً بك يا بطل! لنبدأ جلسة تركيز قوية 🌿</div>
+                    <div id="mainPlantDisplay" class="plant-emoji-container">🌱</div>
+                </div>
 
-            <div class="panel timer-card">
-                <div class="timer-circle" id="timerRing">
-                    <div class="timer-display">
-                        <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 5px;" id="timerLabel">وقت التركيز</div>
-                        <div class="time-text" id="timerDisplay">00:00</div>
-                        <div class="session-badge" id="sessionCounter">في انتظار المهام... 📭</div>
+                <div class="panel timer-card">
+                    <div class="timer-circle" id="timerRing">
+                        <div class="timer-display">
+                            <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 5px;" id="timerLabel">وقت التركيز</div>
+                            <div class="time-text" id="timerDisplay">00:00</div>
+                            <div class="session-badge" id="sessionCounter">في انتظار المهام... 📭</div>
+                        </div>
+                    </div>
+                    
+                    <div class="timer-controls">
+                        <button class="btn-icon" onclick="skipRound()" title="تخطي"><i class="fa-solid fa-forward-step"></i></button>
+                        <button class="btn-play" id="startBtn" onclick="toggleTimer()" disabled>ابدأ ▶</button>
+                        <button class="btn-icon" onclick="resetTimer()" title="إعادة ضبط"><i class="fa-solid fa-rotate-right"></i></button>
                     </div>
                 </div>
-                
-                <div class="timer-controls">
-                    <button class="btn-icon" onclick="skipRound()" title="تخطي"><i class="fa-solid fa-forward-step"></i></button>
-                    <button class="btn-play" id="startBtn" onclick="toggleTimer()" disabled>ابدأ ▶</button>
-                    <button class="btn-icon" onclick="resetTimer()" title="إعادة ضبط"><i class="fa-solid fa-rotate-right"></i></button>
+
+                <div class="panel level-card">
+                    <div>
+                        <div class="level-header">
+                            <span style="font-weight: bold; font-size: 16px;" id="plantLevelDisplay">Lv. 1</span>
+                            <span>الخبرة <span style="color: var(--text-muted);" id="xpDisplay">0 / 1000 XP</span></span>
+                        </div>
+                        <div class="level-bar-bg"><div class="level-bar-fill" id="xpBar"></div></div>
+                    </div>
+
+                    <div class="task-input-container">
+                        <input type="text" id="taskNameInput" placeholder="اسم المهمة (مثال: فيزياء، برمجة)...">
+                        <div class="row-inputs">
+                            <input type="number" id="taskMinInput" placeholder="وقت الجلسة (دقائق)">
+                            <input type="number" id="taskRoundsInput" placeholder="عدد الجولات">
+                        </div>
+                        <button class="btn-add-task" onclick="addNewTask()">إضافة المهمة ➕</button>
+                    </div>
+                </div>
+
+                <div class="panel tasks-card">
+                    <div class="tasks-header">
+                        <span>المهام المعلقة</span>
+                        <span id="pendingTasksCount" style="font-size: 11px; color: var(--text-muted);">0 مهام</span>
+                    </div>
+                    <ul class="task-list" id="pendingTaskList"></ul>
                 </div>
             </div>
 
-            <div class="panel level-card">
-                <div>
-                    <div class="level-header">
-                        <span style="font-weight: bold; font-size: 16px;" id="plantLevelDisplay">Lv. 1</span>
-                        <span>الخبرة <span style="color: var(--text-muted);" id="xpDisplay">0 / 1000 XP</span></span>
+            <div id="view-history" class="view-section">
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <i class="fa-solid fa-list-check"></i>
+                        <div style="color: var(--text-muted); font-size: 12px;">المهام المنجزة</div>
+                        <div class="val" id="statTasks">0</div>
                     </div>
-                    <div class="level-bar-bg"><div class="level-bar-fill" id="xpBar"></div></div>
+                    <div class="stat-box">
+                        <i class="fa-regular fa-clock"></i>
+                        <div style="color: var(--text-muted); font-size: 12px;">الجولات المكتملة</div>
+                        <div class="val" id="statRounds">0</div>
+                    </div>
+                    <div class="stat-box">
+                        <i class="fa-solid fa-fire"></i>
+                        <div style="color: var(--text-muted); font-size: 12px;">مستوى التركيز</div>
+                        <div class="val" style="color: var(--theme-color);" id="statFocus">ممتاز</div>
+                    </div>
+                    <div class="stat-box">
+                        <i class="fa-solid fa-leaf"></i>
+                        <div style="color: var(--text-muted); font-size: 12px;">مستوى النبتة</div>
+                        <div class="val" id="statPlant">Lv. 1</div>
+                    </div>
                 </div>
 
-                <div class="task-input-container">
-                    <input type="text" id="taskNameInput" placeholder="اسم المهمة (مثال: فيزياء، برمجة)...">
-                    <div class="row-inputs">
-                        <input type="number" id="taskMinInput" placeholder="وقت الجلسة (دقائق)">
-                        <input type="number" id="taskRoundsInput" placeholder="عدد الجولات">
+                <div class="panel history-card">
+                    <div class="tasks-header">
+                        <span>المهام المكتملة</span>
+                        <span id="completedTasksCount" style="font-size: 11px; color: var(--theme-color);">0 مهام</span>
                     </div>
-                    <button class="btn-add-task" onclick="addNewTask()">إضافة المهمة ➕</button>
+                    <ul class="task-list" id="completedTaskList">
+                        </ul>
                 </div>
             </div>
 
-            <div class="panel tasks-card">
-                <div class="tasks-header">
-                    <span>مهام اليوم</span>
-                    <span id="totalTasksCount" style="font-size: 11px; color: var(--text-muted);">0 مهام</span>
+            <div id="view-settings" class="view-section">
+                <div class="panel settings-card">
+                    <h2 style="margin-bottom: 10px;">إعدادات المظهر <i class="fa-solid fa-palette" style="color: var(--theme-color)"></i></h2>
+                    <p style="color: var(--text-muted); margin-bottom: 30px;">قم بتخصيص بيئة عملك بما يتناسب مع ذوقك</p>
+
+                    <div style="color: white; font-size: 16px; font-weight: bold;">الألوان الأساسية</div>
+                    <div class="color-options" id="colorPicker">
+                        <div class="color-dot" data-color="#f5a623" style="background: #f5a623;" onclick="setThemeColor('#f5a623', this)"></div>
+                        <div class="color-dot" data-color="#ff2a6d" style="background: #ff2a6d;" onclick="setThemeColor('#ff2a6d', this)"></div>
+                        <div class="color-dot" data-color="#bd10e0" style="background: #bd10e0;" onclick="setThemeColor('#bd10e0', this)"></div>
+                        <div class="color-dot" data-color="#4a90e2" style="background: #4a90e2;" onclick="setThemeColor('#4a90e2', this)"></div>
+                        <div class="color-dot active" data-color="#5ddc67" style="background: #5ddc67;" onclick="setThemeColor('#5ddc67', this)"></div>
+                    </div>
+
+                    <div style="color: white; font-size: 16px; font-weight: bold; margin-top: 20px;">خلفية التطبيق</div>
+                    <div class="bg-options" id="bgPicker">
+                        <div class="bg-box" data-main="#1e2029" style="background: #2a2d3d;" onclick="setThemeBg('#1e2029', '#2a2d3d', this)"></div>
+                        <div class="bg-box" data-main="#000000" style="background: #111;" onclick="setThemeBg('#000000', '#111', this)"></div>
+                        <div class="bg-box active" data-main="#0c0d12" style="background: #161821;" onclick="setThemeBg('#0c0d12', '#161821', this)"></div>
+                    </div>
                 </div>
-                <ul class="task-list" id="mainTaskList"></ul>
             </div>
 
         </main>
-
-        <aside class="right-sidebar">
-            <div class="mini-panel theme-panel">
-                <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 14px;">
-                    <span>تخصيص المظهر</span> <i class="fa-solid fa-palette"></i>
-                </div>
-                
-                <div style="margin-top: 20px; color: var(--text-muted);">الألوان الأساسية</div>
-                <div class="color-options" id="colorPicker">
-                    <div class="color-dot" style="background: #f5a623;" onclick="setThemeColor('#f5a623', this)"></div>
-                    <div class="color-dot" style="background: #ff2a6d;" onclick="setThemeColor('#ff2a6d', this)"></div>
-                    <div class="color-dot" style="background: #bd10e0;" onclick="setThemeColor('#bd10e0', this)"></div>
-                    <div class="color-dot" style="background: #4a90e2;" onclick="setThemeColor('#4a90e2', this)"></div>
-                    <div class="color-dot active" style="background: #5ddc67;" onclick="setThemeColor('#5ddc67', this)"></div>
-                </div>
-
-                <div style="color: var(--text-muted);">الخلفية</div>
-                <div class="bg-options" id="bgPicker">
-                    <div class="bg-box" style="background: #2a2d3d;" onclick="setThemeBg('#1e2029', '#2a2d3d', this)"></div>
-                    <div class="bg-box" style="background: #111;" onclick="setThemeBg('#000', '#111', this)"></div>
-                    <div class="bg-box active" style="background: #161821;" onclick="setThemeBg('#0c0d12', '#161821', this)"></div>
-                </div>
-            </div>
-
-            <div class="mini-panel">
-                <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 14px;">
-                    <span>إحصائيات اليوم</span> <i class="fa-solid fa-chart-pie"></i>
-                </div>
-                <ul class="stats-list">
-                    <li><span><i class="fa-regular fa-clock"></i> الجولات</span> <span id="statRounds">0</span></li>
-                    <li><span><i class="fa-solid fa-list-check"></i> المهام</span> <span id="statTasks">0</span></li>
-                    <li><span><i class="fa-solid fa-fire"></i> التركيز</span> <span style="color: var(--theme-color);" id="statFocus">جاهز!</span></li>
-                    <li><span><i class="fa-solid fa-leaf"></i> النبتة</span> <span id="statPlant">Lv. 1</span></li>
-                </ul>
-            </div>
-        </aside>
     </div>
 
     <script>
+        // --- التحكم بالشكل والقوائم ---
+        function toggleSidebar() {
+            document.getElementById('mainSidebar').classList.toggle('collapsed');
+        }
+
+        function switchView(viewId, navElement) {
+            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-menu li').forEach(li => li.classList.remove('active'));
+            
+            document.getElementById(viewId).classList.add('active');
+            navElement.classList.add('active');
+        }
+
         function setThemeColor(color, el) {
             document.documentElement.style.setProperty('--theme-color', color);
             document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
-            el.classList.add('active');
+            if(el) el.classList.add('active');
+            saveData(); 
         }
 
         function setThemeBg(mainBg, panelBg, el) {
             document.documentElement.style.setProperty('--bg-main', mainBg);
             document.documentElement.style.setProperty('--bg-panel', panelBg);
             document.querySelectorAll('.bg-box').forEach(b => b.classList.remove('active'));
-            el.classList.add('active');
+            if(el) el.classList.add('active');
+            saveData(); 
         }
 
+        // --- نظام العداد والمهام المحدث ---
         let audioCtx;
         function playSoftBell() {
             if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -264,6 +344,9 @@
         let isRunning = false;
         let isBreakTime = false; 
         
+        let totalXP = 0;
+        let statRoundsCount = 0;
+        
         const display = document.getElementById('timerDisplay');
         const startBtn = document.getElementById('startBtn');
         const sessionCounter = document.getElementById('sessionCounter');
@@ -284,56 +367,92 @@
             if (!name || isNaN(mins) || isNaN(rounds) || mins <= 0 || rounds <= 0) return;
 
             tasks.push({ name, minutes: mins, rounds: rounds, completed: false });
-            document.getElementById('totalTasksCount').innerText = `${tasks.length} مهام`;
             
             document.getElementById('taskNameInput').value = '';
             document.getElementById('taskMinInput').value = '';
             document.getElementById('taskRoundsInput').value = '';
 
             renderTasks();
-            if (tasks.length === 1 && currentTaskIndex === -1) loadTask(0);
+            saveData(); 
+            
+            if (currentTaskIndex === -1) {
+                loadNextIncompleteTask(0);
+            }
         }
 
         function renderTasks() {
-            let list = document.getElementById('mainTaskList');
-            list.innerHTML = '';
+            let pendingList = document.getElementById('pendingTaskList');
+            let completedList = document.getElementById('completedTaskList');
+            
+            pendingList.innerHTML = '';
+            completedList.innerHTML = '';
+            
+            let pendingCount = 0;
+            let completedCount = 0;
+
             tasks.forEach((t, i) => {
-                let statusClass = t.completed ? 'completed' : (i === currentTaskIndex ? 'active' : '');
-                let icon = t.completed ? '<i class="fa-solid fa-check"></i>' : '';
-                
-                list.innerHTML += `
-                    <li class="task-item ${statusClass}">
-                        <div style="display: flex; gap: 10px; align-items: center; width: 100%; justify-content: space-between;">
-                            <div>
-                                <div style="font-weight: bold; margin-bottom: 4px;">${t.name}</div>
-                                <div style="font-size: 11px; color: var(--text-muted);">${t.minutes} د | ${t.rounds} جولات</div>
+                if (t.completed) {
+                    completedCount++;
+                    completedList.innerHTML += `
+                        <li class="task-item completed-task">
+                            <div style="display: flex; gap: 10px; align-items: center; width: 100%; justify-content: space-between;">
+                                <div>
+                                    <div style="font-weight: bold; margin-bottom: 4px; text-decoration: line-through;">${t.name}</div>
+                                    <div style="font-size: 11px; color: var(--text-muted);">${t.minutes} د | ${t.rounds} جولات</div>
+                                </div>
+                                <div class="check-circle"><i class="fa-solid fa-check"></i></div>
                             </div>
-                            <div class="check-circle" onclick="toggleTaskCompletion(${i})">${icon}</div>
-                        </div>
-                    </li>
-                `;
+                        </li>
+                    `;
+                } else {
+                    pendingCount++;
+                    let isActive = (i === currentTaskIndex) ? 'active' : '';
+                    pendingList.innerHTML += `
+                        <li class="task-item ${isActive}">
+                            <div style="display: flex; gap: 10px; align-items: center; width: 100%; justify-content: space-between;">
+                                <div>
+                                    <div style="font-weight: bold; margin-bottom: 4px;">${t.name}</div>
+                                    <div style="font-size: 11px; color: var(--text-muted);">${t.minutes} د | ${t.rounds} جولات</div>
+                                </div>
+                                <div class="check-circle" onclick="toggleTaskCompletion(${i})" title="إنهاء المهمة"></div>
+                            </div>
+                        </li>
+                    `;
+                }
             });
+
+            document.getElementById('pendingTasksCount').innerText = `${pendingCount} مهام`;
+            document.getElementById('completedTasksCount').innerText = `${completedCount} مهام`;
+            document.getElementById('statTasks').innerText = completedCount;
         }
 
         function toggleTaskCompletion(index) {
-            tasks[index].completed = !tasks[index].completed;
-            if(tasks[index].completed && index === currentTaskIndex) {
+            tasks[index].completed = true;
+            saveData(); 
+            if(index === currentTaskIndex) {
                 skipRound(); 
+            } else {
+                renderTasks();
             }
-            renderTasks();
         }
 
-        function loadTask(index) {
-            if (index < tasks.length) {
-                currentTaskIndex = index;
+        function loadNextIncompleteTask(startIndex) {
+            let nextIndex = -1;
+            for(let i = startIndex; i < tasks.length; i++) {
+                if(!tasks[i].completed) {
+                    nextIndex = i;
+                    break;
+                }
+            }
+
+            if (nextIndex !== -1) {
+                currentTaskIndex = nextIndex;
                 currentRound = 1;
                 isBreakTime = false;
                 timerRing.classList.remove('break-mode');
                 timerLabel.innerText = "وقت التركيز";
                 
-                let task = tasks[index];
-                if(task.completed) { loadTask(index + 1); return; } 
-
+                let task = tasks[nextIndex];
                 timeLeft = task.minutes * 60;
                 sessionCounter.innerText = `⏳ ${task.name} (جولة ${currentRound}/${task.rounds})`;
                 startBtn.disabled = false;
@@ -341,10 +460,10 @@
             } else {
                 currentTaskIndex = -1;
                 timeLeft = 0;
-                sessionCounter.innerText = "أنهيت جميع المهام! 🏆";
+                sessionCounter.innerText = "لا توجد مهام معلقة! 🏆";
                 startBtn.disabled = true;
-                timerLabel.innerText = "انتهى اليوم";
-                document.getElementById('plantSpeech').innerText = "عمل رائع! لقد أنجزت كل شيء اليوم 🌟";
+                timerLabel.innerText = "انتهى العمل";
+                document.getElementById('plantSpeech').innerText = "عمل رائع! لقد أنجزت كل المهام المدرجة 🌟";
             }
             updateDisplay();
             renderTasks();
@@ -394,8 +513,11 @@
             let task = tasks[currentTaskIndex];
 
             if (!isBreakTime) {
-                document.getElementById('statRounds').innerText = parseInt(document.getElementById('statRounds').innerText) + 1;
-                gainXP();
+                statRoundsCount++;
+                document.getElementById('statRounds').innerText = statRoundsCount;
+                
+                gainXP(task.minutes);
+                saveData(); 
 
                 if (currentRound < task.rounds) {
                     isBreakTime = true;
@@ -408,9 +530,9 @@
                     document.getElementById('plantSpeech').innerText = "استرخِ قليلاً، خذ نفساً عميقاً 😌";
                 } else {
                     task.completed = true;
-                    document.getElementById('statTasks').innerText = parseInt(document.getElementById('statTasks').innerText) + 1;
                     renderTasks();
-                    loadTask(currentTaskIndex + 1);
+                    saveData();
+                    loadNextIncompleteTask(0); 
                     return;
                 }
             } else {
@@ -427,19 +549,70 @@
             updateDisplay();
         }
 
-        function gainXP() {
-            let xpBar = document.getElementById('xpBar');
-            let currentWidth = parseFloat(xpBar.style.width) || 0;
-            currentWidth += 25; 
-            if (currentWidth >= 100) {
-                currentWidth = 0;
-                let lvl = parseInt(document.getElementById('statPlant').innerText.replace('Lv. ', '')) + 1;
-                document.getElementById('plantLevelDisplay').innerText = `Lv. ${lvl}`;
-                document.getElementById('statPlant').innerText = `Lv. ${lvl}`;
-            }
-            xpBar.style.width = `${currentWidth}%`;
-            document.getElementById('xpDisplay').innerText = `${currentWidth * 10} / 1000 XP`;
+        function gainXP(minutes) {
+            let earnedXP = minutes * 10;
+            totalXP += earnedXP; 
+            updateXPUI();
         }
+
+        function updateXPUI() {
+            let lvl = Math.floor(totalXP / 1000) + 1;
+            let currentLevelXP = totalXP % 1000;
+            let percentage = (currentLevelXP / 1000) * 100;
+
+            document.getElementById('plantLevelDisplay').innerText = `Lv. ${lvl}`;
+            document.getElementById('statPlant').innerText = `Lv. ${lvl}`;
+            document.getElementById('xpBar').style.width = `${percentage}%`;
+            document.getElementById('xpDisplay').innerText = `${currentLevelXP} / 1000 XP`;
+        }
+
+        // --- نظام التخزين المحلي (LocalStorage) ---
+        function saveData() {
+            const data = {
+                tasks: tasks,
+                totalXP: totalXP,
+                statRounds: statRoundsCount,
+                themeColor: getComputedStyle(document.documentElement).getPropertyValue('--theme-color').trim(),
+                themeMainBg: getComputedStyle(document.documentElement).getPropertyValue('--bg-main').trim(),
+                themePanelBg: getComputedStyle(document.documentElement).getPropertyValue('--bg-panel').trim()
+            };
+            localStorage.setItem('pomodoroMR_Data', JSON.stringify(data));
+        }
+
+        function loadData() {
+            const savedData = localStorage.getItem('pomodoroMR_Data');
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                
+                tasks = data.tasks || [];
+                totalXP = data.totalXP || 0;
+                statRoundsCount = data.statRounds || 0;
+                
+                document.getElementById('statRounds').innerText = statRoundsCount;
+                updateXPUI();
+                renderTasks();
+                
+                if (data.themeColor) {
+                    document.documentElement.style.setProperty('--theme-color', data.themeColor);
+                    document.querySelectorAll('.color-dot').forEach(d => {
+                        d.classList.remove('active');
+                        if(d.dataset.color === data.themeColor) d.classList.add('active');
+                    });
+                }
+                if (data.themeMainBg) {
+                    document.documentElement.style.setProperty('--bg-main', data.themeMainBg);
+                    document.documentElement.style.setProperty('--bg-panel', data.themePanelBg);
+                    document.querySelectorAll('.bg-box').forEach(b => {
+                        b.classList.remove('active');
+                        if(b.dataset.main === data.themeMainBg) b.classList.add('active');
+                    });
+                }
+                
+                loadNextIncompleteTask(0);
+            }
+        }
+
+        window.onload = loadData;
     </script>
 </body>
 </html>
