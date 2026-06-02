@@ -41,24 +41,23 @@
         
         .logo-container { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; transition: justify-content 0.3s; }
         
-        /* تصميم شعار MR: حرفان مضيئان فقط بلون أخضر نباتي خفيف وثابت وبدون أي إطار أو خلفية */
         .logo-mr-icon { 
-            color: #7aa982; /* لون أخضر نباتي ناعم وثابت */
+            color: #7aa982; 
             font-size: 22px; 
             font-weight: 900; 
-            text-shadow: 0 0 8px rgba(122, 169, 130, 0.4); /* إضاءة خفيفة وناعمة */
+            text-shadow: 0 0 8px rgba(122, 169, 130, 0.4); 
             cursor: pointer; 
             transition: transform 0.3s, text-shadow 0.3s, color 0.3s; 
             user-select: none;
             letter-spacing: 0.5px;
-            background: none; /* إزالة الخلفية */
-            padding: 0; /* إزالة الحشو الداخلي */
-            border: none; /* إزالة الإطار */
+            background: none; 
+            padding: 0; 
+            border: none; 
             border-radius: 0;
         }
         .logo-mr-icon:hover { 
             transform: scale(1.08); 
-            color: #8cbfa4; /* تفتيح نباتي بسيط جداً عند التمرير */
+            color: #8cbfa4; 
             text-shadow: 0 0 12px rgba(140, 191, 164, 0.6); 
         }
         
@@ -179,7 +178,6 @@
         .toggle-label:hover { color: white; }
         .toggle-label input[type="checkbox"] { accent-color: var(--theme-color); width: 18px; height: 18px; cursor: pointer; }
 
-        /* وضع ملء الشاشة */
         .app-container.fullscreen-timer .sidebar { display: none !important; }
         .app-container.fullscreen-timer .level-card, 
         .app-container.fullscreen-timer .tasks-card { display: none !important; }
@@ -206,7 +204,147 @@
         .app-container.fullscreen-timer .btn-fullscreen { top: 20px; right: 20px; font-size: 24px; }
         .app-container.fullscreen-timer .timer-circle { width: 350px; height: 350px; box-shadow: none !important; }
         .app-container.fullscreen-timer .time-text { font-size: 70px; }
-        
+
+        /* ========================================================
+           📱 إضافة إعدادات التجاوب الكاملة للهواتف الذكية (محدث)
+           ======================================================== */
+        @media (max-width: 768px) {
+            body {
+                height: 100vh;
+                overflow: hidden;
+            }
+
+            .app-container {
+                padding: 8px;
+                gap: 8px;
+                height: 100%;
+                overflow: hidden;
+            }
+
+            /* تثبيت القائمة الجانبية لتكون مطوية دائماً وتأخذ حيزاً صغيراً جداً */
+            .sidebar {
+                width: 70px !important;
+                min-width: 70px !important;
+                padding: 15px 5px !important;
+            }
+            .sidebar.collapsed {
+                width: 70px !important;
+            }
+            .logo-text, .nav-text, .copyright-section {
+                display: none !important;
+            }
+            .logo-container {
+                justify-content: center !important;
+                margin-bottom: 20px !important;
+            }
+            .nav-menu li {
+                padding: 12px 0 !important;
+                justify-content: center !important;
+                border-right: none !important;
+                border-bottom: 4px solid transparent !important;
+            }
+            .nav-menu li.active {
+                border-bottom: 4px solid var(--theme-color) !important;
+            }
+
+            /* السماح بالتمرير داخل مساحة المحتوى الرئيسية بسلاسة */
+            .views-container {
+                overflow-y: auto;
+                height: 100%;
+                padding-right: 2px;
+            }
+
+            /* ترتيب خانات صفحة الوقت عمودياً تحت بعضها */
+            #view-timer.active {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            /* تفكيك الحاوية المشتركة برمجياً لتوزيع عناصرها بشكل حر */
+            .unified-top-wrapper {
+                display: contents;
+            }
+
+            /* 1️⃣ المؤقت أولاً */
+            .timer-card {
+                order: 1 !important;
+                width: 100% !important;
+                padding: 25px 15px !important;
+            }
+            
+            /* 2️⃣ خانة إضافة المهام والمستوى ثانياً */
+            .level-card {
+                order: 2 !important;
+                width: 100% !important;
+                gap: 15px;
+            }
+
+            /* 3️⃣ المهام المعلقة ثالثاً */
+            .tasks-card {
+                order: 3 !important;
+                width: 100% !important;
+                max-height: 350px;
+            }
+
+            /* 4️⃣ النبتة أخيراً في الأسفل */
+            .plant-view-card {
+                order: 4 !important;
+                width: 100% !important;
+                padding: 25px 15px !important;
+            }
+
+            /* تقليص أحجام الخطوط والدوائر لتناسب شاشة الهاتف */
+            .timer-circle {
+                width: 185px !important;
+                height: 185px !important;
+            }
+            .time-text {
+                font-size: 38px !important;
+            }
+            .plant-emoji-container {
+                font-size: 85px !important;
+            }
+
+            /* الحفاظ على استقرار وضع ملء الشاشة داخل الهاتف */
+            .app-container.fullscreen-timer .unified-top-wrapper {
+                display: flex !important;
+                flex-direction: column !important;
+                padding: 20px !important;
+            }
+            .app-container.fullscreen-timer .timer-circle {
+                width: 250px !important;
+                height: 250px !important;
+            }
+            .app-container.fullscreen-timer .time-text {
+                font-size: 55px !important;
+            }
+
+            /* إصلاح باقي الصفحات الداخلية (السجل والتخصيص) لتكون مرتبة عمودياً */
+            #view-history {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr) !important; /* توزيع المربعات الأربعة 2×2 بشكل متناسق */
+                gap: 10px !important;
+            }
+            .stat-box {
+                padding: 15px 10px !important;
+            }
+
+            #view-settings {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                justify-content: flex-start;
+            }
+            .settings-card {
+                width: 100% !important;
+                padding: 20px 12px !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -217,7 +355,7 @@
             <div>
                 <div class="logo-container">
                     <span class="logo-mr-icon" onclick="toggleSidebar()" title="طي / توسيع القائمة">MR</span>
-                    <span class="logo-text">POMODORO </span>
+                    <span class="logo-text">POMODORO MR</span>
                 </div>
                 <ul class="nav-menu">
                     <li class="active" onclick="switchView('view-timer', this)">
@@ -337,7 +475,7 @@
                     <h2 style="margin-bottom: 5px;">إعدادات المظهر <i class="fa-solid fa-palette" style="color: var(--theme-color)"></i></h2>
                     <p style="color: var(--text-muted); margin-bottom: 25px;">قم بتخصيص بيئة عملك بألوان وخلفيات مريحة ومضادة لإرهاق العين</p>
 
-                    <div style="color: white; font-size: 15px; font-weight: bold;">الألوان الأساسية</div>
+                    <div style="color: white; font-size: 15px; font-weight: bold;">الألوان الأساسية (10 ألوان هادئة)</div>
                     <div class="color-options" id="colorPicker">
                         <div class="color-dot" data-color="#77947d" style="background: #77947d;" onclick="setThemeColor('#77947d', this)" title="أخضر حكيمي"></div>
                         <div class="color-dot" data-color="#5a8fbc" style="background: #5a8fbc;" onclick="setThemeColor('#5a8fbc', this)" title="أزرق محيطي"></div>
@@ -351,7 +489,7 @@
                         <div class="color-dot active" data-color="#5ddc67" style="background: #5ddc67;" onclick="setThemeColor('#5ddc67', this)" title="أخضر مشع"></div>
                     </div>
 
-                    <div style="color: white; font-size: 15px; font-weight: bold; margin-top: 15px;">خلفية التطبيق</div>
+                    <div style="color: white; font-size: 15px; font-weight: bold; margin-top: 15px;">خلفية التطبيق (5 خيارات مريحة)</div>
                     <div class="bg-options" id="bgPicker">
                         <div class="bg-box" data-main="#1e2029" style="background: #2a2d3d;" onclick="setThemeBg('#1e2029', '#2a2d3d', this)">رمادي</div>
                         <div class="bg-box" data-main="#000000" style="background: #111;" onclick="setThemeBg('#000000', '#111', this)">فحم</div>
@@ -379,7 +517,10 @@
 
     <script>
         function toggleSidebar() {
-            document.getElementById('mainSidebar').classList.toggle('collapsed');
+            // يتم التبديل فقط على الشاشات الكبيرة لمنع المشاكل في الهاتف
+            if (window.innerWidth > 768) {
+                document.getElementById('mainSidebar').classList.toggle('collapsed');
+            }
         }
 
         function switchView(viewId, navElement) {
@@ -487,7 +628,7 @@
             const plantDisplay = document.getElementById('mainPlantDisplay');
             if (currentTaskIndex === -1) {
                 plantDisplay.textContent = '🌱';
-                plantDisplay.style.fontSize = '110px'; 
+                if(window.innerWidth > 768) plantDisplay.style.fontSize = '110px';
                 return;
             }
 
@@ -507,9 +648,9 @@
             plantDisplay.textContent = stages[stageIndex];
 
             if (stageIndex === stages.length - 1) {
-                plantDisplay.style.fontSize = '160px';
+                plantDisplay.style.fontSize = window.innerWidth > 768 ? '160px' : '110px';
             } else {
-                plantDisplay.style.fontSize = '110px';
+                plantDisplay.style.fontSize = window.innerWidth > 768 ? '110px' : '85px';
             }
         }
 
@@ -621,7 +762,7 @@
                 
                 const plantDisplay = document.getElementById('mainPlantDisplay');
                 plantDisplay.textContent = '🌳'; 
-                plantDisplay.style.fontSize = '160px'; 
+                plantDisplay.style.fontSize = window.innerWidth > 768 ? '160px' : '110px'; 
             }
             updateDisplay();
             renderTasks();
