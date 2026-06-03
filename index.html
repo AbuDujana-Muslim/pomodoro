@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pomodoro MR</title>
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#5ddc67">
+    <link rel="apple-touch-icon" href="icon-192.png">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap');
@@ -155,9 +160,6 @@
         .toggle-label:hover { color: white; }
         .toggle-label input[type="checkbox"] { accent-color: var(--theme-color); width: 18px; height: 18px; cursor: pointer; }
 
-        /* ========================================================
-           ملء الشاشة الثابت فوق كل العناصر
-           ======================================================== */
         .app-container.fullscreen-timer .unified-top-wrapper {
             position: fixed !important; top: 0 !important; left: 0 !important; 
             width: 100vw !important; height: 100vh !important; height: 100dvh !important;
@@ -182,9 +184,6 @@
         .app-container.fullscreen-timer .timer-circle { width: 350px !important; height: 350px !important; box-shadow: none !important; }
         .app-container.fullscreen-timer .time-text { font-size: 70px !important; }
 
-        /* ========================================================
-           📱 وضع الهاتف والتجاوب (مع حل المشاكل)
-           ======================================================== */
         @media (max-width: 768px) {
             .app-container { padding: 8px; gap: 8px; }
             
@@ -195,7 +194,6 @@
             .nav-menu li { padding: 12px 0 !important; justify-content: center !important; border-right: none !important; border-bottom: 4px solid transparent !important; }
             .nav-menu li.active { border-bottom: 4px solid var(--theme-color) !important; }
 
-            /* النص العمودي */
             .orientation-hint {
                 display: block;
                 writing-mode: vertical-rl;
@@ -210,17 +208,14 @@
                 opacity: 0.7;
             }
 
-            /* السماح بالتمرير بحرية داخل منطقة العرض */
             .views-container { overflow-y: auto; padding-right: 2px; padding-bottom: 20px; }
 
-            /* إصلاح الصفحات الداخلية لتعمل كل واحدة لوحدها عند التفعيل فقط */
             #view-timer.active, #view-history.active, #view-settings.active {
                 display: flex;
                 flex-direction: column;
                 gap: 12px;
             }
 
-            /* تفكيك الحاوية لتوزيع العناصر عمودياً في صفحة الوقت */
             .unified-top-wrapper { display: contents; }
 
             .timer-card { order: 1 !important; width: 100% !important; padding: 25px 15px !important; }
@@ -236,12 +231,10 @@
             .stat-box { padding: 15px 10px !important; }
             .settings-card { width: 100% !important; padding: 20px 12px !important; }
             
-            /* تعديلات زر ملء الشاشة للهاتف */
             .app-container.fullscreen-timer .timer-circle { width: 250px !important; height: 250px !important; }
             .app-container.fullscreen-timer .time-text { font-size: 55px !important; }
         }
 
-        /* إخفاء النص العمودي تماماً في الوضع الأفقي */
         @media (orientation: landscape) {
             .orientation-hint { display: none !important; }
         }
@@ -817,6 +810,15 @@
             } else {
                 updateXPUI();
             }
+        }
+
+        // تسجيل الـ Service Worker ليعمل التطبيق كـ PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js')
+                    .then(reg => console.log('Service Worker is ready! 🚀'))
+                    .catch(err => console.error('Service Worker Error:', err));
+            });
         }
 
         window.onload = function() {
