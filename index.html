@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pomodoro MR</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -20,7 +20,8 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
 
         body {
-            background-color: var(--bg-main); color: var(--text-light); height: 100vh;
+            background-color: var(--bg-main); color: var(--text-light); 
+            height: 100vh; height: 100dvh;
             display: flex; overflow: hidden; font-size: 14px; transition: background-color 0.5s;
         }
 
@@ -28,7 +29,7 @@
         ::-webkit-scrollbar-track { background: var(--bg-main); }
         ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
 
-        .app-container { display: flex; width: 100%; height: 100%; padding: 15px; gap: 15px; }
+        .app-container { display: flex; width: 100%; height: 100%; padding: 15px; gap: 15px; overflow: hidden; }
 
         .panel {
             background-color: var(--bg-panel); border-radius: 20px; border: 1px solid var(--border-color);
@@ -36,33 +37,20 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        .sidebar { width: 240px; justify-content: space-between; overflow: hidden; flex-shrink: 0; transition: width 0.3s ease; }
+        .sidebar { width: 240px; justify-content: space-between; overflow: hidden; flex-shrink: 0; transition: width 0.3s ease; position: relative; }
         .sidebar.collapsed { width: 85px; }
         
         .logo-container { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; transition: justify-content 0.3s; }
         
         .logo-mr-icon { 
-            color: #7aa982; 
-            font-size: 22px; 
-            font-weight: 900; 
-            text-shadow: 0 0 8px rgba(122, 169, 130, 0.4); 
-            cursor: pointer; 
-            transition: transform 0.3s, text-shadow 0.3s, color 0.3s; 
-            user-select: none;
-            letter-spacing: 0.5px;
-            background: none; 
-            padding: 0; 
-            border: none; 
-            border-radius: 0;
+            color: #7aa982; font-size: 22px; font-weight: 900; 
+            text-shadow: 0 0 8px rgba(122, 169, 130, 0.4); cursor: pointer; 
+            transition: transform 0.3s, text-shadow 0.3s, color 0.3s; user-select: none;
+            letter-spacing: 0.5px; background: none; padding: 0; border: none; 
         }
-        .logo-mr-icon:hover { 
-            transform: scale(1.08); 
-            color: #8cbfa4; 
-            text-shadow: 0 0 12px rgba(140, 191, 164, 0.6); 
-        }
+        .logo-mr-icon:hover { transform: scale(1.08); color: #8cbfa4; text-shadow: 0 0 12px rgba(140, 191, 164, 0.6); }
         
         .logo-text { font-size: 16px; font-weight: 900; color: white; letter-spacing: 1px; white-space: nowrap; transition: opacity 0.2s; opacity: 1; }
-        
         .sidebar.collapsed .logo-text { opacity: 0; display: none; }
         .sidebar.collapsed .logo-container { justify-content: center; }
 
@@ -77,10 +65,11 @@
         .sidebar.collapsed .nav-menu li { padding: 12px 0; justify-content: center; border-right: none; border-bottom: 4px solid transparent; }
         .sidebar.collapsed .nav-menu li.active { border-bottom: 4px solid var(--theme-color); }
 
+        .orientation-hint { display: none; }
         .copyright-section { font-size: 11px; color: var(--text-muted); text-align: center; border-top: 1px solid var(--border-color); padding-top: 15px; transition: opacity 0.2s; white-space: nowrap; }
         .sidebar.collapsed .copyright-section { display: none; }
 
-        .views-container { flex: 1; position: relative; height: 100%; }
+        .views-container { flex: 1; position: relative; height: 100%; overflow-y: auto; overflow-x: hidden; padding-right: 5px; }
         .view-section { display: none; width: 100%; height: 100%; animation: fadeIn 0.4s ease-in-out; }
         .view-section.active { display: flex; }
         
@@ -88,14 +77,7 @@
 
         #view-timer.active { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1.2fr 0.8fr; gap: 15px; }
 
-        .unified-top-wrapper {
-            grid-column: 1 / 3;
-            grid-row: 1;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            position: relative;
-        }
+        .unified-top-wrapper { grid-column: 1 / 3; grid-row: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; position: relative; }
 
         .btn-fullscreen {
             position: absolute; top: 20px; right: 20px; background: transparent; border: none;
@@ -103,17 +85,15 @@
         }
         .btn-fullscreen:hover { color: var(--theme-color); transform: scale(1.2); }
 
-        #view-history { flex-direction: column; gap: 15px; }
-        #view-settings { flex-direction: column; gap: 15px; align-items: center; justify-content: center; }
+        #view-history { flex-direction: column; gap: 15px; min-height: min-content; }
+        #view-settings { flex-direction: column; gap: 15px; align-items: center; justify-content: center; min-height: min-content; }
 
         .plant-view-card { position: relative; background: radial-gradient(circle at center, #1f2425 0%, var(--bg-panel) 70%); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; }
         .speech-bubble { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; font-size: 13px; text-align: center; margin-bottom: 20px; backdrop-filter: blur(10px); transition: 0.3s; }
-        
         .plant-emoji-container { font-size: 110px; filter: drop-shadow(0 0 25px color-mix(in srgb, var(--theme-color) 40%, transparent)); animation: breathe 3s infinite ease-in-out; transition: transform 0.5s ease, opacity 0.3s ease, font-size 0.5s ease; user-select: none; }
         @keyframes breathe { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-10px) scale(1.05); } }
 
         .timer-card { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; width: 100%; height: 100%; }
-        
         .timer-circle {
             position: relative; width: 220px; height: 220px; display: flex; align-items: center; justify-content: center;
             background: conic-gradient(var(--theme-color) 0%, #333 50%, var(--border-color) 50%);
@@ -164,12 +144,9 @@
         .stat-box .val { font-size: 20px; font-weight: bold; color: white; margin-top: 5px; }
 
         .settings-card { width: 60%; text-align: center; padding: 35px; margin: 0 auto; }
-        
-        .color-options { display: flex; gap: 12px; justify-content: center; margin: 15px 0 25px; flex-wrap: wrap; }
+        .color-options, .bg-options { display: flex; gap: 12px; justify-content: center; margin: 15px 0 25px; flex-wrap: wrap; }
         .color-dot { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: 0.2s; }
         .color-dot.active { border-color: white; transform: scale(1.15); }
-        
-        .bg-options { display: flex; gap: 12px; justify-content: center; margin: 15px 0 25px; flex-wrap: wrap; }
         .bg-box { width: 85px; height: 48px; border-radius: 10px; cursor: pointer; border: 3px solid transparent; transition: 0.2s; font-size: 11px; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.3); font-weight: bold; }
         .bg-box.active { border-color: var(--theme-color); color: white; }
 
@@ -178,172 +155,95 @@
         .toggle-label:hover { color: white; }
         .toggle-label input[type="checkbox"] { accent-color: var(--theme-color); width: 18px; height: 18px; cursor: pointer; }
 
-        .app-container.fullscreen-timer .sidebar { display: none !important; }
+        /* ========================================================
+           ملء الشاشة الثابت فوق كل العناصر
+           ======================================================== */
+        .app-container.fullscreen-timer .unified-top-wrapper {
+            position: fixed !important; top: 0 !important; left: 0 !important; 
+            width: 100vw !important; height: 100vh !important; height: 100dvh !important;
+            z-index: 9999 !important; background-color: var(--bg-main) !important;
+            border-radius: 0 !important; border: none !important;
+            display: flex !important; flex-direction: column !important; 
+            justify-content: center !important; align-items: center !important;
+            padding: 20px !important; margin: 0 !important; box-shadow: none !important;
+        }
+
+        .app-container.fullscreen-timer .btn-fullscreen {
+            position: absolute !important; top: 25px !important; right: 25px !important;
+            font-size: 28px !important; color: var(--text-muted) !important;
+        }
+
+        .app-container.fullscreen-timer .plant-view-card, 
+        .app-container.fullscreen-timer .sidebar,
         .app-container.fullscreen-timer .level-card, 
         .app-container.fullscreen-timer .tasks-card { display: none !important; }
 
-        .app-container.fullscreen-timer #view-timer.active {
-            display: flex; width: 100%; height: 100%;
-        }
-
-        .app-container.fullscreen-timer .unified-top-wrapper {
-            display: flex; flex-direction: row; justify-content: center; align-items: center;
-            width: 100%; height: 100%; background-color: var(--bg-panel); border: 1px solid var(--border-color);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-radius: 20px; padding: 40px;
-        }
-
-        .app-container.fullscreen-timer .plant-view-card { 
-            display: none !important; 
-        }
-
-        .app-container.fullscreen-timer .timer-card {
-            background: transparent !important; border: none !important; box-shadow: none !important;
-            width: 100%; height: auto; display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-
-        .app-container.fullscreen-timer .btn-fullscreen { top: 20px; right: 20px; font-size: 24px; }
-        .app-container.fullscreen-timer .timer-circle { width: 350px; height: 350px; box-shadow: none !important; }
-        .app-container.fullscreen-timer .time-text { font-size: 70px; }
+        .app-container.fullscreen-timer .timer-card { background: transparent !important; border: none !important; box-shadow: none !important; }
+        .app-container.fullscreen-timer .timer-circle { width: 350px !important; height: 350px !important; box-shadow: none !important; }
+        .app-container.fullscreen-timer .time-text { font-size: 70px !important; }
 
         /* ========================================================
-           📱 إضافة إعدادات التجاوب الكاملة للهواتف الذكية (محدث)
+           📱 وضع الهاتف والتجاوب (مع حل المشاكل)
            ======================================================== */
         @media (max-width: 768px) {
-            body {
-                height: 100vh;
-                overflow: hidden;
-            }
-
-            .app-container {
-                padding: 8px;
-                gap: 8px;
-                height: 100%;
-                overflow: hidden;
-            }
-
-            /* تثبيت القائمة الجانبية لتكون مطوية دائماً وتأخذ حيزاً صغيراً جداً */
-            .sidebar {
-                width: 70px !important;
-                min-width: 70px !important;
-                padding: 15px 5px !important;
-            }
-            .sidebar.collapsed {
-                width: 70px !important;
-            }
-            .logo-text, .nav-text, .copyright-section {
-                display: none !important;
-            }
-            .logo-container {
-                justify-content: center !important;
-                margin-bottom: 20px !important;
-            }
-            .nav-menu li {
-                padding: 12px 0 !important;
-                justify-content: center !important;
-                border-right: none !important;
-                border-bottom: 4px solid transparent !important;
-            }
-            .nav-menu li.active {
-                border-bottom: 4px solid var(--theme-color) !important;
-            }
-
-            /* السماح بالتمرير داخل مساحة المحتوى الرئيسية بسلاسة */
-            .views-container {
-                overflow-y: auto;
-                height: 100%;
-                padding-right: 2px;
-            }
-
-            /* ترتيب خانات صفحة الوقت عمودياً تحت بعضها */
-            #view-timer.active {
-                display: flex;
-                flex-direction: column;
-                gap: 12px;
-            }
-
-            /* تفكيك الحاوية المشتركة برمجياً لتوزيع عناصرها بشكل حر */
-            .unified-top-wrapper {
-                display: contents;
-            }
-
-            /* 1️⃣ المؤقت أولاً */
-            .timer-card {
-                order: 1 !important;
-                width: 100% !important;
-                padding: 25px 15px !important;
-            }
+            .app-container { padding: 8px; gap: 8px; }
             
-            /* 2️⃣ خانة إضافة المهام والمستوى ثانياً */
-            .level-card {
-                order: 2 !important;
-                width: 100% !important;
-                gap: 15px;
+            .sidebar { width: 70px !important; min-width: 70px !important; padding: 15px 5px !important; }
+            .sidebar.collapsed { width: 70px !important; }
+            .logo-text, .nav-text, .copyright-section { display: none !important; }
+            .logo-container { justify-content: center !important; margin-bottom: 20px !important; }
+            .nav-menu li { padding: 12px 0 !important; justify-content: center !important; border-right: none !important; border-bottom: 4px solid transparent !important; }
+            .nav-menu li.active { border-bottom: 4px solid var(--theme-color) !important; }
+
+            /* النص العمودي */
+            .orientation-hint {
+                display: block;
+                writing-mode: vertical-rl;
+                text-orientation: mixed;
+                color: var(--theme-color);
+                font-size: 13px;
+                text-align: center;
+                margin: auto auto 15px auto;
+                font-weight: bold;
+                letter-spacing: 2px;
+                white-space: nowrap;
+                opacity: 0.7;
             }
 
-            /* 3️⃣ المهام المعلقة ثالثاً */
-            .tasks-card {
-                order: 3 !important;
-                width: 100% !important;
-                max-height: 350px;
-            }
+            /* السماح بالتمرير بحرية داخل منطقة العرض */
+            .views-container { overflow-y: auto; padding-right: 2px; padding-bottom: 20px; }
 
-            /* 4️⃣ النبتة أخيراً في الأسفل */
-            .plant-view-card {
-                order: 4 !important;
-                width: 100% !important;
-                padding: 25px 15px !important;
-            }
-
-            /* تقليص أحجام الخطوط والدوائر لتناسب شاشة الهاتف */
-            .timer-circle {
-                width: 185px !important;
-                height: 185px !important;
-            }
-            .time-text {
-                font-size: 38px !important;
-            }
-            .plant-emoji-container {
-                font-size: 85px !important;
-            }
-
-            /* الحفاظ على استقرار وضع ملء الشاشة داخل الهاتف */
-            .app-container.fullscreen-timer .unified-top-wrapper {
-                display: flex !important;
-                flex-direction: column !important;
-                padding: 20px !important;
-            }
-            .app-container.fullscreen-timer .timer-circle {
-                width: 250px !important;
-                height: 250px !important;
-            }
-            .app-container.fullscreen-timer .time-text {
-                font-size: 55px !important;
-            }
-
-            /* إصلاح باقي الصفحات الداخلية (السجل والتخصيص) لتكون مرتبة عمودياً */
-            #view-history {
+            /* إصلاح الصفحات الداخلية لتعمل كل واحدة لوحدها عند التفعيل فقط */
+            #view-timer.active, #view-history.active, #view-settings.active {
                 display: flex;
                 flex-direction: column;
                 gap: 12px;
             }
-            .stats-grid {
-                grid-template-columns: repeat(2, 1fr) !important; /* توزيع المربعات الأربعة 2×2 بشكل متناسق */
-                gap: 10px !important;
-            }
-            .stat-box {
-                padding: 15px 10px !important;
-            }
 
-            #view-settings {
-                display: flex;
-                flex-direction: column;
-                gap: 12px;
-                justify-content: flex-start;
-            }
-            .settings-card {
-                width: 100% !important;
-                padding: 20px 12px !important;
-            }
+            /* تفكيك الحاوية لتوزيع العناصر عمودياً في صفحة الوقت */
+            .unified-top-wrapper { display: contents; }
+
+            .timer-card { order: 1 !important; width: 100% !important; padding: 25px 15px !important; }
+            .level-card { order: 2 !important; width: 100% !important; gap: 15px; }
+            .tasks-card { order: 3 !important; width: 100% !important; min-height: 250px; }
+            .plant-view-card { order: 4 !important; width: 100% !important; padding: 25px 15px !important; min-height: 200px; }
+
+            .timer-circle { width: 185px !important; height: 185px !important; }
+            .time-text { font-size: 38px !important; }
+            .plant-emoji-container { font-size: 85px !important; }
+
+            .stats-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+            .stat-box { padding: 15px 10px !important; }
+            .settings-card { width: 100% !important; padding: 20px 12px !important; }
+            
+            /* تعديلات زر ملء الشاشة للهاتف */
+            .app-container.fullscreen-timer .timer-circle { width: 250px !important; height: 250px !important; }
+            .app-container.fullscreen-timer .time-text { font-size: 55px !important; }
+        }
+
+        /* إخفاء النص العمودي تماماً في الوضع الأفقي */
+        @media (orientation: landscape) {
+            .orientation-hint { display: none !important; }
         }
     </style>
 </head>
@@ -370,6 +270,8 @@
                 </ul>
             </div>
             
+            <div class="orientation-hint">لتجربة أفضل استخدم الوضع الأفقي</div>
+
             <div class="copyright-section">
                 <p>جميع الحقوق محفوظة © 2026</p>
                 <p>تطوير: Mahmod Rabaa 👨‍💻</p>
@@ -517,7 +419,6 @@
 
     <script>
         function toggleSidebar() {
-            // يتم التبديل فقط على الشاشات الكبيرة لمنع المشاكل في الهاتف
             if (window.innerWidth > 768) {
                 document.getElementById('mainSidebar').classList.toggle('collapsed');
             }
