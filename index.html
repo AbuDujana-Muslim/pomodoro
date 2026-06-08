@@ -7,7 +7,8 @@
     
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#5ddc67">
-    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="icon" href="./logo.png" type="image/png">
+    <link rel="apple-touch-icon" href="./logo.png">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -47,13 +48,13 @@
         
         .logo-container { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; transition: justify-content 0.3s; }
         
-        .logo-mr-icon { 
-            color: #7aa982; font-size: 22px; font-weight: 900; 
-            text-shadow: 0 0 8px rgba(122, 169, 130, 0.4); cursor: pointer; 
-            transition: transform 0.3s, text-shadow 0.3s, color 0.3s; user-select: none;
-            letter-spacing: 0.5px; background: none; padding: 0; border: none; 
+        /* تنسيق صورة الشعار الجديدة */
+        .logo-image { 
+            width: 35px; height: 35px; object-fit: contain; 
+            cursor: pointer; transition: transform 0.3s, filter 0.3s; user-select: none;
+            filter: drop-shadow(0 0 3px rgba(255,255,255,0.1));
         }
-        .logo-mr-icon:hover { transform: scale(1.08); color: #8cbfa4; text-shadow: 0 0 12px rgba(140, 191, 164, 0.6); }
+        .logo-image:hover { transform: scale(1.1); filter: drop-shadow(0 0 8px var(--theme-color)); }
         
         .logo-text { font-size: 16px; font-weight: 900; color: white; letter-spacing: 1px; white-space: nowrap; transition: opacity 0.2s; opacity: 1; }
         .sidebar.collapsed .logo-text { opacity: 0; display: none; }
@@ -80,8 +81,8 @@
         
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+        /* Timer Section */
         #view-timer.active { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1.2fr 0.8fr; gap: 15px; }
-
         .unified-top-wrapper { grid-column: 1 / 3; grid-row: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; position: relative; }
 
         .btn-fullscreen {
@@ -92,6 +93,15 @@
 
         #view-history { flex-direction: column; gap: 15px; min-height: min-content; }
         #view-settings { flex-direction: column; gap: 15px; align-items: center; justify-content: center; min-height: min-content; }
+        #view-sounds { flex-direction: column; gap: 15px; min-height: min-content; }
+
+        /* Sound Grid Styling */
+        .sound-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; padding-bottom: 20px; }
+        .sound-card { background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); padding: 20px; border-radius: 15px; text-align: center; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+        .sound-card:hover { border-color: var(--theme-color); transform: translateY(-3px); }
+        .sound-card.active { border-color: var(--theme-color); background: color-mix(in srgb, var(--theme-color) 15%, transparent); box-shadow: 0 0 15px color-mix(in srgb, var(--theme-color) 30%, transparent); }
+        .sound-card i { font-size: 28px; color: var(--theme-color); }
+        .sound-title { font-weight: bold; font-size: 13px; color: var(--text-light); }
 
         .plant-view-card { position: relative; background: radial-gradient(circle at center, #1f2425 0%, var(--bg-panel) 70%); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; }
         .speech-bubble { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; font-size: 13px; text-align: center; margin-bottom: 20px; backdrop-filter: blur(10px); transition: 0.3s; }
@@ -160,6 +170,7 @@
         .toggle-label:hover { color: white; }
         .toggle-label input[type="checkbox"] { accent-color: var(--theme-color); width: 18px; height: 18px; cursor: pointer; }
 
+        /* Fullscreen Layout Fixed */
         .app-container.fullscreen-timer .unified-top-wrapper {
             position: fixed !important; top: 0 !important; left: 0 !important; 
             width: 100vw !important; height: 100vh !important; height: 100dvh !important;
@@ -169,51 +180,39 @@
             justify-content: center !important; align-items: center !important;
             padding: 20px !important; margin: 0 !important; box-shadow: none !important;
         }
-
         .app-container.fullscreen-timer .btn-fullscreen {
             position: absolute !important; top: 25px !important; right: 25px !important;
             font-size: 28px !important; color: var(--text-muted) !important;
         }
-
         .app-container.fullscreen-timer .plant-view-card, 
         .app-container.fullscreen-timer .sidebar,
         .app-container.fullscreen-timer .level-card, 
         .app-container.fullscreen-timer .tasks-card { display: none !important; }
-
         .app-container.fullscreen-timer .timer-card { background: transparent !important; border: none !important; box-shadow: none !important; }
         .app-container.fullscreen-timer .timer-circle { width: 350px !important; height: 350px !important; box-shadow: none !important; }
         .app-container.fullscreen-timer .time-text { font-size: 70px !important; }
 
-        @media (max-width: 768px) {
-            .app-container { padding: 8px; gap: 8px; }
-            
-            .sidebar { width: 70px !important; min-width: 70px !important; padding: 15px 5px !important; }
-            .sidebar.collapsed { width: 70px !important; }
+        /* ========================================================
+           📱 التجاوب المثالي للهواتف والتابلت
+           ======================================================== */
+        @media (max-width: 1024px) {
+            .app-container { padding: 10px; gap: 10px; }
+            .sidebar { width: 85px !important; min-width: 85px !important; padding: 15px 5px !important; }
             .logo-text, .nav-text, .copyright-section { display: none !important; }
             .logo-container { justify-content: center !important; margin-bottom: 20px !important; }
             .nav-menu li { padding: 12px 0 !important; justify-content: center !important; border-right: none !important; border-bottom: 4px solid transparent !important; }
-            .nav-menu li.active { border-bottom: 4px solid var(--theme-color) !important; }
+            .nav-menu li.active { border-bottom: 4px solid var(--theme-color) !important; background: transparent; }
 
             .orientation-hint {
-                display: block;
-                writing-mode: vertical-rl;
-                text-orientation: mixed;
-                color: var(--theme-color);
-                font-size: 13px;
-                text-align: center;
-                margin: auto auto 15px auto;
-                font-weight: bold;
-                letter-spacing: 2px;
-                white-space: nowrap;
-                opacity: 0.7;
+                display: block; writing-mode: vertical-rl; text-orientation: mixed; color: var(--theme-color);
+                font-size: 13px; text-align: center; margin: auto auto 15px auto; font-weight: bold; letter-spacing: 2px;
+                white-space: nowrap; opacity: 0.7;
             }
 
             .views-container { overflow-y: auto; padding-right: 2px; padding-bottom: 20px; }
 
-            #view-timer.active, #view-history.active, #view-settings.active {
-                display: flex;
-                flex-direction: column;
-                gap: 12px;
+            #view-timer.active, #view-history.active, #view-settings.active, #view-sounds.active {
+                display: flex; flex-direction: column; gap: 15px;
             }
 
             .unified-top-wrapper { display: contents; }
@@ -247,12 +246,15 @@
         <aside class="panel sidebar" id="mainSidebar">
             <div>
                 <div class="logo-container">
-                    <span class="logo-mr-icon" onclick="toggleSidebar()" title="طي / توسيع القائمة">MR</span>
+                    <img src="./logo.png" class="logo-image" onclick="toggleSidebar()" title="طي / توسيع القائمة" alt="شعار">
                     <span class="logo-text">POMODORO MR</span>
                 </div>
                 <ul class="nav-menu">
                     <li class="active" onclick="switchView('view-timer', this)">
                         <i class="fa-regular fa-clock"></i> <span class="nav-text">الوقت</span>
+                    </li>
+                    <li onclick="switchView('view-sounds', this)">
+                        <i class="fa-solid fa-headphones"></i> <span class="nav-text">أصوات التركيز</span>
                     </li>
                     <li onclick="switchView('view-history', this)">
                         <i class="fa-solid fa-book-journal-whills"></i> <span class="nav-text">سجل التركيز</span>
@@ -274,9 +276,7 @@
         <main class="views-container">
             
             <div id="view-timer" class="view-section active">
-                
                 <div class="unified-top-wrapper">
-                    
                     <div class="panel plant-view-card">
                         <div class="speech-bubble" id="plantSpeech">أهلاً بك يا بطل! لنبدأ جلسة تركيز قوية 🌿</div>
                         <div id="mainPlantDisplay" class="plant-emoji-container">🌱</div>
@@ -329,6 +329,52 @@
                         <span id="pendingTasksCount" style="font-size: 11px; color: var(--text-muted);">0 مهام</span>
                     </div>
                     <ul class="task-list" id="pendingTaskList"></ul>
+                </div>
+            </div>
+
+            <div id="view-sounds" class="view-section">
+                <div class="panel" style="width: 100%; height: 100%; display: flex; flex-direction: column;">
+                    
+                    <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                        <h2 style="color: var(--text-light); font-size: 18px;">
+                            <i class="fa-solid fa-headphones" style="color: var(--theme-color); margin-left: 5px;"></i> أصوات الطبيعة للاسترخاء
+                        </h2>
+                        
+                        <div style="display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.2); padding: 10px 15px; border-radius: 12px; border: 1px solid var(--border-color);">
+                            <i class="fa-solid fa-volume-low" style="color: var(--text-muted);"></i>
+                            <input type="range" id="volumeControl" min="0" max="1" step="0.05" value="0.5" onchange="changeVolume(this.value)" style="width: 120px; accent-color: var(--theme-color);">
+                            <i class="fa-solid fa-volume-high" style="color: var(--text-muted);"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="sound-grid" style="flex: 1; overflow-y: auto;">
+                        <div class="sound-card" onclick="toggleAudio('rain', this)">
+                            <i class="fa-solid fa-cloud-showers-heavy"></i>
+                            <div class="sound-title">مطر هادئ</div>
+                        </div>
+                        <div class="sound-card" onclick="toggleAudio('wind', this)">
+                            <i class="fa-solid fa-wind"></i>
+                            <div class="sound-title">رياح هادئة</div>
+                        </div>
+                        <div class="sound-card" onclick="toggleAudio('brown', this)">
+                            <i class="fa-solid fa-water"></i>
+                            <div class="sound-title">ضوضاء بنية</div>
+                        </div>
+                        <div class="sound-card" onclick="toggleAudio('white', this)">
+                            <i class="fa-solid fa-tv"></i>
+                            <div class="sound-title">ضوضاء بيضاء</div>
+                        </div>
+                        <div class="sound-card" onclick="toggleAudio('pink', this)">
+                            <i class="fa-solid fa-wave-square"></i>
+                            <div class="sound-title">ضوضاء زهرية</div>
+                        </div>
+                        <div class="sound-card" onclick="toggleAudio('cafe', this)">
+                            <i class="fa-solid fa-mug-hot"></i>
+                            <div class="sound-title">أجواء مقهى</div>
+                        </div>
+                    </div>
+                    
+                    <audio id="focusAudio" loop></audio>
                 </div>
             </div>
 
@@ -411,8 +457,47 @@
     </div>
 
     <script>
+        // ----------------------------------------------------
+        // نظام الأصوات الحقيقية (Local Audio Setup)
+        // ----------------------------------------------------
+        const audioFiles = {
+            'rain': './rain.mp3',
+            'wind': './wind.mp3',
+            'brown': './brown.mp3',
+            'white': './white.mp3',
+            'pink': './pink.mp3',
+            'cafe': './cafe.mp3'
+        };
+        const focusPlayer = document.getElementById('focusAudio');
+        let currentSound = '';
+
+        function toggleAudio(type, element) {
+            document.querySelectorAll('.sound-card').forEach(c => c.classList.remove('active'));
+
+            if (currentSound === type) {
+                if (focusPlayer.paused) {
+                    focusPlayer.play();
+                    element.classList.add('active');
+                } else {
+                    focusPlayer.pause();
+                }
+            } else {
+                focusPlayer.src = audioFiles[type];
+                focusPlayer.play();
+                currentSound = type;
+                element.classList.add('active');
+            }
+        }
+
+        function changeVolume(val) {
+            focusPlayer.volume = val;
+        }
+
+        // ----------------------------------------------------
+        // باقي الدوال الأصلية (التنقل، المظهر، المؤقت، الخ)
+        // ----------------------------------------------------
         function toggleSidebar() {
-            if (window.innerWidth > 768) {
+            if (window.innerWidth > 1024) {
                 document.getElementById('mainSidebar').classList.toggle('collapsed');
             }
         }
@@ -420,7 +505,6 @@
         function switchView(viewId, navElement) {
             document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-menu li').forEach(li => li.classList.remove('active'));
-            
             document.getElementById(viewId).classList.add('active');
             navElement.classList.add('active');
         }
@@ -443,14 +527,8 @@
         function toggleFullscreenTimer() {
             const container = document.querySelector('.app-container');
             const icon = document.querySelector('.btn-fullscreen i');
-            
             container.classList.toggle('fullscreen-timer');
-            
-            if(container.classList.contains('fullscreen-timer')) {
-                icon.className = 'fa-solid fa-compress';
-            } else {
-                icon.className = 'fa-solid fa-expand';
-            }
+            icon.className = container.classList.contains('fullscreen-timer') ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
         }
 
         let audioCtx;
@@ -494,15 +572,8 @@
         const timerRing = document.getElementById('timerRing');
         const timerLabel = document.getElementById('timerLabel');
 
-        function toggleAutoBreak(checked) {
-            autoStartBreak = checked;
-            saveData();
-        }
-
-        function toggleAutoSession(checked) {
-            autoStartSession = checked;
-            saveData();
-        }
+        function toggleAutoBreak(checked) { autoStartBreak = checked; saveData(); }
+        function toggleAutoSession(checked) { autoStartSession = checked; saveData(); }
 
         function updateDisplay() {
             let m = Math.floor(timeLeft / 60);
@@ -522,7 +593,7 @@
             const plantDisplay = document.getElementById('mainPlantDisplay');
             if (currentTaskIndex === -1) {
                 plantDisplay.textContent = '🌱';
-                if(window.innerWidth > 768) plantDisplay.style.fontSize = '110px';
+                if(window.innerWidth > 1024) plantDisplay.style.fontSize = '110px';
                 return;
             }
 
@@ -540,12 +611,9 @@
             if (totalProgress >= 1) stageIndex = stages.length - 1;
 
             plantDisplay.textContent = stages[stageIndex];
-
-            if (stageIndex === stages.length - 1) {
-                plantDisplay.style.fontSize = window.innerWidth > 768 ? '160px' : '110px';
-            } else {
-                plantDisplay.style.fontSize = window.innerWidth > 768 ? '110px' : '85px';
-            }
+            plantDisplay.style.fontSize = (stageIndex === stages.length - 1) 
+                ? (window.innerWidth > 1024 ? '160px' : '110px') 
+                : (window.innerWidth > 1024 ? '110px' : '85px');
         }
 
         function addNewTask() {
@@ -564,50 +632,30 @@
             renderTasks();
             saveData(); 
             
-            if (currentTaskIndex === -1) {
-                loadNextIncompleteTask(0);
-            }
+            if (currentTaskIndex === -1) loadNextIncompleteTask(0);
         }
 
         function renderTasks() {
             let pendingList = document.getElementById('pendingTaskList');
             let completedList = document.getElementById('completedTaskList');
-            
-            pendingList.innerHTML = '';
-            completedList.innerHTML = '';
-            
-            let pendingCount = 0;
-            let completedCount = 0;
+            pendingList.innerHTML = ''; completedList.innerHTML = '';
+            let pendingCount = 0; let completedCount = 0;
 
             tasks.forEach((t, i) => {
-                if (t.completed) {
-                    completedCount++;
-                    completedList.innerHTML += `
-                        <li class="task-item completed-task">
-                            <div style="display: flex; gap: 10px; align-items: center; width: 100%; justify-content: space-between;">
-                                <div>
-                                    <div style="font-weight: bold; margin-bottom: 4px; text-decoration: line-through;">${t.name}</div>
-                                    <div style="font-size: 11px; color: var(--text-muted);">${t.minutes} د | ${t.rounds} جولات</div>
-                                </div>
-                                <div class="check-circle"><i class="fa-solid fa-check"></i></div>
+                let htmlStr = `
+                    <li class="task-item ${t.completed ? 'completed-task' : (i === currentTaskIndex ? 'active' : '')}">
+                        <div style="display: flex; gap: 10px; align-items: center; width: 100%; justify-content: space-between;">
+                            <div>
+                                <div style="font-weight: bold; margin-bottom: 4px; ${t.completed ? 'text-decoration: line-through;' : ''}">${t.name}</div>
+                                <div style="font-size: 11px; color: var(--text-muted);">${t.minutes} د | ${t.rounds} جولات</div>
                             </div>
-                        </li>
-                    `;
-                } else {
-                    pendingCount++;
-                    let isActive = (i === currentTaskIndex) ? 'active' : '';
-                    pendingList.innerHTML += `
-                        <li class="task-item ${isActive}">
-                            <div style="display: flex; gap: 10px; align-items: center; width: 100%; justify-content: space-between;">
-                                <div>
-                                    <div style="font-weight: bold; margin-bottom: 4px;">${t.name}</div>
-                                    <div style="font-size: 11px; color: var(--text-muted);">${t.minutes} د | ${t.rounds} جولات</div>
-                                </div>
-                                <div class="check-circle" onclick="toggleTaskCompletion(${i})" title="إنهاء المهمة"></div>
+                            <div class="check-circle" onclick="${!t.completed ? `toggleTaskCompletion(${i})` : ''}">
+                                ${t.completed ? '<i class="fa-solid fa-check"></i>' : ''}
                             </div>
-                        </li>
-                    `;
-                }
+                        </div>
+                    </li>`;
+                if (t.completed) { completedCount++; completedList.innerHTML += htmlStr; } 
+                else { pendingCount++; pendingList.innerHTML += htmlStr; }
             });
 
             document.getElementById('pendingTasksCount').innerText = `${pendingCount} مهام`;
@@ -618,21 +666,12 @@
         function toggleTaskCompletion(index) {
             tasks[index].completed = true;
             saveData(); 
-            if(index === currentTaskIndex) {
-                skipRound(); 
-            } else {
-                renderTasks();
-            }
+            if(index === currentTaskIndex) skipRound(); else renderTasks();
         }
 
         function loadNextIncompleteTask(startIndex) {
             let nextIndex = -1;
-            for(let i = startIndex; i < tasks.length; i++) {
-                if(!tasks[i].completed) {
-                    nextIndex = i;
-                    break;
-                }
-            }
+            for(let i = startIndex; i < tasks.length; i++) { if(!tasks[i].completed) { nextIndex = i; break; } }
 
             if (nextIndex !== -1) {
                 currentTaskIndex = nextIndex;
@@ -656,7 +695,7 @@
                 
                 const plantDisplay = document.getElementById('mainPlantDisplay');
                 plantDisplay.textContent = '🌳'; 
-                plantDisplay.style.fontSize = window.innerWidth > 768 ? '160px' : '110px'; 
+                plantDisplay.style.fontSize = window.innerWidth > 1024 ? '160px' : '110px'; 
             }
             updateDisplay();
             renderTasks();
@@ -674,10 +713,8 @@
                 startBtn.innerHTML = 'إيقاف ⏸';
                 isRunning = true;
                 timerId = setInterval(() => {
-                    if (timeLeft > 0) {
-                        timeLeft--;
-                        updateDisplay();
-                    } else {
+                    if (timeLeft > 0) { timeLeft--; updateDisplay(); } 
+                    else {
                         clearInterval(timerId);
                         isRunning = false;
                         startBtn.innerHTML = 'متابعة ▶';
@@ -722,18 +759,13 @@
                     document.getElementById('plantSpeech').innerText = "استرخِ قليلاً، خذ نفساً عميقاً 😌";
                     
                     updateDisplay();
-                    if (autoStartBreak) {
-                        setTimeout(() => { toggleTimer(); }, 200);
-                    }
+                    if (autoStartBreak) setTimeout(() => { toggleTimer(); }, 200);
                 } else {
                     task.completed = true;
                     renderTasks();
                     saveData();
                     loadNextIncompleteTask(0); 
-                    
-                    if (currentTaskIndex !== -1 && autoStartSession) {
-                        setTimeout(() => { toggleTimer(); }, 200);
-                    }
+                    if (currentTaskIndex !== -1 && autoStartSession) setTimeout(() => { toggleTimer(); }, 200);
                     return;
                 }
             } else {
@@ -747,15 +779,12 @@
                 document.getElementById('plantSpeech').innerText = "عدنا للعمل! 💪";
                 
                 updateDisplay();
-                if (autoStartSession) {
-                    setTimeout(() => { toggleTimer(); }, 200);
-                }
+                if (autoStartSession) setTimeout(() => { toggleTimer(); }, 200);
             }
         }
 
         function gainXP(minutes) {
-            let earnedXP = minutes * 10;
-            totalXP += earnedXP; 
+            totalXP += minutes * 10; 
             updateXPUI();
         }
 
@@ -774,14 +803,11 @@
 
         function saveData() {
             const data = {
-                tasks: tasks,
-                totalXP: totalXP,
-                statRounds: statRoundsCount,
+                tasks: tasks, totalXP: totalXP, statRounds: statRoundsCount,
                 themeColor: getComputedStyle(document.documentElement).getPropertyValue('--theme-color').trim(),
                 themeMainBg: getComputedStyle(document.documentElement).getPropertyValue('--bg-main').trim(),
                 themePanelBg: getComputedStyle(document.documentElement).getPropertyValue('--bg-panel').trim(),
-                autoStartBreak: autoStartBreak,
-                autoStartSession: autoStartSession
+                autoStartBreak: autoStartBreak, autoStartSession: autoStartSession
             };
             localStorage.setItem('pomodoroMR_Data', JSON.stringify(data));
         }
@@ -790,11 +816,8 @@
             const savedData = localStorage.getItem('pomodoroMR_Data');
             if (savedData) {
                 const parsed = JSON.parse(savedData);
-                tasks = parsed.tasks || [];
-                totalXP = parsed.totalXP || 0;
-                statRoundsCount = parsed.statRounds || 0;
-                autoStartBreak = parsed.autoStartBreak || false;
-                autoStartSession = parsed.autoStartSession || false;
+                tasks = parsed.tasks || []; totalXP = parsed.totalXP || 0; statRoundsCount = parsed.statRounds || 0;
+                autoStartBreak = parsed.autoStartBreak || false; autoStartSession = parsed.autoStartSession || false;
 
                 document.getElementById('autoBreakToggle').checked = autoStartBreak;
                 document.getElementById('autoSessionToggle').checked = autoStartSession;
@@ -804,26 +827,20 @@
                 if(parsed.themePanelBg) document.documentElement.style.setProperty('--bg-panel', parsed.themePanelBg);
                 
                 document.getElementById('statRounds').innerText = statRoundsCount;
-                updateXPUI();
-                renderTasks();
-                loadNextIncompleteTask(0);
+                updateXPUI(); renderTasks(); loadNextIncompleteTask(0);
             } else {
                 updateXPUI();
             }
         }
 
-        // تسجيل الـ Service Worker ليعمل التطبيق كـ PWA
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('Service Worker is ready! 🚀'))
                     .catch(err => console.error('Service Worker Error:', err));
             });
         }
 
-        window.onload = function() {
-            loadData();
-        };
+        window.onload = function() { loadData(); };
     </script>
 </body>
 </html>
