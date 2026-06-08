@@ -11,238 +11,10 @@
     <link rel="apple-touch-icon" href="./logo.png">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap');
-
-        :root {
-            --bg-main: #0c0d12;
-            --bg-panel: #161821;
-            --theme-color: #5ddc67; 
-            --text-light: #f0f0f0;
-            --text-muted: #888c99;
-            --border-color: #2a2d3d;
-        }
-
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
-
-        body {
-            background-color: var(--bg-main); color: var(--text-light); 
-            height: 100vh; height: 100dvh;
-            display: flex; overflow: hidden; font-size: 14px; transition: background-color 0.5s;
-        }
-
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-main); }
-        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
-
-        .app-container { display: flex; width: 100%; height: 100%; padding: 15px; gap: 15px; overflow: hidden; }
-
-        .panel {
-            background-color: var(--bg-panel); border-radius: 20px; border: 1px solid var(--border-color);
-            padding: 20px; display: flex; flex-direction: column; transition: background-color 0.5s, width 0.3s;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .sidebar { width: 240px; justify-content: space-between; overflow: hidden; flex-shrink: 0; transition: width 0.3s ease; position: relative; }
-        .sidebar.collapsed { width: 85px; }
-        
-        .logo-container { display: flex; align-items: center; gap: 12px; margin-bottom: 30px; transition: justify-content 0.3s; }
-        
-        /* تنسيق صورة الشعار الجديدة */
-        .logo-image { 
-            width: 35px; height: 35px; object-fit: contain; 
-            cursor: pointer; transition: transform 0.3s, filter 0.3s; user-select: none;
-            filter: drop-shadow(0 0 3px rgba(255,255,255,0.1));
-        }
-        .logo-image:hover { transform: scale(1.1); filter: drop-shadow(0 0 8px var(--theme-color)); }
-        
-        .logo-text { font-size: 16px; font-weight: 900; color: white; letter-spacing: 1px; white-space: nowrap; transition: opacity 0.2s; opacity: 1; }
-        .sidebar.collapsed .logo-text { opacity: 0; display: none; }
-        .sidebar.collapsed .logo-container { justify-content: center; }
-
-        .nav-menu { list-style: none; display: flex; flex-direction: column; gap: 8px; }
-        .nav-menu li { padding: 12px 15px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; gap: 12px; color: var(--text-muted); transition: 0.3s; font-weight: 500; white-space: nowrap; }
-        .nav-menu li:hover, .nav-menu li.active { background-color: color-mix(in srgb, var(--theme-color) 10%, transparent); color: white; }
-        .nav-menu li.active { border-right: 4px solid var(--theme-color); }
-        .nav-menu li i { font-size: 18px; min-width: 20px; text-align: center; }
-        
-        .nav-text { transition: opacity 0.2s; opacity: 1; }
-        .sidebar.collapsed .nav-text { display: none; }
-        .sidebar.collapsed .nav-menu li { padding: 12px 0; justify-content: center; border-right: none; border-bottom: 4px solid transparent; }
-        .sidebar.collapsed .nav-menu li.active { border-bottom: 4px solid var(--theme-color); }
-
-        .orientation-hint { display: none; }
-        .copyright-section { font-size: 11px; color: var(--text-muted); text-align: center; border-top: 1px solid var(--border-color); padding-top: 15px; transition: opacity 0.2s; white-space: nowrap; }
-        .sidebar.collapsed .copyright-section { display: none; }
-
-        .views-container { flex: 1; position: relative; height: 100%; overflow-y: auto; overflow-x: hidden; padding-right: 5px; }
-        .view-section { display: none; width: 100%; height: 100%; animation: fadeIn 0.4s ease-in-out; }
-        .view-section.active { display: flex; }
-        
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Timer Section */
-        #view-timer.active { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1.2fr 0.8fr; gap: 15px; }
-        .unified-top-wrapper { grid-column: 1 / 3; grid-row: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 15px; position: relative; }
-
-        .btn-fullscreen {
-            position: absolute; top: 20px; right: 20px; background: transparent; border: none;
-            color: var(--text-muted); font-size: 18px; cursor: pointer; transition: 0.2s; z-index: 10;
-        }
-        .btn-fullscreen:hover { color: var(--theme-color); transform: scale(1.2); }
-
-        #view-history { flex-direction: column; gap: 15px; min-height: min-content; }
-        #view-settings { flex-direction: column; gap: 15px; align-items: center; justify-content: center; min-height: min-content; }
-        #view-sounds { flex-direction: column; gap: 15px; min-height: min-content; }
-
-        /* Sound Grid Styling */
-        .sound-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; padding-bottom: 20px; }
-        .sound-card { background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); padding: 20px; border-radius: 15px; text-align: center; cursor: pointer; transition: 0.3s; display: flex; flex-direction: column; align-items: center; gap: 12px; }
-        .sound-card:hover { border-color: var(--theme-color); transform: translateY(-3px); }
-        .sound-card.active { border-color: var(--theme-color); background: color-mix(in srgb, var(--theme-color) 15%, transparent); box-shadow: 0 0 15px color-mix(in srgb, var(--theme-color) 30%, transparent); }
-        .sound-card i { font-size: 28px; color: var(--theme-color); }
-        .sound-title { font-weight: bold; font-size: 13px; color: var(--text-light); }
-
-        .plant-view-card { position: relative; background: radial-gradient(circle at center, #1f2425 0%, var(--bg-panel) 70%); display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; }
-        .speech-bubble { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 15px; border-radius: 15px; font-size: 13px; text-align: center; margin-bottom: 20px; backdrop-filter: blur(10px); transition: 0.3s; }
-        .plant-emoji-container { font-size: 110px; filter: drop-shadow(0 0 25px color-mix(in srgb, var(--theme-color) 40%, transparent)); animation: breathe 3s infinite ease-in-out; transition: transform 0.5s ease, opacity 0.3s ease, font-size 0.5s ease; user-select: none; }
-        @keyframes breathe { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-10px) scale(1.05); } }
-
-        .timer-card { display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; width: 100%; height: 100%; }
-        .timer-circle {
-            position: relative; width: 220px; height: 220px; display: flex; align-items: center; justify-content: center;
-            background: conic-gradient(var(--theme-color) 0%, #333 50%, var(--border-color) 50%);
-            border-radius: 50%; margin-bottom: 20px; box-shadow: 0 0 30px rgba(0,0,0,0.5); transition: background 0.3s;
-        }
-        .timer-circle.break-mode { background: conic-gradient(#4a90e2 0%, #333 50%, var(--border-color) 50%); }
-        .timer-circle::before { content: ''; position: absolute; inset: 8px; background: var(--bg-panel); border-radius: 50%; transition: 0.5s; }
-        .timer-display { position: relative; z-index: 1; text-align: center; }
-        .time-text { font-size: 48px; font-weight: 900; letter-spacing: 2px; }
-        .session-badge { background: color-mix(in srgb, var(--theme-color) 15%, transparent); color: var(--theme-color); padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: bold; margin-top: 5px; display: inline-block; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; transition: 0.3s; }
-        
-        .timer-controls { display: flex; gap: 12px; align-items: center; }
-        .btn-play { background: var(--theme-color); color: #000; border: none; padding: 12px 30px; border-radius: 25px; font-size: 16px; font-weight: bold; cursor: pointer; box-shadow: 0 0 15px color-mix(in srgb, var(--theme-color) 50%, transparent); transition: 0.2s; }
-        .btn-play:hover { transform: translateY(-2px); box-shadow: 0 0 25px var(--theme-color); }
-        .btn-play:disabled { background: var(--border-color); color: #888; box-shadow: none; cursor: not-allowed; }
-        .btn-icon { background: var(--border-color); color: white; border: none; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; }
-        .btn-icon:hover { background: #3a3d52; }
-
-        .level-card { grid-column: 1; grid-row: 2; display: flex; flex-direction: column; justify-content: space-between; }
-        .level-header { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 12px; }
-        .level-bar-bg { width: 100%; height: 6px; background: var(--border-color); border-radius: 5px; overflow: hidden; margin-bottom: 15px; }
-        .level-bar-fill { height: 100%; width: 0%; background: var(--theme-color); box-shadow: 0 0 10px var(--theme-color); transition: width 0.5s ease, background 0.3s; }
-        
-        .task-input-container { display: flex; flex-direction: column; gap: 8px; background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; }
-        .task-input-container input { background: rgba(0,0,0,0.3); border: 1px solid #333; color: white; padding: 8px; border-radius: 8px; font-size: 12px; outline: none; transition: 0.3s; }
-        .task-input-container input:focus { border-color: var(--theme-color); }
-        .row-inputs { display: flex; gap: 8px; }
-        .row-inputs input { width: 50%; }
-        .btn-add-task { background: transparent; border: 1px dashed var(--theme-color); color: var(--theme-color); padding: 8px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; font-size: 12px; }
-        .btn-add-task:hover { background: var(--theme-color); color: black; }
-
-        .tasks-card { grid-column: 2; grid-row: 2; overflow-y: auto; }
-        .tasks-header { font-size: 14px; font-weight: bold; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
-        .task-list { list-style: none; }
-        .task-item { display: flex; align-items: center; justify-content: space-between; padding: 12px; background: rgba(0,0,0,0.2); border-radius: 10px; margin-bottom: 8px; transition: 0.3s; border: 1px solid transparent; }
-        .task-item.active { border-color: var(--theme-color); background: color-mix(in srgb, var(--theme-color) 5%, transparent); box-shadow: 0 0 10px color-mix(in srgb, var(--theme-color) 20%, transparent) inset;}
-        
-        .check-circle { width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 12px; color: transparent; cursor: pointer; transition: 0.3s; }
-        .check-circle:hover { border-color: var(--theme-color); }
-        
-        .history-card { flex: 1; overflow-y: auto; }
-        .completed-task { opacity: 0.7; border-color: var(--theme-color); background: rgba(0,0,0,0.3); }
-        .completed-task .check-circle { background: var(--theme-color); border-color: var(--theme-color); color: #000; box-shadow: 0 0 8px var(--theme-color); cursor: default; }
-        
-        .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 15px; }
-        .stat-box { background: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: 15px; padding: 20px; text-align: center; }
-        .stat-box i { font-size: 24px; color: var(--theme-color); margin-bottom: 10px; }
-        .stat-box .val { font-size: 20px; font-weight: bold; color: white; margin-top: 5px; }
-
-        .settings-card { width: 60%; text-align: center; padding: 35px; margin: 0 auto; }
-        .color-options, .bg-options { display: flex; gap: 12px; justify-content: center; margin: 15px 0 25px; flex-wrap: wrap; }
-        .color-dot { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: 0.2s; }
-        .color-dot.active { border-color: white; transform: scale(1.15); }
-        .bg-box { width: 85px; height: 48px; border-radius: 10px; cursor: pointer; border: 3px solid transparent; transition: 0.2s; font-size: 11px; display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.3); font-weight: bold; }
-        .bg-box.active { border-color: var(--theme-color); color: white; }
-
-        .toggle-options-container { display: flex; flex-direction: column; gap: 12px; align-items: flex-start; max-width: 280px; margin: 20px auto 0; text-align: right; }
-        .toggle-label { display: flex; align-items: center; gap: 12px; cursor: pointer; color: var(--text-light); font-size: 13px; width: 100%; transition: 0.2s; }
-        .toggle-label:hover { color: white; }
-        .toggle-label input[type="checkbox"] { accent-color: var(--theme-color); width: 18px; height: 18px; cursor: pointer; }
-
-        /* Fullscreen Layout Fixed */
-        .app-container.fullscreen-timer .unified-top-wrapper {
-            position: fixed !important; top: 0 !important; left: 0 !important; 
-            width: 100vw !important; height: 100vh !important; height: 100dvh !important;
-            z-index: 9999 !important; background-color: var(--bg-main) !important;
-            border-radius: 0 !important; border: none !important;
-            display: flex !important; flex-direction: column !important; 
-            justify-content: center !important; align-items: center !important;
-            padding: 20px !important; margin: 0 !important; box-shadow: none !important;
-        }
-        .app-container.fullscreen-timer .btn-fullscreen {
-            position: absolute !important; top: 25px !important; right: 25px !important;
-            font-size: 28px !important; color: var(--text-muted) !important;
-        }
-        .app-container.fullscreen-timer .plant-view-card, 
-        .app-container.fullscreen-timer .sidebar,
-        .app-container.fullscreen-timer .level-card, 
-        .app-container.fullscreen-timer .tasks-card { display: none !important; }
-        .app-container.fullscreen-timer .timer-card { background: transparent !important; border: none !important; box-shadow: none !important; }
-        .app-container.fullscreen-timer .timer-circle { width: 350px !important; height: 350px !important; box-shadow: none !important; }
-        .app-container.fullscreen-timer .time-text { font-size: 70px !important; }
-
-        /* ========================================================
-           📱 التجاوب المثالي للهواتف والتابلت
-           ======================================================== */
-        @media (max-width: 1024px) {
-            .app-container { padding: 10px; gap: 10px; }
-            .sidebar { width: 85px !important; min-width: 85px !important; padding: 15px 5px !important; }
-            .logo-text, .nav-text, .copyright-section { display: none !important; }
-            .logo-container { justify-content: center !important; margin-bottom: 20px !important; }
-            .nav-menu li { padding: 12px 0 !important; justify-content: center !important; border-right: none !important; border-bottom: 4px solid transparent !important; }
-            .nav-menu li.active { border-bottom: 4px solid var(--theme-color) !important; background: transparent; }
-
-            .orientation-hint {
-                display: block; writing-mode: vertical-rl; text-orientation: mixed; color: var(--theme-color);
-                font-size: 13px; text-align: center; margin: auto auto 15px auto; font-weight: bold; letter-spacing: 2px;
-                white-space: nowrap; opacity: 0.7;
-            }
-
-            .views-container { overflow-y: auto; padding-right: 2px; padding-bottom: 20px; }
-
-            #view-timer.active, #view-history.active, #view-settings.active, #view-sounds.active {
-                display: flex; flex-direction: column; gap: 15px;
-            }
-
-            .unified-top-wrapper { display: contents; }
-
-            .timer-card { order: 1 !important; width: 100% !important; padding: 25px 15px !important; }
-            .level-card { order: 2 !important; width: 100% !important; gap: 15px; }
-            .tasks-card { order: 3 !important; width: 100% !important; min-height: 250px; }
-            .plant-view-card { order: 4 !important; width: 100% !important; padding: 25px 15px !important; min-height: 200px; }
-
-            .timer-circle { width: 185px !important; height: 185px !important; }
-            .time-text { font-size: 38px !important; }
-            .plant-emoji-container { font-size: 85px !important; }
-
-            .stats-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
-            .stat-box { padding: 15px 10px !important; }
-            .settings-card { width: 100% !important; padding: 20px 12px !important; }
-            
-            .app-container.fullscreen-timer .timer-circle { width: 250px !important; height: 250px !important; }
-            .app-container.fullscreen-timer .time-text { font-size: 55px !important; }
-        }
-
-        @media (orientation: landscape) {
-            .orientation-hint { display: none !important; }
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
     <div class="app-container">
-        
         <aside class="panel sidebar" id="mainSidebar">
             <div>
                 <div class="logo-container">
@@ -264,9 +36,7 @@
                     </li>
                 </ul>
             </div>
-            
             <div class="orientation-hint">لتجربة أفضل استخدم الوضع الأفقي</div>
-
             <div class="copyright-section">
                 <p>جميع الحقوق محفوظة © 2026</p>
                 <p>تطوير: Mahmod Rabaa 👨‍💻</p>
@@ -286,15 +56,13 @@
                         <button class="btn-fullscreen" onclick="toggleFullscreenTimer()" title="ملء الشاشة">
                             <i class="fa-solid fa-expand"></i>
                         </button>
-
                         <div class="timer-circle" id="timerRing">
                             <div class="timer-display">
-                                <div style="font-size: 12px; color: var(--text-muted); margin-bottom: 5px;" id="timerLabel">وقت التركيز</div>
+                                <div id="timerLabel" style="font-size: 12px; color: var(--text-muted); margin-bottom: 5px;">وقت التركيز</div>
                                 <div class="time-text" id="timerDisplay">00:00</div>
                                 <div class="session-badge" id="sessionCounter">في انتظار المهام... 📭</div>
                             </div>
                         </div>
-                        
                         <div class="timer-controls">
                             <button class="btn-icon" onclick="skipRound()" title="تخطي"><i class="fa-solid fa-forward-step"></i></button>
                             <button class="btn-play" id="startBtn" onclick="toggleTimer()" disabled>ابدأ ▶</button>
@@ -307,12 +75,11 @@
                 <div class="panel level-card">
                     <div>
                         <div class="level-header">
-                            <span style="font-weight: bold; font-size: 16px;" id="userLevelDisplay">مستوى المستخدم Lv. 1</span>
-                            <span>الخبرة <span style="color: var(--text-muted);" id="xpDisplay">0 / 1000 XP</span></span>
+                            <span id="userLevelDisplay" style="font-weight: bold; font-size: 16px;">مستوى المستخدم Lv. 1</span>
+                            <span>الخبرة <span id="xpDisplay" style="color: var(--text-muted);">0 / 1000 XP</span></span>
                         </div>
                         <div class="level-bar-bg"><div class="level-bar-fill" id="xpBar"></div></div>
                     </div>
-
                     <div class="task-input-container">
                         <input type="text" id="taskNameInput" placeholder="اسم المهمة (مثال: فيزياء، برمجة)...">
                         <div class="row-inputs">
@@ -334,12 +101,10 @@
 
             <div id="view-sounds" class="view-section">
                 <div class="panel" style="width: 100%; height: 100%; display: flex; flex-direction: column;">
-                    
                     <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
                         <h2 style="color: var(--text-light); font-size: 18px;">
                             <i class="fa-solid fa-headphones" style="color: var(--theme-color); margin-left: 5px;"></i> أصوات الطبيعة للاسترخاء
                         </h2>
-                        
                         <div style="display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.2); padding: 10px 15px; border-radius: 12px; border: 1px solid var(--border-color);">
                             <i class="fa-solid fa-volume-low" style="color: var(--text-muted);"></i>
                             <input type="range" id="volumeControl" min="0" max="1" step="0.05" value="0.5" onchange="changeVolume(this.value)" style="width: 120px; accent-color: var(--theme-color);">
@@ -349,31 +114,24 @@
                     
                     <div class="sound-grid" style="flex: 1; overflow-y: auto;">
                         <div class="sound-card" onclick="toggleAudio('rain', this)">
-                            <i class="fa-solid fa-cloud-showers-heavy"></i>
-                            <div class="sound-title">مطر هادئ</div>
+                            <i class="fa-solid fa-cloud-showers-heavy"></i><div class="sound-title">مطر هادئ</div>
                         </div>
                         <div class="sound-card" onclick="toggleAudio('wind', this)">
-                            <i class="fa-solid fa-wind"></i>
-                            <div class="sound-title">رياح هادئة</div>
+                            <i class="fa-solid fa-wind"></i><div class="sound-title">رياح هادئة</div>
                         </div>
                         <div class="sound-card" onclick="toggleAudio('brown', this)">
-                            <i class="fa-solid fa-water"></i>
-                            <div class="sound-title">ضوضاء بنية</div>
+                            <i class="fa-solid fa-water"></i><div class="sound-title">ضوضاء بنية</div>
                         </div>
                         <div class="sound-card" onclick="toggleAudio('white', this)">
-                            <i class="fa-solid fa-tv"></i>
-                            <div class="sound-title">ضوضاء بيضاء</div>
+                            <i class="fa-solid fa-tv"></i><div class="sound-title">ضوضاء بيضاء</div>
                         </div>
                         <div class="sound-card" onclick="toggleAudio('pink', this)">
-                            <i class="fa-solid fa-wave-square"></i>
-                            <div class="sound-title">ضوضاء زهرية</div>
+                            <i class="fa-solid fa-wave-square"></i><div class="sound-title">ضوضاء زهرية</div>
                         </div>
                         <div class="sound-card" onclick="toggleAudio('cafe', this)">
-                            <i class="fa-solid fa-mug-hot"></i>
-                            <div class="sound-title">أجواء مقهى</div>
+                            <i class="fa-solid fa-mug-hot"></i><div class="sound-title">أجواء مقهى</div>
                         </div>
                     </div>
-                    
                     <audio id="focusAudio" loop></audio>
                 </div>
             </div>
@@ -414,23 +172,23 @@
             <div id="view-settings" class="view-section">
                 <div class="panel settings-card">
                     <h2 style="margin-bottom: 5px;">إعدادات المظهر <i class="fa-solid fa-palette" style="color: var(--theme-color)"></i></h2>
-                    <p style="color: var(--text-muted); margin-bottom: 25px;">قم بتخصيص بيئة عملك بألوان وخلفيات مريحة ومضادة لإرهاق العين</p>
+                    <p style="color: var(--text-muted); margin-bottom: 25px;">قم بتخصيص بيئة عملك بألوان وخلفيات مريحة</p>
 
-                    <div style="color: white; font-size: 15px; font-weight: bold;">الألوان الأساسية (10 ألوان هادئة)</div>
+                    <div style="color: white; font-size: 15px; font-weight: bold;">الألوان الأساسية</div>
                     <div class="color-options" id="colorPicker">
-                        <div class="color-dot" data-color="#77947d" style="background: #77947d;" onclick="setThemeColor('#77947d', this)" title="أخضر حكيمي"></div>
-                        <div class="color-dot" data-color="#5a8fbc" style="background: #5a8fbc;" onclick="setThemeColor('#5a8fbc', this)" title="أزرق محيطي"></div>
-                        <div class="color-dot" data-color="#7b7cb5" style="background: #7b7cb5;" onclick="setThemeColor('#7b7cb5', this)" title="خزامي ناعم"></div>
-                        <div class="color-dot" data-color="#c38191" style="background: #c38191;" onclick="setThemeColor('#c38191', this)" title="وردي غباري"></div>
-                        <div class="color-dot" data-color="#c68a64" style="background: #c68a64;" onclick="setThemeColor('#c68a64', this)" title="ترابي دافئ"></div>
-                        <div class="color-dot" data-color="#a3966a" style="background: #a3966a;" onclick="setThemeColor('#a3966a', this)" title="زيتوني كلاسيكي"></div>
-                        <div class="color-dot" data-color="#68b09b" style="background: #68b09b;" onclick="setThemeColor('#68b09b', this)" title="نعناعي بارد"></div>
-                        <div class="color-dot" data-color="#4b8f96" style="background: #4b8f96;" onclick="setThemeColor('#4b8f96', this)" title="تيل عميق"></div>
-                        <div class="color-dot" data-color="#bfa78f" style="background: #bfa78f;" onclick="setThemeColor('#bfa78f', this)" title="رمال ناعمة"></div>
-                        <div class="color-dot active" data-color="#5ddc67" style="background: #5ddc67;" onclick="setThemeColor('#5ddc67', this)" title="أخضر مشع"></div>
+                        <div class="color-dot" data-color="#77947d" style="background: #77947d;" onclick="setThemeColor('#77947d', this)"></div>
+                        <div class="color-dot" data-color="#5a8fbc" style="background: #5a8fbc;" onclick="setThemeColor('#5a8fbc', this)"></div>
+                        <div class="color-dot" data-color="#7b7cb5" style="background: #7b7cb5;" onclick="setThemeColor('#7b7cb5', this)"></div>
+                        <div class="color-dot" data-color="#c38191" style="background: #c38191;" onclick="setThemeColor('#c38191', this)"></div>
+                        <div class="color-dot" data-color="#c68a64" style="background: #c68a64;" onclick="setThemeColor('#c68a64', this)"></div>
+                        <div class="color-dot" data-color="#a3966a" style="background: #a3966a;" onclick="setThemeColor('#a3966a', this)"></div>
+                        <div class="color-dot" data-color="#68b09b" style="background: #68b09b;" onclick="setThemeColor('#68b09b', this)"></div>
+                        <div class="color-dot" data-color="#4b8f96" style="background: #4b8f96;" onclick="setThemeColor('#4b8f96', this)"></div>
+                        <div class="color-dot" data-color="#bfa78f" style="background: #bfa78f;" onclick="setThemeColor('#bfa78f', this)"></div>
+                        <div class="color-dot active" data-color="#5ddc67" style="background: #5ddc67;" onclick="setThemeColor('#5ddc67', this)"></div>
                     </div>
 
-                    <div style="color: white; font-size: 15px; font-weight: bold; margin-top: 15px;">خلفية التطبيق (5 خيارات مريحة)</div>
+                    <div style="color: white; font-size: 15px; font-weight: bold; margin-top: 15px;">الخلفيات</div>
                     <div class="bg-options" id="bgPicker">
                         <div class="bg-box" data-main="#1e2029" style="background: #2a2d3d;" onclick="setThemeBg('#1e2029', '#2a2d3d', this)">رمادي</div>
                         <div class="bg-box" data-main="#000000" style="background: #111;" onclick="setThemeBg('#000000', '#111', this)">فحم</div>
@@ -439,15 +197,15 @@
                         <div class="bg-box" data-main="#12161a" style="background: #1b2126;" onclick="setThemeBg('#12161a', '#1b2126', this)">ليلي</div>
                     </div>
 
-                    <div style="color: white; font-size: 15px; font-weight: bold; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 15px;">خيارات التشغيل التلقائي</div>
+                    <div style="color: white; font-size: 15px; font-weight: bold; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 15px;">الخيارات التلقائية</div>
                     <div class="toggle-options-container">
                         <label class="toggle-label">
                             <input type="checkbox" id="autoBreakToggle" onchange="toggleAutoBreak(this.checked)">
-                            <span>بدء الاستراحة التالية تلقائياً ☕</span>
+                            <span>بدء الاستراحة التلقائي ☕</span>
                         </label>
                         <label class="toggle-label">
                             <input type="checkbox" id="autoSessionToggle" onchange="toggleAutoSession(this.checked)">
-                            <span>بدء الجلسة التالية تلقائياً 🎯</span>
+                            <span>بدء الجلسة التلقائي 🎯</span>
                         </label>
                     </div>
                 </div>
@@ -456,391 +214,6 @@
         </main>
     </div>
 
-    <script>
-        // ----------------------------------------------------
-        // نظام الأصوات الحقيقية (Local Audio Setup)
-        // ----------------------------------------------------
-        const audioFiles = {
-            'rain': './rain.mp3',
-            'wind': './wind.mp3',
-            'brown': './brown.mp3',
-            'white': './white.mp3',
-            'pink': './pink.mp3',
-            'cafe': './cafe.mp3'
-        };
-        const focusPlayer = document.getElementById('focusAudio');
-        let currentSound = '';
-
-        function toggleAudio(type, element) {
-            document.querySelectorAll('.sound-card').forEach(c => c.classList.remove('active'));
-
-            if (currentSound === type) {
-                if (focusPlayer.paused) {
-                    focusPlayer.play();
-                    element.classList.add('active');
-                } else {
-                    focusPlayer.pause();
-                }
-            } else {
-                focusPlayer.src = audioFiles[type];
-                focusPlayer.play();
-                currentSound = type;
-                element.classList.add('active');
-            }
-        }
-
-        function changeVolume(val) {
-            focusPlayer.volume = val;
-        }
-
-        // ----------------------------------------------------
-        // باقي الدوال الأصلية (التنقل، المظهر، المؤقت، الخ)
-        // ----------------------------------------------------
-        function toggleSidebar() {
-            if (window.innerWidth > 1024) {
-                document.getElementById('mainSidebar').classList.toggle('collapsed');
-            }
-        }
-
-        function switchView(viewId, navElement) {
-            document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-menu li').forEach(li => li.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
-            navElement.classList.add('active');
-        }
-
-        function setThemeColor(color, el) {
-            document.documentElement.style.setProperty('--theme-color', color);
-            document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
-            if(el) el.classList.add('active');
-            saveData(); 
-        }
-
-        function setThemeBg(mainBg, panelBg, el) {
-            document.documentElement.style.setProperty('--bg-main', mainBg);
-            document.documentElement.style.setProperty('--bg-panel', panelBg);
-            document.querySelectorAll('.bg-box').forEach(b => b.classList.remove('active'));
-            if(el) el.classList.add('active');
-            saveData(); 
-        }
-
-        function toggleFullscreenTimer() {
-            const container = document.querySelector('.app-container');
-            const icon = document.querySelector('.btn-fullscreen i');
-            container.classList.toggle('fullscreen-timer');
-            icon.className = container.classList.contains('fullscreen-timer') ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
-        }
-
-        let audioCtx;
-        function playSoftBell() {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            
-            osc.type = 'sine'; 
-            osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
-            
-            gain.gain.setValueAtTime(0, audioCtx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.4, audioCtx.currentTime + 0.1);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 3);
-            
-            osc.start(audioCtx.currentTime);
-            osc.stop(audioCtx.currentTime + 3);
-        }
-
-        let tasks = [];
-        let currentTaskIndex = -1;
-        let currentRound = 1;
-        let timeLeft = 0;
-        let timerId = null;
-        let isRunning = false;
-        let isBreakTime = false; 
-        
-        let totalXP = 0;
-        let statRoundsCount = 0;
-
-        let autoStartBreak = false;
-        let autoStartSession = false;
-        
-        const display = document.getElementById('timerDisplay');
-        const startBtn = document.getElementById('startBtn');
-        const sessionCounter = document.getElementById('sessionCounter');
-        const timerRing = document.getElementById('timerRing');
-        const timerLabel = document.getElementById('timerLabel');
-
-        function toggleAutoBreak(checked) { autoStartBreak = checked; saveData(); }
-        function toggleAutoSession(checked) { autoStartSession = checked; saveData(); }
-
-        function updateDisplay() {
-            let m = Math.floor(timeLeft / 60);
-            let s = timeLeft % 60;
-            display.textContent = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
-            updatePlantEvolution(); 
-        }
-
-        function addMinute() {
-            if (currentTaskIndex !== -1 && timeLeft >= 0) {
-                timeLeft += 60;
-                updateDisplay();
-            }
-        }
-
-        function updatePlantEvolution() {
-            const plantDisplay = document.getElementById('mainPlantDisplay');
-            if (currentTaskIndex === -1) {
-                plantDisplay.textContent = '🌱';
-                if(window.innerWidth > 1024) plantDisplay.style.fontSize = '110px';
-                return;
-            }
-
-            let task = tasks[currentTaskIndex];
-            let totalSecondsPerRound = task.minutes * 60;
-            let currentRoundProgress = (totalSecondsPerRound - timeLeft) / totalSecondsPerRound;
-            if (isBreakTime) currentRoundProgress = 1; 
-
-            let totalProgress = ((currentRound - 1) + currentRoundProgress) / task.rounds;
-            if (totalProgress > 1) totalProgress = 1;
-            if (totalProgress < 0) totalProgress = 0;
-
-            const stages = ['🌱', '🌿', '🪴', '🌳'];
-            let stageIndex = Math.floor(totalProgress * (stages.length - 1));
-            if (totalProgress >= 1) stageIndex = stages.length - 1;
-
-            plantDisplay.textContent = stages[stageIndex];
-            plantDisplay.style.fontSize = (stageIndex === stages.length - 1) 
-                ? (window.innerWidth > 1024 ? '160px' : '110px') 
-                : (window.innerWidth > 1024 ? '110px' : '85px');
-        }
-
-        function addNewTask() {
-            let name = document.getElementById('taskNameInput').value;
-            let mins = parseInt(document.getElementById('taskMinInput').value);
-            let rounds = parseInt(document.getElementById('taskRoundsInput').value);
-
-            if (!name || isNaN(mins) || isNaN(rounds) || mins <= 0 || rounds <= 0) return;
-
-            tasks.push({ name, minutes: mins, rounds: rounds, completed: false });
-            
-            document.getElementById('taskNameInput').value = '';
-            document.getElementById('taskMinInput').value = '';
-            document.getElementById('taskRoundsInput').value = '';
-
-            renderTasks();
-            saveData(); 
-            
-            if (currentTaskIndex === -1) loadNextIncompleteTask(0);
-        }
-
-        function renderTasks() {
-            let pendingList = document.getElementById('pendingTaskList');
-            let completedList = document.getElementById('completedTaskList');
-            pendingList.innerHTML = ''; completedList.innerHTML = '';
-            let pendingCount = 0; let completedCount = 0;
-
-            tasks.forEach((t, i) => {
-                let htmlStr = `
-                    <li class="task-item ${t.completed ? 'completed-task' : (i === currentTaskIndex ? 'active' : '')}">
-                        <div style="display: flex; gap: 10px; align-items: center; width: 100%; justify-content: space-between;">
-                            <div>
-                                <div style="font-weight: bold; margin-bottom: 4px; ${t.completed ? 'text-decoration: line-through;' : ''}">${t.name}</div>
-                                <div style="font-size: 11px; color: var(--text-muted);">${t.minutes} د | ${t.rounds} جولات</div>
-                            </div>
-                            <div class="check-circle" onclick="${!t.completed ? `toggleTaskCompletion(${i})` : ''}">
-                                ${t.completed ? '<i class="fa-solid fa-check"></i>' : ''}
-                            </div>
-                        </div>
-                    </li>`;
-                if (t.completed) { completedCount++; completedList.innerHTML += htmlStr; } 
-                else { pendingCount++; pendingList.innerHTML += htmlStr; }
-            });
-
-            document.getElementById('pendingTasksCount').innerText = `${pendingCount} مهام`;
-            document.getElementById('completedTasksCount').innerText = `${completedCount} مهام`;
-            document.getElementById('statTasks').innerText = completedCount;
-        }
-
-        function toggleTaskCompletion(index) {
-            tasks[index].completed = true;
-            saveData(); 
-            if(index === currentTaskIndex) skipRound(); else renderTasks();
-        }
-
-        function loadNextIncompleteTask(startIndex) {
-            let nextIndex = -1;
-            for(let i = startIndex; i < tasks.length; i++) { if(!tasks[i].completed) { nextIndex = i; break; } }
-
-            if (nextIndex !== -1) {
-                currentTaskIndex = nextIndex;
-                currentRound = 1;
-                isBreakTime = false;
-                timerRing.classList.remove('break-mode');
-                timerLabel.innerText = "وقت التركيز";
-                
-                let task = tasks[nextIndex];
-                timeLeft = task.minutes * 60;
-                sessionCounter.innerText = `⏳ ${task.name} (جولة ${currentRound}/${task.rounds})`;
-                startBtn.disabled = false;
-                document.getElementById('plantSpeech').innerText = "ركز الآن، سنرتاح لاحقاً! 🎯";
-            } else {
-                currentTaskIndex = -1;
-                timeLeft = 0;
-                sessionCounter.innerText = "لا توجد مهام معلقة! 🏆";
-                startBtn.disabled = true;
-                timerLabel.innerText = "انتهى العمل";
-                document.getElementById('plantSpeech').innerText = "عمل رائع! لقد أنجزت كل المهام المدرجة 🌟";
-                
-                const plantDisplay = document.getElementById('mainPlantDisplay');
-                plantDisplay.textContent = '🌳'; 
-                plantDisplay.style.fontSize = window.innerWidth > 1024 ? '160px' : '110px'; 
-            }
-            updateDisplay();
-            renderTasks();
-        }
-
-        function toggleTimer() {
-            if (currentTaskIndex === -1) return;
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
-            if (isRunning) {
-                clearInterval(timerId);
-                startBtn.innerHTML = 'استئناف ▶';
-                isRunning = false;
-            } else {
-                startBtn.innerHTML = 'إيقاف ⏸';
-                isRunning = true;
-                timerId = setInterval(() => {
-                    if (timeLeft > 0) { timeLeft--; updateDisplay(); } 
-                    else {
-                        clearInterval(timerId);
-                        isRunning = false;
-                        startBtn.innerHTML = 'متابعة ▶';
-                        handleTimerEnd();
-                    }
-                }, 1000);
-            }
-        }
-
-        function skipRound() {
-            if (isRunning) toggleTimer();
-            if (currentTaskIndex !== -1) handleTimerEnd();
-        }
-
-        function resetTimer() {
-            if (currentTaskIndex !== -1) {
-                if (isRunning) toggleTimer();
-                let task = tasks[currentTaskIndex];
-                timeLeft = isBreakTime ? Math.ceil(task.minutes * 0.2) * 60 : task.minutes * 60;
-                updateDisplay();
-            }
-        }
-
-        function handleTimerEnd() {
-            playSoftBell(); 
-            let task = tasks[currentTaskIndex];
-
-            if (!isBreakTime) {
-                statRoundsCount++;
-                document.getElementById('statRounds').innerText = statRoundsCount;
-                gainXP(task.minutes);
-                saveData(); 
-
-                if (currentRound < task.rounds) {
-                    isBreakTime = true;
-                    let breakMins = Math.ceil(task.minutes * 0.2); 
-                    timeLeft = breakMins * 60;
-                    
-                    timerRing.classList.add('break-mode');
-                    timerLabel.innerText = "وقت الاستراحة";
-                    sessionCounter.innerText = `☕ استراحة (${breakMins} دقائق)`;
-                    document.getElementById('plantSpeech').innerText = "استرخِ قليلاً، خذ نفساً عميقاً 😌";
-                    
-                    updateDisplay();
-                    if (autoStartBreak) setTimeout(() => { toggleTimer(); }, 200);
-                } else {
-                    task.completed = true;
-                    renderTasks();
-                    saveData();
-                    loadNextIncompleteTask(0); 
-                    if (currentTaskIndex !== -1 && autoStartSession) setTimeout(() => { toggleTimer(); }, 200);
-                    return;
-                }
-            } else {
-                isBreakTime = false;
-                currentRound++;
-                timeLeft = task.minutes * 60;
-                
-                timerRing.classList.remove('break-mode');
-                timerLabel.innerText = "وقت التركيز";
-                sessionCounter.innerText = `⏳ ${task.name} (جولة ${currentRound}/${task.rounds})`;
-                document.getElementById('plantSpeech').innerText = "عدنا للعمل! 💪";
-                
-                updateDisplay();
-                if (autoStartSession) setTimeout(() => { toggleTimer(); }, 200);
-            }
-        }
-
-        function gainXP(minutes) {
-            totalXP += minutes * 10; 
-            updateXPUI();
-        }
-
-        function updateXPUI() {
-            let lvl = Math.floor((1 + Math.sqrt(1 + 0.008 * totalXP)) / 2);
-            let xpForCurrentLvl = 500 * lvl * (lvl - 1);
-            let xpNeededForNextLvl = lvl * 1000;
-            let currentLevelXP = totalXP - xpForCurrentLvl;
-            let percentage = (currentLevelXP / xpNeededForNextLvl) * 100;
-
-            document.getElementById('userLevelDisplay').innerText = `مستوى المستخدم Lv. ${lvl}`;
-            document.getElementById('statUser').innerText = `Lv. ${lvl}`;
-            document.getElementById('xpBar').style.width = `${percentage}%`;
-            document.getElementById('xpDisplay').innerText = `${currentLevelXP} / ${xpNeededForNextLvl} XP`;
-        }
-
-        function saveData() {
-            const data = {
-                tasks: tasks, totalXP: totalXP, statRounds: statRoundsCount,
-                themeColor: getComputedStyle(document.documentElement).getPropertyValue('--theme-color').trim(),
-                themeMainBg: getComputedStyle(document.documentElement).getPropertyValue('--bg-main').trim(),
-                themePanelBg: getComputedStyle(document.documentElement).getPropertyValue('--bg-panel').trim(),
-                autoStartBreak: autoStartBreak, autoStartSession: autoStartSession
-            };
-            localStorage.setItem('pomodoroMR_Data', JSON.stringify(data));
-        }
-
-        function loadData() {
-            const savedData = localStorage.getItem('pomodoroMR_Data');
-            if (savedData) {
-                const parsed = JSON.parse(savedData);
-                tasks = parsed.tasks || []; totalXP = parsed.totalXP || 0; statRoundsCount = parsed.statRounds || 0;
-                autoStartBreak = parsed.autoStartBreak || false; autoStartSession = parsed.autoStartSession || false;
-
-                document.getElementById('autoBreakToggle').checked = autoStartBreak;
-                document.getElementById('autoSessionToggle').checked = autoStartSession;
-                
-                if(parsed.themeColor) document.documentElement.style.setProperty('--theme-color', parsed.themeColor);
-                if(parsed.themeMainBg) document.documentElement.style.setProperty('--bg-main', parsed.themeMainBg);
-                if(parsed.themePanelBg) document.documentElement.style.setProperty('--bg-panel', parsed.themePanelBg);
-                
-                document.getElementById('statRounds').innerText = statRoundsCount;
-                updateXPUI(); renderTasks(); loadNextIncompleteTask(0);
-            } else {
-                updateXPUI();
-            }
-        }
-
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .catch(err => console.error('Service Worker Error:', err));
-            });
-        }
-
-        window.onload = function() { loadData(); };
-    </script>
+    <script src="app.js"></script>
 </body>
 </html>
