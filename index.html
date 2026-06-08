@@ -18,20 +18,17 @@
         <aside class="panel sidebar" id="mainSidebar">
             <div>
                 <div class="logo-container">
-                    <img src="./logo.png" class="logo-image" onclick="toggleSidebar()" title="طي / توسيع القائمة" alt="شعار">
+                    <img id="sidebarToggle" src="./logo.png" class="logo-image" title="طي / توسيع القائمة" alt="شعار">
                     <span class="logo-text">POMODORO MR</span>
                 </div>
                 <ul class="nav-menu">
-                    <li class="active" onclick="switchView('view-timer', this)">
+                    <li class="nav-item active" data-view="view-timer">
                         <i class="fa-regular fa-clock"></i> <span class="nav-text">الوقت</span>
                     </li>
-                    <li onclick="switchView('view-sounds', this)">
-                        <i class="fa-solid fa-headphones"></i> <span class="nav-text">أصوات التركيز</span>
-                    </li>
-                    <li onclick="switchView('view-history', this)">
+                    <li class="nav-item" data-view="view-history">
                         <i class="fa-solid fa-book-journal-whills"></i> <span class="nav-text">سجل التركيز</span>
                     </li>
-                    <li onclick="switchView('view-settings', this)">
+                    <li class="nav-item" data-view="view-settings">
                         <i class="fa-solid fa-palette"></i> <span class="nav-text">تخصيص المظهر</span>
                     </li>
                 </ul>
@@ -45,6 +42,7 @@
 
         <main class="views-container">
             
+            <!-- قسم المؤقت والمهام -->
             <div id="view-timer" class="view-section active">
                 <div class="unified-top-wrapper">
                     <div class="panel plant-view-card">
@@ -53,7 +51,7 @@
                     </div>
 
                     <div class="panel timer-card">
-                        <button class="btn-fullscreen" onclick="toggleFullscreenTimer()" title="ملء الشاشة">
+                        <button id="fullscreenBtn" class="btn-fullscreen" title="ملء الشاشة">
                             <i class="fa-solid fa-expand"></i>
                         </button>
                         <div class="timer-circle" id="timerRing">
@@ -64,10 +62,10 @@
                             </div>
                         </div>
                         <div class="timer-controls">
-                            <button class="btn-icon" onclick="skipRound()" title="تخطي"><i class="fa-solid fa-forward-step"></i></button>
-                            <button class="btn-play" id="startBtn" onclick="toggleTimer()" disabled>ابدأ ▶</button>
-                            <button class="btn-icon" onclick="addMinute()" title="زيادة دقيقة ⏱️"><i class="fa-solid fa-plus"></i></button>
-                            <button class="btn-icon" onclick="resetTimer()" title="إعادة ضبط"><i class="fa-solid fa-rotate-right"></i></button>
+                            <button id="skipBtn" class="btn-icon" title="تخطي"><i class="fa-solid fa-forward-step"></i></button>
+                            <button class="btn-play" id="startBtn" disabled>ابدأ ▶</button>
+                            <button id="addMinuteBtn" class="btn-icon" title="زيادة دقيقة ⏱️"><i class="fa-solid fa-plus"></i></button>
+                            <button id="resetBtn" class="btn-icon" title="إعادة ضبط"><i class="fa-solid fa-rotate-right"></i></button>
                         </div>
                     </div>
                 </div>
@@ -80,13 +78,19 @@
                         </div>
                         <div class="level-bar-bg"><div class="level-bar-fill" id="xpBar"></div></div>
                     </div>
-                    <div class="task-input-container">
-                        <input type="text" id="taskNameInput" placeholder="اسم المهمة (مثال: فيزياء، برمجة)...">
+                    <div class="task-input-container" id="taskForm">
+                        <label class="sr-only" for="taskNameInput">اسم المهمة</label>
+                        <input type="text" id="taskNameInput" placeholder="اسم المهمة (مثال: فيزياء، برمجة)..." aria-label="اسم المهمة">
                         <div class="row-inputs">
-                            <input type="number" id="taskMinInput" placeholder="وقت الجلسة (دقائق)">
-                            <input type="number" id="taskRoundsInput" placeholder="عدد الجولات">
+                            <label class="sr-only" for="taskMinInput">وقت الجلسة بالدقائق</label>
+                            <input type="number" id="taskMinInput" placeholder="وقت الجلسة (دقائق)" aria-label="وقت الجلسة">
+                            <label class="sr-only" for="taskRoundsInput">عدد الجولات</label>
+                            <input type="number" id="taskRoundsInput" placeholder="عدد الجولات" aria-label="عدد الجولات">
                         </div>
-                        <button class="btn-add-task" onclick="addNewTask()">إضافة المهمة ➕</button>
+                        <div class="task-form-actions">
+                            <button id="taskSubmitBtn" class="btn-add-task">إضافة المهمة ➕</button>
+                            <button id="cancelEditBtn" class="btn-secondary hidden">إلغاء</button>
+                        </div>
                     </div>
                 </div>
 
@@ -99,43 +103,7 @@
                 </div>
             </div>
 
-            <div id="view-sounds" class="view-section">
-                <div class="panel" style="width: 100%; height: 100%; display: flex; flex-direction: column;">
-                    <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
-                        <h2 style="color: var(--text-light); font-size: 18px;">
-                            <i class="fa-solid fa-headphones" style="color: var(--theme-color); margin-left: 5px;"></i> أصوات الطبيعة للاسترخاء
-                        </h2>
-                        <div style="display: flex; align-items: center; gap: 10px; background: rgba(0,0,0,0.2); padding: 10px 15px; border-radius: 12px; border: 1px solid var(--border-color);">
-                            <i class="fa-solid fa-volume-low" style="color: var(--text-muted);"></i>
-                            <input type="range" id="volumeControl" min="0" max="1" step="0.05" value="0.5" onchange="changeVolume(this.value)" style="width: 120px; accent-color: var(--theme-color);">
-                            <i class="fa-solid fa-volume-high" style="color: var(--text-muted);"></i>
-                        </div>
-                    </div>
-                    
-                    <div class="sound-grid" style="flex: 1; overflow-y: auto;">
-                        <div class="sound-card" onclick="toggleAudio('rain', this)">
-                            <i class="fa-solid fa-cloud-showers-heavy"></i><div class="sound-title">مطر هادئ</div>
-                        </div>
-                        <div class="sound-card" onclick="toggleAudio('wind', this)">
-                            <i class="fa-solid fa-wind"></i><div class="sound-title">رياح هادئة</div>
-                        </div>
-                        <div class="sound-card" onclick="toggleAudio('brown', this)">
-                            <i class="fa-solid fa-water"></i><div class="sound-title">ضوضاء بنية</div>
-                        </div>
-                        <div class="sound-card" onclick="toggleAudio('white', this)">
-                            <i class="fa-solid fa-tv"></i><div class="sound-title">ضوضاء بيضاء</div>
-                        </div>
-                        <div class="sound-card" onclick="toggleAudio('pink', this)">
-                            <i class="fa-solid fa-wave-square"></i><div class="sound-title">ضوضاء زهرية</div>
-                        </div>
-                        <div class="sound-card" onclick="toggleAudio('cafe', this)">
-                            <i class="fa-solid fa-mug-hot"></i><div class="sound-title">أجواء مقهى</div>
-                        </div>
-                    </div>
-                    <audio id="focusAudio" loop></audio>
-                </div>
-            </div>
-
+            <!-- قسم سجل التركيز -->
             <div id="view-history" class="view-section">
                 <div class="stats-grid">
                     <div class="stat-box">
@@ -169,6 +137,7 @@
                 </div>
             </div>
 
+            <!-- قسم التخصيص والإعدادات -->
             <div id="view-settings" class="view-section">
                 <div class="panel settings-card">
                     <h2 style="margin-bottom: 5px;">إعدادات المظهر <i class="fa-solid fa-palette" style="color: var(--theme-color)"></i></h2>
@@ -176,35 +145,35 @@
 
                     <div style="color: white; font-size: 15px; font-weight: bold;">الألوان الأساسية</div>
                     <div class="color-options" id="colorPicker">
-                        <div class="color-dot" data-color="#77947d" style="background: #77947d;" onclick="setThemeColor('#77947d', this)"></div>
-                        <div class="color-dot" data-color="#5a8fbc" style="background: #5a8fbc;" onclick="setThemeColor('#5a8fbc', this)"></div>
-                        <div class="color-dot" data-color="#7b7cb5" style="background: #7b7cb5;" onclick="setThemeColor('#7b7cb5', this)"></div>
-                        <div class="color-dot" data-color="#c38191" style="background: #c38191;" onclick="setThemeColor('#c38191', this)"></div>
-                        <div class="color-dot" data-color="#c68a64" style="background: #c68a64;" onclick="setThemeColor('#c68a64', this)"></div>
-                        <div class="color-dot" data-color="#a3966a" style="background: #a3966a;" onclick="setThemeColor('#a3966a', this)"></div>
-                        <div class="color-dot" data-color="#68b09b" style="background: #68b09b;" onclick="setThemeColor('#68b09b', this)"></div>
-                        <div class="color-dot" data-color="#4b8f96" style="background: #4b8f96;" onclick="setThemeColor('#4b8f96', this)"></div>
-                        <div class="color-dot" data-color="#bfa78f" style="background: #bfa78f;" onclick="setThemeColor('#bfa78f', this)"></div>
-                        <div class="color-dot active" data-color="#5ddc67" style="background: #5ddc67;" onclick="setThemeColor('#5ddc67', this)"></div>
+                        <div class="color-dot" data-color="#77947d" style="background: #77947d;" role="button" tabindex="0" aria-label="لون أخضر داكن"></div>
+                        <div class="color-dot" data-color="#5a8fbc" style="background: #5a8fbc;" role="button" tabindex="0" aria-label="لون أزرق"></div>
+                        <div class="color-dot" data-color="#7b7cb5" style="background: #7b7cb5;" role="button" tabindex="0" aria-label="لون بنفسجي"></div>
+                        <div class="color-dot" data-color="#c38191" style="background: #c38191;" role="button" tabindex="0" aria-label="لون وردي فاتح"></div>
+                        <div class="color-dot" data-color="#c68a64" style="background: #c68a64;" role="button" tabindex="0" aria-label="لون برتقالي قاتم"></div>
+                        <div class="color-dot" data-color="#a3966a" style="background: #a3966a;" role="button" tabindex="0" aria-label="لون أخضر زيتوني"></div>
+                        <div class="color-dot" data-color="#68b09b" style="background: #68b09b;" role="button" tabindex="0" aria-label="لون تركوازي"></div>
+                        <div class="color-dot" data-color="#4b8f96" style="background: #4b8f96;" role="button" tabindex="0" aria-label="لون زمردي"></div>
+                        <div class="color-dot" data-color="#bfa78f" style="background: #bfa78f;" role="button" tabindex="0" aria-label="لون بيج"></div>
+                        <div class="color-dot active" data-color="#5ddc67" style="background: #5ddc67;" role="button" tabindex="0" aria-label="لون أخضر نباتي"></div>
                     </div>
 
                     <div style="color: white; font-size: 15px; font-weight: bold; margin-top: 15px;">الخلفيات</div>
                     <div class="bg-options" id="bgPicker">
-                        <div class="bg-box" data-main="#1e2029" style="background: #2a2d3d;" onclick="setThemeBg('#1e2029', '#2a2d3d', this)">رمادي</div>
-                        <div class="bg-box" data-main="#000000" style="background: #111;" onclick="setThemeBg('#000000', '#111', this)">فحم</div>
-                        <div class="bg-box active" data-main="#0c0d12" style="background: #161821;" onclick="setThemeBg('#0c0d12', '#161821', this)">داكن</div>
-                        <div class="bg-box" data-main="#0f1411" style="background: #171f1a;" onclick="setThemeBg('#0f1411', '#171f1a', this)">غابوي</div>
-                        <div class="bg-box" data-main="#12161a" style="background: #1b2126;" onclick="setThemeBg('#12161a', '#1b2126', this)">ليلي</div>
+                        <div class="bg-box" data-main="#1e2029" data-panel="#2a2d3d" style="background: #2a2d3d;" role="button" tabindex="0" aria-label="خلفية رمادية">رمادي</div>
+                        <div class="bg-box" data-main="#000000" data-panel="#111" style="background: #111;" role="button" tabindex="0" aria-label="خلفية فحمية">فحم</div>
+                        <div class="bg-box active" data-main="#0c0d12" data-panel="#161821" style="background: #161821;" role="button" tabindex="0" aria-label="خلفية داكنة">داكن</div>
+                        <div class="bg-box" data-main="#0f1411" data-panel="#171f1a" style="background: #171f1a;" role="button" tabindex="0" aria-label="خلفية غابوية">غابوي</div>
+                        <div class="bg-box" data-main="#12161a" data-panel="#1b2126" style="background: #1b2126;" role="button" tabindex="0" aria-label="خلفية ليلية">ليلي</div>
                     </div>
 
                     <div style="color: white; font-size: 15px; font-weight: bold; margin-top: 20px; border-top: 1px solid var(--border-color); padding-top: 15px;">الخيارات التلقائية</div>
                     <div class="toggle-options-container">
                         <label class="toggle-label">
-                            <input type="checkbox" id="autoBreakToggle" onchange="toggleAutoBreak(this.checked)">
+                            <input type="checkbox" id="autoBreakToggle">
                             <span>بدء الاستراحة التلقائي ☕</span>
                         </label>
                         <label class="toggle-label">
-                            <input type="checkbox" id="autoSessionToggle" onchange="toggleAutoSession(this.checked)">
+                            <input type="checkbox" id="autoSessionToggle">
                             <span>بدء الجلسة التلقائي 🎯</span>
                         </label>
                     </div>

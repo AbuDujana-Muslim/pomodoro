@@ -1,4 +1,3 @@
-// المتغيرات المركزية وإدارة الحالة
 const AppState = {
     tasks: [],
     currentTaskIndex: -1,
@@ -12,52 +11,127 @@ const AppState = {
     statTasksCompleted: 0,
     autoStartBreak: false,
     autoStartSession: false,
-    audioCtx: null,
-    currentSound: ''
+    editingTaskIndex: -1,
+    needsRender: false,
+    expectedEndTime: 0 // متغير أساسي مضاف لضبط دقة الوقت اللحظي في الخلفية
 };
 
-const audioFiles = {
-    'rain': './rain.mp3',
-    'wind': './wind.mp3',
-    'brown': './brown.mp3',
-    'white': './white.mp3',
-    'pink': './pink.mp3',
-    'cafe': './cafe.mp3'
+const elements = {
+    sidebar: document.getElementById('mainSidebar'),
+    navItems: Array.from(document.querySelectorAll('.nav-item')),
+    fullscreenBtn: document.getElementById('fullscreenBtn'),
+    skipBtn: document.getElementById('skipBtn'),
+    startBtn: document.getElementById('startBtn'),
+    addMinuteBtn: document.getElementById('addMinuteBtn'),
+    resetBtn: document.getElementById('resetBtn'),
+    taskNameInput: document.getElementById('taskNameInput'),
+    taskMinInput: document.getElementById('taskMinInput'),
+    taskRoundsInput: document.getElementById('taskRoundsInput'),
+    taskSubmitBtn: document.getElementById('taskSubmitBtn'),
+    cancelEditBtn: document.getElementById('cancelEditBtn'),
+    pendingTaskList: document.getElementById('pendingTaskList'),
+    completedTaskList: document.getElementById('completedTaskList'),
+    sessionCounter: document.getElementById('sessionCounter'),
+    timerRing: document.getElementById('timerRing'),
+    timerLabel: document.getElementById('timerLabel'),
+    timerDisplay: document.getElementById('timerDisplay'),
+    plantSpeech: document.getElementById('plantSpeech'),
+    userLevelDisplay: document.getElementById('userLevelDisplay'),
+    xpDisplay: document.getElementById('xpDisplay'),
+    xpBar: document.getElementById('xpBar'),
+    statUser: document.getElementById('statUser'),
+    statRounds: document.getElementById('statRounds'),
+    statTasks: document.getElementById('statTasks'),
+    pendingTasksCount: document.getElementById('pendingTasksCount'),
+    completedTasksCount: document.getElementById('completedTasksCount'),
+    colorPicker: document.getElementById('colorPicker'),
+    bgPicker: document.getElementById('bgPicker'),
+    autoBreakToggle: document.getElementById('autoBreakToggle'),
+    autoSessionToggle: document.getElementById('autoSessionToggle'),
+    sidebarToggle: document.getElementById('sidebarToggle')
 };
 
-const focusPlayer = document.getElementById('focusAudio');
-const display = document.getElementById('timerDisplay');
-const startBtn = document.getElementById('startBtn');
-const sessionCounter = document.getElementById('sessionCounter');
-const timerRing = document.getElementById('timerRing');
-const timerLabel = document.getElementById('timerLabel');
+function init() {
+    bindEvents();
+    loadData();
+    requestRender();
+    if ('Notification' in window && Notification.permission === 'default') {
+        Notification.requestPermission();
+    }
+}
 
-// دوال التنقل بين الواجهات
+function bindEvents() {
+    elements.sidebarToggle.addEventListener('click', toggleSidebar);
+    elements.navItems.forEach(item => item.addEventListener('click', () => switchView(item.dataset.view, item)));
+    elements.fullscreenBtn.addEventListener('click', toggleFullscreenTimer);
+    elements.skipBtn.addEventListener('click', skipRound);
+    elements.startBtn.addEventListener('click', toggleTimer);
+    elements.addMinuteBtn.addEventListener('click', addMinute);
+    elements.resetBtn.addEventListener('click', resetTimer);
+    elements.taskSubmitBtn.addEventListener('click', handleTaskFormSubmit);
+    elements.cancelEditBtn.addEventListener('click', cancelTaskEdit);
+    elements.colorPicker.addEventListener('click', handleColorClick);
+    elements.bgPicker.addEventListener('click', handleBgClick);
+    elements.autoBreakToggle.addEventListener('change', event => toggleAutoBreak(event.target.checked));
+    elements.autoSessionToggle.addEventListener('change', event => toggleAutoSession(event.target.checked));
+    elements.pendingTaskList.addEventListener('click', handleTaskActionClick);
+    elements.completedTaskList.addEventListener('click', handleTaskActionClick);
+    document.addEventListener('keydown', handleKeyboardActivation);
+}
+
+function handleKeyboardActivation(event) {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    const target = event.target;
+    if (target.matches('.color-dot, .bg-box')) {
+        event.preventDefault();
+        target.click();
+    }
+}
+
 function toggleSidebar() {
-    if (window.innerWidth > 1024) document.getElementById('mainSidebar').classList.toggle('collapsed');
+    if (window.innerWidth > 1024) elements.sidebar.classList.toggle('collapsed');
 }
 
 function switchView(viewId, navElement) {
     document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.nav-menu li').forEach(li => li.classList.remove('active'));
+    elements.navItems.forEach(item => item.classList.remove('active'));
     document.getElementById(viewId).classList.add('active');
     navElement.classList.add('active');
 }
 
-// تخصيص المظهر
-function setThemeColor(color, el) {
+function setThemeColor(color, element) {
     document.documentElement.style.setProperty('--theme-color', color);
-    document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
-    if(el) el.classList.add('active');
-    saveData(); 
+    elements.colorPicker.querySelectorAll('.color-dot').forEach(dot => dot.classList.toggle('active', dot.dataset.color === color));
+    if (element) element.classList.add('active');
+    saveData();
 }
 
-function setThemeBg(mainBg, panelBg, el) {
+function setThemeBg(mainBg, panelBg, element) {
     document.documentElement.style.setProperty('--bg-main', mainBg);
     document.documentElement.style.setProperty('--bg-panel', panelBg);
-    document.querySelectorAll('.bg-box').forEach(b => b.classList.remove('active'));
-    if(el) el.classList.add('active');
-    saveData(); 
+    elements.bgPicker.querySelectorAll('.bg-box').forEach(box => box.classList.toggle('active', box.dataset.main === mainBg && box.dataset.panel === panelBg));
+    if (element) element.classList.add('active');
+    saveData();
+}
+
+function handleColorClick(event) {
+    const dot = event.target.closest('.color-dot');
+    if (!dot) return;
+    setThemeColor(dot.dataset.color, dot);
+}
+
+function handleBgClick(event) {
+    const box = event.target.closest('.bg-box');
+    if (!box) return;
+    setThemeBg(box.dataset.main, box.dataset.panel, box);
+}
+
+function updateThemeSelector() {
+    const currentColor = getComputedStyle(document.documentElement).getPropertyValue('--theme-color').trim();
+    const currentBg = getComputedStyle(document.documentElement).getPropertyValue('--bg-main').trim();
+    const currentPanel = getComputedStyle(document.documentElement).getPropertyValue('--bg-panel').trim();
+    elements.colorPicker.querySelectorAll('.color-dot').forEach(dot => dot.classList.toggle('active', dot.dataset.color === currentColor));
+    elements.bgPicker.querySelectorAll('.bg-box').forEach(box => box.classList.toggle('active', box.dataset.main === currentBg && box.dataset.panel === currentPanel));
 }
 
 function toggleFullscreenTimer() {
@@ -67,282 +141,416 @@ function toggleFullscreenTimer() {
     icon.className = container.classList.contains('fullscreen-timer') ? 'fa-solid fa-compress' : 'fa-solid fa-expand';
 }
 
-// نظام الإعدادات التلقائية
-function toggleAutoBreak(checked) { AppState.autoStartBreak = checked; saveData(); }
-function toggleAutoSession(checked) { AppState.autoStartSession = checked; saveData(); }
-
-// إدارة الأصوات
-function toggleAudio(type, element) {
-    document.querySelectorAll('.sound-card').forEach(c => c.classList.remove('active'));
-    if (AppState.currentSound === type) {
-        if (focusPlayer.paused) { focusPlayer.play(); element.classList.add('active'); } 
-        else { focusPlayer.pause(); }
-    } else {
-        focusPlayer.src = audioFiles[type];
-        focusPlayer.play();
-        AppState.currentSound = type;
-        element.classList.add('active');
-    }
-}
-
-function changeVolume(val) { focusPlayer.volume = val; }
-
 function playSoftBell() {
-    if (!AppState.audioCtx) AppState.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (AppState.audioCtx.state === 'suspended') AppState.audioCtx.resume();
-    
-    const osc = AppState.audioCtx.createOscillator();
-    const gain = AppState.audioCtx.createGain();
-    osc.connect(gain);
-    gain.connect(AppState.audioCtx.destination);
-    
-    osc.type = 'sine'; 
-    osc.frequency.setValueAtTime(523, AppState.audioCtx.currentTime);
-    gain.gain.setValueAtTime(0, AppState.audioCtx.currentTime);
-    gain.gain.linearRampToValueAtTime(0.4, AppState.audioCtx.currentTime + 0.1);
-    gain.gain.exponentialRampToValueAtTime(0.001, AppState.audioCtx.currentTime + 3);
-    
-    osc.start(AppState.audioCtx.currentTime);
-    osc.stop(AppState.audioCtx.currentTime + 3);
+    // صوت التنبيه معطل لأن ميزة الصوت أُزلت.
 }
 
-// تحديثات الشاشة ونمو النبتة
+function requestRender() {
+    if (AppState.needsRender) return;
+    AppState.needsRender = true;
+    requestAnimationFrame(() => {
+        AppState.needsRender = false;
+        renderUI();
+    });
+}
+
+function renderUI() {
+    updateDisplay();
+    renderTasks();
+    updateTaskFormState();
+}
+
 function updateDisplay() {
-    let m = Math.floor(AppState.timeLeft / 60);
-    let s = Math.floor(AppState.timeLeft % 60);
-    display.textContent = `${m < 10 ? '0'+m : m}:${s < 10 ? '0'+s : s}`;
-    updatePlantEvolution(); 
-}
-
-function addMinute() {
-    if (AppState.currentTaskIndex !== -1 && AppState.timeLeft >= 0) {
-        AppState.timeLeft += 60;
-        updateDisplay();
-    }
+    const minutes = Math.floor(AppState.timeLeft / 60);
+    const seconds = AppState.timeLeft % 60;
+    elements.timerDisplay.textContent = `${minutes < 10 ? '0' + minutes : minutes}:${seconds < 10 ? '0' + seconds : seconds}`;
+    updatePlantEvolution();
 }
 
 function updatePlantEvolution() {
     const plantDisplay = document.getElementById('mainPlantDisplay');
+    if (!plantDisplay) return;
     if (AppState.currentTaskIndex === -1) {
         plantDisplay.textContent = '🌱';
-        if(window.innerWidth > 1024) plantDisplay.style.fontSize = '110px';
+        plantDisplay.style.fontSize = window.innerWidth > 1024 ? '110px' : '85px';
+        return;
+    }
+    const task = AppState.tasks[AppState.currentTaskIndex];
+    const totalSecondsPerRound = Math.floor(task.minutes * 60);
+    let progress;
+    if (AppState.isBreakTime) {
+        progress = (AppState.currentRound - 1 + 1) / task.rounds;
+    } else {
+        const elapsed = totalSecondsPerRound - AppState.timeLeft;
+        progress = ((AppState.currentRound - 1) + elapsed / totalSecondsPerRound) / task.rounds;
+    }
+    progress = Math.min(Math.max(progress, 0), 1);
+    const stages = ['🌱', '🌿', '🪴', '🌳'];
+    let stageIndex = Math.floor(progress * (stages.length - 1));
+    if (progress >= 1) stageIndex = stages.length - 1;
+    plantDisplay.textContent = stages[stageIndex];
+    plantDisplay.style.fontSize = stageIndex === stages.length - 1 ? (window.innerWidth > 1024 ? '160px' : '110px') : (window.innerWidth > 1024 ? '110px' : '85px');
+}
+
+function handleTaskFormSubmit(event) {
+    event.preventDefault();
+    if (AppState.editingTaskIndex === -1) {
+        addNewTask();
+    } else {
+        saveTaskEdit();
+    }
+}
+
+// بناء دالة إضافة المهام المفقودة باحترافية كاملة مع ربطها التلقائي بالمؤقت
+function addNewTask() {
+    const name = elements.taskNameInput.value.trim();
+    const minutes = Math.floor(parseInt(elements.taskMinInput.value, 10));
+    const rounds = Math.floor(parseInt(elements.taskRoundsInput.value, 10));
+    
+    if (!name || isNaN(minutes) || isNaN(rounds) || minutes <= 0 || rounds <= 0) {
+        alert('الرجاء إدخال بيانات صحيحة وكاملة للمهمة! ⚠️');
         return;
     }
 
-    let task = AppState.tasks[AppState.currentTaskIndex];
-    let totalSecondsPerRound = Math.floor(task.minutes * 60);
-    let currentRoundProgress = Math.floor((totalSecondsPerRound - AppState.timeLeft) * 100 / totalSecondsPerRound) / 100;
-    if (AppState.isBreakTime) currentRoundProgress = 1; 
+    const newTask = {
+        name: name,
+        minutes: minutes,
+        rounds: rounds,
+        completed: false
+    };
 
-    let totalProgress = Math.floor(((AppState.currentRound - 1) + currentRoundProgress) * 100 / task.rounds) / 100;
-    if (totalProgress > 1) totalProgress = 1;
-    if (totalProgress < 0) totalProgress = 0;
-
-    const stages = ['🌱', '🌿', '🪴', '🌳'];
-    let stageIndex = Math.floor(totalProgress * (stages.length - 1));
-    if (totalProgress >= 1) stageIndex = stages.length - 1;
-
-    plantDisplay.textContent = stages[stageIndex];
-    plantDisplay.style.fontSize = (stageIndex === stages.length - 1) 
-        ? (window.innerWidth > 1024 ? '160px' : '110px') 
-        : (window.innerWidth > 1024 ? '110px' : '85px');
-}
-
-// نظام إدارة المهام
-function addNewTask() {
-    let name = document.getElementById('taskNameInput').value;
-    let mins = Math.floor(parseInt(document.getElementById('taskMinInput').value));
-    let rounds = Math.floor(parseInt(document.getElementById('taskRoundsInput').value));
-
-    if (!name || isNaN(mins) || isNaN(rounds) || mins <= 0 || rounds <= 0) return;
-
-    AppState.tasks.push({ name, minutes: mins, rounds: rounds, completed: false });
+    AppState.tasks.push(newTask);
     
-    document.getElementById('taskNameInput').value = '';
-    document.getElementById('taskMinInput').value = '';
-    document.getElementById('taskRoundsInput').value = '';
+    elements.taskNameInput.value = '';
+    elements.taskMinInput.value = '';
+    elements.taskRoundsInput.value = '';
 
     renderTasks();
-    saveData(); 
-    if (AppState.currentTaskIndex === -1) loadNextIncompleteTask(0);
+    saveData();
+
+    if (AppState.currentTaskIndex === -1) {
+        loadNextIncompleteTask(0);
+    }
+}
+
+// بناء دالة إضافة الدقيقة المفقودة بدقة متوافقة مع المحرك الزمني الجديد
+function addMinute() {
+    if (AppState.currentTaskIndex === -1) return;
+    AppState.timeLeft += 60;
+    if (AppState.isRunning) {
+        AppState.expectedEndTime += 60000;
+    }
+    requestRender();
+}
+
+// بناء دالات التبديل التلقائي المفقودة لحفظ الخيارات في الذاكرة
+function toggleAutoBreak(checked) {
+    AppState.autoStartBreak = checked;
+    saveData();
+}
+
+function toggleAutoSession(checked) {
+    AppState.autoStartSession = checked;
+    saveData();
+}
+
+function updateTaskFormState() {
+    if (AppState.editingTaskIndex === -1) {
+        elements.taskSubmitBtn.textContent = 'إضافة المهمة ➕';
+        elements.cancelEditBtn.classList.add('hidden');
+    } else {
+        elements.taskSubmitBtn.textContent = 'حفظ التعديل ✅';
+        elements.cancelEditBtn.classList.remove('hidden');
+    }
+}
+
+function editTask(index) {
+    const task = AppState.tasks[index];
+    if (!task || task.completed) return;
+    AppState.editingTaskIndex = index;
+    elements.taskNameInput.value = task.name;
+    elements.taskMinInput.value = task.minutes;
+    elements.taskRoundsInput.value = task.rounds;
+    updateTaskFormState();
+    elements.taskNameInput.focus();
+}
+
+function saveTaskEdit() {
+    const name = elements.taskNameInput.value.trim();
+    const minutes = Math.floor(parseInt(elements.taskMinInput.value, 10));
+    const rounds = Math.floor(parseInt(elements.taskRoundsInput.value, 10));
+    if (!name || isNaN(minutes) || isNaN(rounds) || minutes <= 0 || rounds <= 0) return;
+    const task = AppState.tasks[AppState.editingTaskIndex];
+    if (!task) return;
+    task.name = name;
+    task.minutes = minutes;
+    task.rounds = rounds;
+    if (AppState.currentTaskIndex === AppState.editingTaskIndex && !AppState.isBreakTime) {
+        AppState.timeLeft = Math.floor(minutes * 60);
+        if (AppState.isRunning) {
+            AppState.expectedEndTime = Date.now() + AppState.timeLeft * 1000;
+        }
+    }
+    AppState.editingTaskIndex = -1;
+    elements.taskNameInput.value = '';
+    elements.taskMinInput.value = '';
+    elements.taskRoundsInput.value = '';
+    updateTaskFormState();
+    renderTasks();
+    saveData();
+}
+
+function cancelTaskEdit(event) {
+    event.preventDefault();
+    AppState.editingTaskIndex = -1;
+    elements.taskNameInput.value = '';
+    elements.taskMinInput.value = '';
+    elements.taskRoundsInput.value = '';
+    updateTaskFormState();
+}
+
+function handleTaskActionClick(event) {
+    const actionButton = event.target.closest('[data-action]');
+    if (!actionButton) return;
+    const action = actionButton.dataset.action;
+    const index = Number(actionButton.dataset.index);
+    if (action === 'edit') editTask(index);
+    if (action === 'delete') deleteTask(index);
+    if (action === 'complete') toggleTaskCompletion(index);
+}
+
+function deleteTask(index) {
+    if (!AppState.tasks[index]) return;
+    const confirmed = confirm('هل أنت متأكد من حذف هذه المهمة؟ لا يمكن التراجع عن العملية.');
+    if (!confirmed) return;
+    const isCurrent = index === AppState.currentTaskIndex;
+    AppState.tasks.splice(index, 1);
+    if (AppState.editingTaskIndex === index) cancelTaskEdit(new Event('click'));
+    if (isCurrent) {
+        if (AppState.isRunning) toggleTimer();
+        loadNextIncompleteTask(0);
+    } else if (index < AppState.currentTaskIndex) {
+        AppState.currentTaskIndex -= 1;
+    }
+    renderTasks();
+    saveData();
 }
 
 function renderTasks() {
-    let pendingList = document.getElementById('pendingTaskList');
-    let completedList = document.getElementById('completedTaskList');
-    pendingList.innerHTML = ''; completedList.innerHTML = '';
-    let pendingCount = 0; AppState.statTasksCompleted = 0;
+    let pendingList = elements.pendingTaskList;
+    let completedList = elements.completedTaskList;
+    if (!pendingList || !completedList) return;
+    pendingList.innerHTML = '';
+    completedList.innerHTML = '';
+    let pendingCount = 0;
+    AppState.statTasksCompleted = 0;
 
-    AppState.tasks.forEach((t, i) => {
-        let htmlStr = `
-            <li class="task-item ${t.completed ? 'completed-task' : (i === AppState.currentTaskIndex ? 'active' : '')}">
+    AppState.tasks.forEach((task, index) => {
+        const taskClass = task.completed ? 'completed-task' : (index === AppState.currentTaskIndex ? 'active' : '');
+        const controls = `
+            <div class="task-actions">
+                ${task.completed ? '' : `<button class="action-btn complete" data-action="complete" data-index="${index}" aria-label="إنهاء المهمة">✔</button>`}
+                ${task.completed ? '' : `<button class="action-btn edit" data-action="edit" data-index="${index}" aria-label="تعديل المهمة">✏</button>`}
+                <button class="action-btn delete" data-action="delete" data-index="${index}" aria-label="حذف المهمة">🗑</button>
+            </div>`;
+        const htmlStr = `
+            <li class="task-item ${taskClass}">
                 <div style="display: flex; gap: 10px; align-items: center; width: 100%; justify-content: space-between;">
                     <div>
-                        <div style="font-weight: bold; margin-bottom: 4px; ${t.completed ? 'text-decoration: line-through;' : ''}">${t.name}</div>
-                        <div style="font-size: 11px; color: var(--text-muted);">${t.minutes} د | ${t.rounds} جولات</div>
+                        <div style="font-weight: bold; margin-bottom: 4px; ${task.completed ? 'text-decoration: line-through;' : ''}">${task.name}</div>
+                        <div style="font-size: 11px; color: var(--text-muted);">${task.minutes} د | ${task.rounds} جولات</div>
                     </div>
-                    <div class="check-circle" onclick="${!t.completed ? `toggleTaskCompletion(${i})` : ''}">
-                        ${t.completed ? '<i class="fa-solid fa-check"></i>' : ''}
-                    </div>
+                    ${task.completed ? '<div class="check-circle"><i class="fa-solid fa-check"></i></div>' : ''}
                 </div>
+                ${controls}
             </li>`;
-        if (t.completed) { AppState.statTasksCompleted++; completedList.innerHTML += htmlStr; } 
-        else { pendingCount++; pendingList.innerHTML += htmlStr; }
+        if (task.completed) {
+            AppState.statTasksCompleted += 1;
+            completedList.insertAdjacentHTML('beforeend', htmlStr);
+        } else {
+            pendingCount += 1;
+            pendingList.insertAdjacentHTML('beforeend', htmlStr);
+        }
     });
-
-    document.getElementById('pendingTasksCount').innerText = `${pendingCount} مهام`;
-    document.getElementById('completedTasksCount').innerText = `${AppState.statTasksCompleted} مهام`;
-    document.getElementById('statTasks').innerText = Math.floor(AppState.statTasksCompleted);
+    elements.pendingTasksCount.innerText = `${pendingCount} مهام`;
+    elements.completedTasksCount.innerText = `${AppState.statTasksCompleted} مهام`;
+    elements.statTasks.innerText = Math.floor(AppState.statTasksCompleted);
 }
 
 function toggleTaskCompletion(index) {
+    if (!AppState.tasks[index] || AppState.tasks[index].completed) return;
     AppState.tasks[index].completed = true;
-    saveData(); 
-    if(index === AppState.currentTaskIndex) skipRound(); else renderTasks();
+    saveData();
+    if (index === AppState.currentTaskIndex) {
+        if (AppState.isRunning) toggleTimer();
+        handleTimerEnd(true);
+    } else {
+        renderTasks();
+    }
 }
 
-function loadNextIncompleteTask(startIndex) {
+function loadNextIncompleteTask(startIndex = 0) {
     let nextIndex = -1;
-    for(let i = startIndex; i < AppState.tasks.length; i++) { if(!AppState.tasks[i].completed) { nextIndex = i; break; } }
-
+    for (let i = startIndex; i < AppState.tasks.length; i++) {
+        if (!AppState.tasks[i].completed) {
+            nextIndex = i;
+            break;
+        }
+    }
     if (nextIndex !== -1) {
         AppState.currentTaskIndex = nextIndex;
         AppState.currentRound = 1;
         AppState.isBreakTime = false;
-        timerRing.classList.remove('break-mode');
-        timerLabel.innerText = "وقت التركيز";
-        
-        let task = AppState.tasks[nextIndex];
+        elements.timerRing.classList.remove('break-mode');
+        elements.timerLabel.innerText = 'وقت التركيز';
+        const task = AppState.tasks[nextIndex];
         AppState.timeLeft = Math.floor(task.minutes * 60);
-        sessionCounter.innerText = `⏳ ${task.name} (جولة ${AppState.currentRound}/${task.rounds})`;
-        startBtn.disabled = false;
-        document.getElementById('plantSpeech').innerText = "ركز الآن، سنرتاح لاحقاً! 🎯";
+        elements.sessionCounter.innerText = `⏳ ${task.name} (جولة ${AppState.currentRound}/${task.rounds})`;
+        elements.startBtn.disabled = false;
+        elements.plantSpeech.innerText = 'ركز الآن، سنرتاح لاحقاً! 🎯';
     } else {
         AppState.currentTaskIndex = -1;
         AppState.timeLeft = 0;
-        sessionCounter.innerText = "لا توجد مهام معلقة! 🏆";
-        startBtn.disabled = true;
-        timerLabel.innerText = "انتهى العمل";
-        document.getElementById('plantSpeech').innerText = "عمل رائع! لقد أنجزت كل المهام المدرجة 🌟";
-        
+        elements.sessionCounter.innerText = 'لا توجد مهام معلقة! 🏆';
+        elements.startBtn.disabled = true;
+        elements.timerLabel.innerText = 'انتهى العمل';
+        elements.plantSpeech.innerText = 'عمل رائع! لقد أنجزت كل المهام المدرجة 🌟';
         const plantDisplay = document.getElementById('mainPlantDisplay');
-        plantDisplay.textContent = '🌳';
-        plantDisplay.style.fontSize = window.innerWidth > 1024 ? '160px' : '110px'; 
+        if (plantDisplay) {
+            plantDisplay.textContent = '🌳';
+            plantDisplay.style.fontSize = window.innerWidth > 1024 ? '160px' : '110px';
+        }
     }
     updateDisplay();
     renderTasks();
 }
 
-// نظام إدارة الجلسات والمؤقت
+// ترقية وتطوير المؤقت ليعمل بالطوابع الزمنية عالية الدقة لمنع تجميده عند التنقل بين التبويبات
 function toggleTimer() {
     if (AppState.currentTaskIndex === -1) return;
-    if (!AppState.audioCtx) AppState.audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-
     if (AppState.isRunning) {
         clearInterval(AppState.timerId);
-        startBtn.innerHTML = 'استئناف ▶';
+        AppState.timerId = null;
         AppState.isRunning = false;
+        elements.startBtn.innerHTML = 'استئناف ▶';
     } else {
-        startBtn.innerHTML = 'إيقاف ⏸';
         AppState.isRunning = true;
+        elements.startBtn.innerHTML = 'إيقاف ⏸';
+        
+        // حساب الطابع الزمني الدقيق الذي يجب أن ينتهي عنده العداد
+        AppState.expectedEndTime = Date.now() + AppState.timeLeft * 1000;
+        
         AppState.timerId = setInterval(() => {
-            if (AppState.timeLeft > 0) { AppState.timeLeft--; updateDisplay(); } 
-            else {
+            const msLeft = AppState.expectedEndTime - Date.now();
+            if (msLeft > 0) {
+                AppState.timeLeft = Math.ceil(msLeft / 1000);
+                requestRender();
+            } else {
+                AppState.timeLeft = 0;
                 clearInterval(AppState.timerId);
+                AppState.timerId = null;
                 AppState.isRunning = false;
-                startBtn.innerHTML = 'متابعة ▶';
+                elements.startBtn.innerHTML = 'متابعة ▶';
                 handleTimerEnd();
             }
-        }, 1000);
+        }, 250); // فحص متكرر فائق السرعة لضمان السلاسة المطلقة
     }
 }
 
 function skipRound() {
+    const shouldSkip = confirm('هل تريد تخطي الجولة الحالية؟ سيتم الانتقال إلى المرحلة التالية.');
+    if (!shouldSkip) return;
     if (AppState.isRunning) toggleTimer();
-    if (AppState.currentTaskIndex !== -1) handleTimerEnd();
+    if (AppState.currentTaskIndex !== -1) handleTimerEnd(true);
 }
 
 function resetTimer() {
     if (AppState.currentTaskIndex !== -1) {
+        const shouldReset = confirm('هل تريد إعادة ضبط المؤقت؟ سيتم فقد التقدم الحالي.');
+        if (!shouldReset) return;
         if (AppState.isRunning) toggleTimer();
-        let task = AppState.tasks[AppState.currentTaskIndex];
+        const task = AppState.tasks[AppState.currentTaskIndex];
         AppState.timeLeft = AppState.isBreakTime ? Math.floor(Math.ceil(task.minutes * 0.2) * 60) : Math.floor(task.minutes * 60);
-        updateDisplay();
+        requestRender();
+        notifyUser('تم إعادة ضبط المؤقت', 'يمكنك بدء الجلسة مجدداً في أي وقت.');
     }
 }
 
-function handleTimerEnd() {
+function handleTimerEnd(forceEnd = false) {
     playSoftBell();
-    let task = AppState.tasks[AppState.currentTaskIndex];
-
-    if (!AppState.isBreakTime) {
-        AppState.statRoundsCount++;
-        document.getElementById('statRounds').innerText = Math.floor(AppState.statRoundsCount);
-        gainXP(task.minutes);
-        saveData(); 
-
-        if (AppState.currentRound < task.rounds) {
-            AppState.isBreakTime = true;
-            let breakMins = Math.floor(Math.ceil(task.minutes * 0.2)); 
-            AppState.timeLeft = Math.floor(breakMins * 60);
-            
-            timerRing.classList.add('break-mode');
-            timerLabel.innerText = "وقت الاستراحة";
-            sessionCounter.innerText = `☕ استراحة (${breakMins} دقائق)`;
-            document.getElementById('plantSpeech').innerText = "استرخِ قليلاً، خذ نفساً عميقاً 😌";
-            
-            updateDisplay();
-            if (AppState.autoStartBreak) setTimeout(() => { toggleTimer(); }, 200);
-        } else {
-            task.completed = true;
-            renderTasks();
+    const task = AppState.tasks[AppState.currentTaskIndex];
+    if (!task) return;
+    if (!AppState.isBreakTime || forceEnd) {
+        if (!AppState.isBreakTime) {
+            AppState.statRoundsCount += 1;
+            elements.statRounds.innerText = Math.floor(AppState.statRoundsCount);
+            gainXP(task.minutes);
             saveData();
-            loadNextIncompleteTask(0); 
-            if (AppState.currentTaskIndex !== -1 && AppState.autoStartSession) setTimeout(() => { toggleTimer(); }, 200);
+        }
+        if (!AppState.isBreakTime && AppState.currentRound < task.rounds) {
+            AppState.isBreakTime = true;
+            const breakMins = Math.floor(Math.max(1, Math.ceil(task.minutes * 0.2)));
+            AppState.timeLeft = Math.floor(breakMins * 60);
+            elements.timerRing.classList.add('break-mode');
+            elements.timerLabel.innerText = 'وقت الاستراحة';
+            elements.sessionCounter.innerText = `☕ استراحة (${breakMins} دقائق)`;
+            elements.plantSpeech.innerText = 'استرخِ قليلاً، خذ نفساً عميقاً 😌';
+            notifyUser('استراحة قصيرة', `أكملت جولة ${AppState.currentRound}. وقت الاستراحة الآن.`);
+            requestRender();
+            if (AppState.autoStartBreak) setTimeout(toggleTimer, 200);
             return;
         }
-    } else {
-        AppState.isBreakTime = false;
-        AppState.currentRound++;
-        AppState.timeLeft = Math.floor(task.minutes * 60);
-        
-        timerRing.classList.remove('break-mode');
-        timerLabel.innerText = "وقت التركيز";
-        sessionCounter.innerText = `⏳ ${task.name} (جولة ${AppState.currentRound}/${task.rounds})`;
-        document.getElementById('plantSpeech').innerText = "عدنا للعمل! 💪";
-        
-        updateDisplay();
-        if (AppState.autoStartSession) setTimeout(() => { toggleTimer(); }, 200);
+        if (AppState.isBreakTime) {
+            AppState.isBreakTime = false;
+            AppState.currentRound += 1;
+            AppState.timeLeft = Math.floor(task.minutes * 60);
+            elements.timerRing.classList.remove('break-mode');
+            elements.timerLabel.innerText = 'وقت التركيز';
+            elements.sessionCounter.innerText = `⏳ ${task.name} (جولة ${AppState.currentRound}/${task.rounds})`;
+            elements.plantSpeech.innerText = 'عدنا للعمل! 💪';
+            notifyUser('انتهت الاستراحة', 'حان وقت التركيز مرة أخرى.');
+            requestRender();
+            if (AppState.autoStartSession) setTimeout(toggleTimer, 200);
+            return;
+        }
+        task.completed = true;
+        AppState.statTasksCompleted += 1;
+        renderTasks();
+        saveData();
+        loadNextIncompleteTask(0);
+        if (AppState.currentTaskIndex !== -1 && AppState.autoStartSession) setTimeout(toggleTimer, 200);
+        notifyUser('مهمة مكتملة', `لقد أنجزت المهمة: ${task.name}`);
+        return;
     }
 }
 
-// نظام الخبرة والمستويات
 function gainXP(minutes) {
     AppState.totalXP += Math.floor(minutes * 10);
     updateXPUI();
 }
 
 function updateXPUI() {
-    let lvl = Math.floor((1 + Math.sqrt(1 + 0.008 * AppState.totalXP)) / 2);
-    let xpForCurrentLvl = Math.floor(500 * lvl * (lvl - 1));
-    let xpNeededForNextLvl = Math.floor(lvl * 1000);
-    let currentLevelXP = Math.floor(AppState.totalXP - xpForCurrentLvl);
-    let percentage = Math.floor((currentLevelXP * 100) / xpNeededForNextLvl);
-
-    document.getElementById('userLevelDisplay').innerText = `مستوى المستخدم Lv. ${lvl}`;
-    document.getElementById('statUser').innerText = `Lv. ${lvl}`;
-    document.getElementById('xpBar').style.width = `${percentage}%`;
-    document.getElementById('xpDisplay').innerText = `${currentLevelXP} / ${xpNeededForNextLvl} XP`;
+    const lvl = Math.floor((1 + Math.sqrt(1 + 0.008 * AppState.totalXP)) / 2);
+    const xpForCurrentLvl = Math.floor(500 * lvl * (lvl - 1));
+    const xpNeededForNextLvl = Math.floor(lvl * 1000);
+    const currentLevelXP = Math.max(0, Math.floor(AppState.totalXP - xpForCurrentLvl));
+    const percentage = xpNeededForNextLvl ? Math.floor((currentLevelXP * 100) / xpNeededForNextLvl) : 0;
+    elements.userLevelDisplay.innerText = `مستوى المستخدم Lv. ${lvl}`;
+    elements.statUser.innerText = `Lv. ${lvl}`;
+    elements.xpBar.style.width = `${percentage}%`;
+    elements.xpDisplay.innerText = `${currentLevelXP} / ${xpNeededForNextLvl} XP`;
 }
 
-// نظام الحفظ المحوري
 function saveData() {
     const data = {
-        tasks: AppState.tasks, totalXP: Math.floor(AppState.totalXP), statRounds: Math.floor(AppState.statRoundsCount),
+        tasks: AppState.tasks,
+        totalXP: Math.floor(AppState.totalXP),
+        statRounds: Math.floor(AppState.statRoundsCount),
         themeColor: getComputedStyle(document.documentElement).getPropertyValue('--theme-color').trim(),
         themeMainBg: getComputedStyle(document.documentElement).getPropertyValue('--bg-main').trim(),
         themePanelBg: getComputedStyle(document.documentElement).getPropertyValue('--bg-panel').trim(),
-        autoStartBreak: AppState.autoStartBreak, autoStartSession: AppState.autoStartSession
+        autoStartBreak: AppState.autoStartBreak,
+        autoStartSession: AppState.autoStartSession
     };
     localStorage.setItem('pomodoroMR_Data', JSON.stringify(data));
 }
@@ -351,32 +559,37 @@ function loadData() {
     const savedData = localStorage.getItem('pomodoroMR_Data');
     if (savedData) {
         const parsed = JSON.parse(savedData);
-        AppState.tasks = parsed.tasks || []; 
-        AppState.totalXP = Math.floor(parsed.totalXP || 0); 
+        AppState.tasks = parsed.tasks || [];
+        AppState.totalXP = Math.floor(parsed.totalXP || 0);
         AppState.statRoundsCount = Math.floor(parsed.statRounds || 0);
         AppState.autoStartBreak = parsed.autoStartBreak || false;
         AppState.autoStartSession = parsed.autoStartSession || false;
-
-        document.getElementById('autoBreakToggle').checked = AppState.autoStartBreak;
-        document.getElementById('autoSessionToggle').checked = AppState.autoStartSession;
-        
-        if(parsed.themeColor) document.documentElement.style.setProperty('--theme-color', parsed.themeColor);
-        if(parsed.themeMainBg) document.documentElement.style.setProperty('--bg-main', parsed.themeMainBg);
-        if(parsed.themePanelBg) document.documentElement.style.setProperty('--bg-panel', parsed.themePanelBg);
-        
-        document.getElementById('statRounds').innerText = Math.floor(AppState.statRoundsCount);
-        updateXPUI(); renderTasks(); loadNextIncompleteTask(0);
+        elements.autoBreakToggle.checked = AppState.autoStartBreak;
+        elements.autoSessionToggle.checked = AppState.autoStartSession;
+        if (parsed.themeColor) document.documentElement.style.setProperty('--theme-color', parsed.themeColor);
+        if (parsed.themeMainBg) document.documentElement.style.setProperty('--bg-main', parsed.themeMainBg);
+        if (parsed.themePanelBg) document.documentElement.style.setProperty('--bg-panel', parsed.themePanelBg);
+        updateThemeSelector();
+        elements.statRounds.innerText = Math.floor(AppState.statRoundsCount);
+        updateXPUI();
+        renderTasks();
+        loadNextIncompleteTask(0);
     } else {
         updateXPUI();
     }
 }
 
-// تسجيل تطبيق الويب (PWA)
+function notifyUser(title, body) {
+    if (!('Notification' in window)) return;
+    if (Notification.permission === 'granted') {
+        new Notification(title, { body });
+    }
+}
+
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('sw.js')
-            .catch(err => console.error('Service Worker Error:', err));
+        navigator.serviceWorker.register('sw.js').catch(err => console.error('Service Worker Error:', err));
     });
 }
 
-window.onload = function() { loadData(); };
+window.addEventListener('DOMContentLoaded', init);
