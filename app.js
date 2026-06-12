@@ -8,7 +8,7 @@ let isRunning = false;
 let currentMode = 'pomodoro'; // 'pomodoro', 'shortBreak', 'longBreak'
 let timeLeft = 25 * 60; // 25 دقيقة بالثواني
 let pomodorosCompletedToday = 0;
-let pomodoroCountForTask = {}; // لتتبع عدد بومودورو لكل مهمة
+let pomodoroCountForTask = {}; // لتتبع عدد البومودورو لكل مهمة
 
 // العناصر DOM
 const minutesDisplay = document.getElementById('minutes');
@@ -25,20 +25,29 @@ const addTaskBtn = document.getElementById('addTaskBtn');
 const notification = document.getElementById('notification');
 
 // ========================
-// دوال الصوت (تم إصلاحها)
+// دالة الصوت (تعمل بدون ملفات)
 // ========================
 function playSoftBell() {
     try {
-        // تأكد من وجود ملف bell.mp3 في نفس المجلد
-        const audio = new Audio('bell.mp3');
-        audio.load();
-        // محاولة التشغيل مع التعامل مع أخطاء سياسة المتصفح
-        audio.play().catch(error => {
-            console.warn('فشل تشغيل الصوت تلقائياً:', error);
-            // محاولة بديلة: عرض إشعار فقط
-        });
+        // استخدام Web Audio API لتوليد نغمة تنبيه
+        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        const oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
+        
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
+        
+        oscillator.type = 'sine';   // صوت نقي
+        oscillator.frequency.value = 880; // تردد 880 هرتز
+        gainNode.gain.value = 0.3;  // مستوى صوت مناسب
+        
+        oscillator.start();
+        setTimeout(() => {
+            oscillator.stop();
+            audioContext.close();
+        }, 500); // نصف ثانية
     } catch (e) {
-        console.error('خطأ في إنشاء الصوت:', e);
+        console.warn('تعذر تشغيل الصوت:', e);
     }
 }
 
@@ -60,7 +69,6 @@ function startTimer() {
             timeLeft--;
             updateDisplay();
         } else {
-            // انتهاء الوقت
             clearInterval(timerInterval);
             isRunning = false;
             handleTimerEnd();
@@ -81,13 +89,9 @@ function resetTimer() {
 }
 
 function setTimeByMode() {
-    if (currentMode === 'pomodoro') {
-        timeLeft = 25 * 60;
-    } else if (currentMode === 'shortBreak') {
-        timeLeft = 5 * 60;
-    } else if (currentMode === 'longBreak') {
-        timeLeft = 15 * 60;
-    }
+    if (currentMode === 'pomodoro') timeLeft = 25 * 60;
+    else if (currentMode === 'shortBreak') timeLeft = 5 * 60;
+    else if (currentMode === 'longBreak') timeLeft = 15 * 60;
 }
 
 function switchMode(mode) {
@@ -95,7 +99,6 @@ function switchMode(mode) {
     setTimeByMode();
     updateDisplay();
     pauseTimer();
-    // تحديث الشكل النشط للأزرار
     document.querySelectorAll('.mode-btn').forEach(btn => btn.classList.remove('active'));
     if (mode === 'pomodoro') pomodoroBtn.classList.add('active');
     else if (mode === 'shortBreak') shortBreakBtn.classList.add('active');
@@ -106,7 +109,7 @@ function switchMode(mode) {
 // معالجة نهاية المؤقت (الحدث الرئيسي)
 // ========================
 function handleTimerEnd() {
-    playSoftBell(); // تشغيل صوت التنبيه
+    playSoftBell(); // تشغيل الصوت
     notifyUser(`انتهى وقت ${getModeName()}!`);
     
     if (currentMode === 'pomodoro') {
@@ -114,17 +117,12 @@ function handleTimerEnd() {
         if (currentTaskId) {
             pomodoroCountForTask[currentTaskId] = (pomodoroCountForTask[currentTaskId] || 0) + 1;
             saveData();
-            updateTaskList(); // تحديث عرض المهام ليعرض عدد البومودورو
+            updateTaskList(); // تحديث عرض عدد البومودورو
         }
-        
-        // بعد إكمال بومودورو، يمكن الانتقال تلقائيًا للمهمة التالية (اختياري)
+        // الانتقال إلى المهمة التالية غير المكتملة
         loadNextIncompleteTask();
-        
-        // تلقائياً انتقل إلى استراحة قصيرة (حسب رغبتك)
-        // switchMode('shortBreak');
-        // startTimer();
     } else {
-        // إذا كانت استراحة، عد إلى وضع البومودورو
+        // بعد الاستراحة، نعود إلى وضع البومودورو
         switchMode('pomodoro');
     }
 }
@@ -136,7 +134,7 @@ function getModeName() {
 }
 
 function notifyUser(message) {
-    // عرض إشعار في واجهة المستخدم
+    // عرض رسالة داخل الصفحة (إذا وجد عنصر الإشعارات)
     if (notification) {
         notification.textContent = message;
         notification.style.display = 'block';
@@ -144,7 +142,7 @@ function notifyUser(message) {
             notification.style.display = 'none';
         }, 4000);
     }
-    // إشعار المتصفح
+    // إشعارات المتصفح
     if (Notification.permission === 'granted') {
         new Notification('مؤقت بومودورو', { body: message });
     } else if (Notification.permission !== 'denied') {
@@ -161,7 +159,6 @@ function loadNextIncompleteTask() {
         notifyUser('مبروك! لا توجد مهام متبقية.');
         return;
     }
-    // اختر أول مهمة غير مكتملة
     const nextTask = incompleteTasks[0];
     currentTaskId = nextTask.id;
     updateTaskList();
@@ -190,7 +187,6 @@ function toggleTaskComplete(taskId) {
     if (task) {
         task.completed = !task.completed;
         if (task.completed && currentTaskId === taskId) {
-            // إذا اكتملت المهمة الحالية، انتقل للتالية
             loadNextIncompleteTask();
         }
         saveData();
@@ -231,7 +227,6 @@ function updateTaskList() {
         li.appendChild(taskTextSpan);
         li.appendChild(deleteBtn);
         
-        // عند النقر على المهمة، اجعلها الحالية
         li.addEventListener('click', (e) => {
             if (e.target !== checkBox && e.target !== deleteBtn) {
                 currentTaskId = task.id;
@@ -270,12 +265,13 @@ function loadData() {
             pomodoroCountForTask = data.pomodoroCountForTask || {};
             currentMode = data.currentMode || 'pomodoro';
             timeLeft = data.timeLeft || 25 * 60;
-            isRunning = false; // لا نريد تشغيل المؤقت تلقائياً عند التحميل
             pomodorosCompletedToday = data.pomodorosCompletedToday || 0;
             updateDisplay();
             switchMode(currentMode);
             updateTaskList();
-        } catch(e) { console.error('خطأ في تحميل البيانات', e); }
+        } catch(e) {
+            console.error('خطأ في تحميل البيانات', e);
+        }
     }
 }
 
@@ -303,7 +299,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
-    // طلب إذن الإشعارات
     if (Notification.permission === 'default') {
         Notification.requestPermission();
     }
