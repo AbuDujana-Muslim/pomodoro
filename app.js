@@ -1,34 +1,28 @@
 // ============================================================
-// تطبيق بومودورو MR - النسخة المعدلة بالكامل
-// تم إصلاح الصوت وربط المؤقت بالمهام مع عدد الجولات
-// مع الحفاظ الكامل على التصميم الأصلي
+// تطبيق بومودورو MR - الإصدار النهائي مع استعادة البيانات من 'pomodoroMR_Data'
 // ============================================================
 
-// ---------- المتغيرات العامة ----------
-let tasks = [];              // { id, name, minutesPerSession, totalRounds, remainingRounds }
-let completedTasks = [];     // { id, name, totalRounds, completedDate }
-let currentTaskId = null;    // id المهمة النشطة الحالية
+let tasks = [];
+let completedTasks = [];
+let currentTaskId = null;
 let timer = null;
 let isRunning = false;
-let currentMode = "focus";   // 'focus' أو 'break'
-let timeLeft = 0;            // بالثواني
-let currentFocusSeconds = 0; // مدة التركيز الحالية (المستخدمة في ضبط الوقت)
-let isBreak = false;         // بديل
-let autoBreak = false;       // الإعدادات
+let currentMode = "focus";
+let timeLeft = 0;
+let autoBreak = false;
 let autoSession = false;
-let currentPlantEmoji = "🌱";
+let xp = 0;
+let level = 1;
+let completedRoundsCount = 0;
+let totalCompletedTasks = 0;
 let plantMessages = [
     "أهلاً بك يا بطل! لنبدأ جلسة تركيز قوية 🌿",
     "أنت مذهل! واصل التركيز 💪",
     "نبتتك تنمو مع كل جولة 🌻",
     "قمة التركيز! ارفع من طاقتك 🚀"
 ];
-let xp = 0;
-let level = 1;
-let completedRoundsCount = 0;   // إجمالي الجولات المنجزة (للاستعراض)
-let totalCompletedTasks = 0;
 
-// عناصر DOM (بناءً على الـ HTML المقدم)
+// عناصر DOM
 const timerDisplay = document.getElementById('timerDisplay');
 const timerLabel = document.getElementById('timerLabel');
 const sessionCounter = document.getElementById('sessionCounter');
@@ -37,6 +31,7 @@ const skipBtn = document.getElementById('skipBtn');
 const addMinuteBtn = document.getElementById('addMinuteBtn');
 const resetBtn = document.getElementById('resetBtn');
 const fullscreenBtn = document.getElementById('fullscreenBtn');
+const sidebarToggle = document.getElementById('sidebarToggle');
 const plantSpeech = document.getElementById('plantSpeech');
 const mainPlantDisplay = document.getElementById('mainPlantDisplay');
 const userLevelDisplay = document.getElementById('userLevelDisplay');
@@ -58,7 +53,7 @@ const taskRoundsInput = document.getElementById('taskRoundsInput');
 const taskSubmitBtn = document.getElementById('taskSubmitBtn');
 const cancelEditBtn = document.getElementById('cancelEditBtn');
 
-// ---------- دوال الصوت (تعمل بدون ملفات) ----------
+// ---------- دالة الصوت ----------
 function playBeep() {
     try {
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -74,12 +69,10 @@ function playBeep() {
             oscillator.stop();
             audioCtx.close();
         }, 500);
-    } catch(e) {
-        console.warn("تعذر تشغيل الصوت", e);
-    }
+    } catch(e) { console.warn(e); }
 }
 
-// ---------- دوال النظام والإشعارات الداخلية ----------
+// ---------- دوال مساعدة ----------
 function showSpeechMessage(msg) {
     if (plantSpeech) plantSpeech.innerText = msg;
     setTimeout(() => {
@@ -93,9 +86,7 @@ function updateStatsUI() {
     if (statTasksSpan) statTasksSpan.innerText = totalCompletedTasks;
     if (statRoundsSpan) statRoundsSpan.innerText = completedRoundsCount;
     if (statUserSpan) statUserSpan.innerText = `Lv. ${level}`;
-    let focusText = "ممتاز";
-    if (completedRoundsCount < 5) focusText = "جيد";
-    if (completedRoundsCount === 0) focusText = "لم تبدأ بعد";
+    let focusText = completedRoundsCount === 0 ? "لم تبدأ بعد" : (completedRoundsCount < 5 ? "جيد" : "ممتاز");
     if (statFocusSpan) statFocusSpan.innerText = focusText;
 }
 
@@ -109,8 +100,7 @@ function updateLevelAndXP() {
     if (userLevelDisplay) userLevelDisplay.innerText = `مستوى المستخدم Lv. ${level}`;
     if (xpDisplaySpan) xpDisplaySpan.innerText = `${xp} / ${level * 1000} XP`;
     if (xpBar) {
-        let percent = (xp / (level * 1000)) * 100;
-        xpBar.style.width = percent + "%";
+        xpBar.style.width = (xp / (level * 1000)) * 100 + "%";
     }
     updateStatsUI();
 }
@@ -120,17 +110,85 @@ function addXP(amount) {
     updateLevelAndXP();
 }
 
+// حساب مدة الاستراحة بناءً على مدة الجلسة
+function getBreakDurationFromSession(minutes) {
+    if (minutes === 25) return 5;
+    if (minutes === 50) return 10;
+    let br = Math.floor(minutes / 5);
+    return br < 2 ? 2 : br;
+}
+
+// ========== ترحيل البيانات القديمة (ذكي وشامل) ==========
+function migrateAllOldData() {
+    let oldData = null;
+    // قائمة بجميع المفاتيح المحتملة - مع وضع مفتاحك الأصلي في البداية
+    const possibleKeys = [
+        'pomodoroMR_Data_v2',   // مفتاحك الأصلي
+    ];
+    for (let key of possibleKeys) {
+        try {
+            const raw = localStorage.getItem(key);
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                if (parsed && (parsed.tasks || parsed.completedTasks || parsed.xp !== undefined)) {
+                    oldData = parsed;
+                    console.log(`تم العثور على بيانات قديمة من المفتاح: ${key}`);
+                    break;
+                }
+            }
+        } catch(e) {}
+    }
+    
+    if (!oldData) return false;
+    
+    // استعادة المهام النشطة
+    if (oldData.tasks && Array.isArray(oldData.tasks)) {
+        tasks = oldData.tasks.map(task => {
+            return {
+                id: task.id || Date.now() + Math.random(),
+                name: task.name || task.text || "مهمة",
+                minutesPerSession: task.minutesPerSession || task.minutes || task.duration || 25,
+                totalRounds: task.totalRounds || task.remainingRounds || task.rounds || 1,
+                remainingRounds: task.remainingRounds !== undefined ? task.remainingRounds : (task.totalRounds || 1)
+            };
+        });
+    }
+    
+    // استعادة المهام المنجزة
+    if (oldData.completedTasks && Array.isArray(oldData.completedTasks)) {
+        completedTasks = oldData.completedTasks.map(t => ({
+            id: t.id || Date.now(),
+            name: t.name || t.text || "مهمة",
+            totalRounds: t.totalRounds || t.rounds || 1,
+            completedDate: t.completedDate || t.date || new Date().toLocaleString('ar-EG')
+        }));
+        totalCompletedTasks = completedTasks.length;
+    }
+    
+    // استعادة المتغيرات الأخرى
+    if (oldData.currentTaskId) currentTaskId = oldData.currentTaskId;
+    if (oldData.currentMode) currentMode = oldData.currentMode;
+    if (oldData.timeLeft) timeLeft = oldData.timeLeft;
+    if (oldData.xp !== undefined) xp = oldData.xp;
+    if (oldData.level) level = oldData.level;
+    if (oldData.completedRoundsCount !== undefined) completedRoundsCount = oldData.completedRoundsCount;
+    if (oldData.totalCompletedTasks !== undefined) totalCompletedTasks = oldData.totalCompletedTasks;
+    if (oldData.autoBreak !== undefined) autoBreak = oldData.autoBreak;
+    if (oldData.autoSession !== undefined) autoSession = oldData.autoSession;
+    
+    // حفظ البيانات المهاجرة فوراً بالمفتاح الجديد
+    saveData();
+    return true;
+}
+
 // ---------- حفظ وتحميل البيانات ----------
 function saveData() {
-    const data = {
-        tasks, completedTasks, currentTaskId, currentMode, timeLeft, isRunning,
-        xp, level, completedRoundsCount, totalCompletedTasks,
-        autoBreak, autoSession, currentPlantEmoji
-    };
+    const data = { tasks, completedTasks, currentTaskId, currentMode, timeLeft, isRunning, xp, level, completedRoundsCount, totalCompletedTasks, autoBreak, autoSession };
     localStorage.setItem('pomodoro_mr_data', JSON.stringify(data));
 }
 
 function loadData() {
+    // أولاً: محاولة تحميل من المفتاح الجديد
     const saved = localStorage.getItem('pomodoro_mr_data');
     if (saved) {
         try {
@@ -146,28 +204,41 @@ function loadData() {
             totalCompletedTasks = data.totalCompletedTasks || 0;
             autoBreak = data.autoBreak || false;
             autoSession = data.autoSession || false;
-            currentPlantEmoji = data.currentPlantEmoji || "🌱";
             if (autoBreakToggle) autoBreakToggle.checked = autoBreak;
             if (autoSessionToggle) autoSessionToggle.checked = autoSession;
         } catch(e) {}
+    } else {
+        // ثانياً: لا توجد بيانات جديدة، نحاول الترحيل من القديم
+        const migrated = migrateAllOldData();
+        if (!migrated) {
+            // لا بيانات على الإطلاق، نبدأ من الصفر
+            tasks = [];
+            completedTasks = [];
+            currentTaskId = null;
+            currentMode = "focus";
+            timeLeft = 0;
+            xp = 0;
+            level = 1;
+            completedRoundsCount = 0;
+            totalCompletedTasks = 0;
+        }
     }
-    if (!tasks.length && !completedTasks.length) {
-        // بيانات افتراضية للعرض
-        tasks = [];
-        completedTasks = [];
-    }
+    
+    // التأكد من صحة البيانات
+    if (!Array.isArray(tasks)) tasks = [];
+    if (!Array.isArray(completedTasks)) completedTasks = [];
+    if (!currentTaskId && tasks.length) currentTaskId = tasks[0].id;
+    
+    // تحديث واجهات المستخدم
     updateTasksUI();
     updateCompletedUI();
     updateLevelAndXP();
     applyCurrentTaskToTimer();
-    if (timeLeft === 0 && currentMode === "focus") applyCurrentTaskToTimer();
-    else updateTimerDisplay();
-    if (isRunning) {
-        // لا نستأنف المؤقت تلقائياً حفاظاً على تجربة المستخدم
-        isRunning = false;
-        if (timer) clearInterval(timer);
-        if (startBtn) startBtn.innerText = "ابدأ ▶";
-    }
+    if (isRunning) stopTimer();
+    if (startBtn) startBtn.disabled = (tasks.length === 0);
+    
+    // حفظ البيانات بعد التحميل (لضمان تحديث التخزين)
+    saveData();
 }
 
 // ---------- إدارة المهام والجولات ----------
@@ -175,33 +246,32 @@ function applyCurrentTaskToTimer() {
     if (currentMode === "focus") {
         const task = tasks.find(t => t.id === currentTaskId);
         if (task) {
-            const minutes = task.minutesPerSession || 25;
-            timeLeft = minutes * 60;
-            currentFocusSeconds = timeLeft;
-            if (sessionCounter) {
-                sessionCounter.innerText = `${task.name} (${task.remainingRounds}/${task.totalRounds})`;
-                sessionCounter.style.display = "inline-block";
-            }
+            timeLeft = (task.minutesPerSession || 25) * 60;
+            if (sessionCounter) sessionCounter.innerText = `${task.name} (${task.remainingRounds}/${task.totalRounds})`;
             if (timerLabel) timerLabel.innerText = "وقت التركيز";
         } else {
-            if (sessionCounter) sessionCounter.innerText = "اختر مهمة 📋";
-            timeLeft = 25 * 60;
-            currentFocusSeconds = timeLeft;
+            timeLeft = 0;
+            if (sessionCounter) sessionCounter.innerText = "لا توجد مهام";
+            if (timerLabel) timerLabel.innerText = "أضف مهمة";
         }
     } else {
-        // وقت استراحة
-        timeLeft = 5 * 60;
-        if (timerLabel) timerLabel.innerText = "استراحة قصيرة";
-        if (sessionCounter) sessionCounter.innerText = "استراحة ☕";
+        const task = tasks.find(t => t.id === currentTaskId);
+        let breakMinutes = 5;
+        if (task) breakMinutes = getBreakDurationFromSession(task.minutesPerSession || 25);
+        else if (tasks.length > 0) breakMinutes = getBreakDurationFromSession(tasks[0].minutesPerSession || 25);
+        timeLeft = breakMinutes * 60;
+        if (timerLabel) timerLabel.innerText = `استراحة ${breakMinutes} دقائق`;
+        if (sessionCounter) sessionCounter.innerText = `☕ استراحة`;
     }
     updateTimerDisplay();
 }
 
 function updateTimerDisplay() {
-    if (!timerDisplay) return;
-    const mins = Math.floor(timeLeft / 60);
-    const secs = timeLeft % 60;
-    timerDisplay.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    if (timerDisplay) {
+        const mins = Math.floor(timeLeft / 60);
+        const secs = timeLeft % 60;
+        timerDisplay.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
 }
 
 function updateTasksUI() {
@@ -210,15 +280,13 @@ function updateTasksUI() {
     tasks.forEach(task => {
         const li = document.createElement('li');
         li.className = `task-item ${currentTaskId === task.id ? 'active' : ''}`;
-        li.setAttribute('data-id', task.id);
-        const taskTextSpan = document.createElement('span');
-        taskTextSpan.innerText = `${task.name} (${task.remainingRounds}/${task.totalRounds} جولة • ${task.minutesPerSession} د)`;
-        const actionsDiv = document.createElement('div');
-        actionsDiv.className = "task-actions";
+        const span = document.createElement('span');
+        span.innerText = `${task.name} (${task.remainingRounds}/${task.totalRounds} جولة • ${task.minutesPerSession} د)`;
+        const actions = document.createElement('div');
+        actions.className = "task-actions";
         const completeBtn = document.createElement('button');
         completeBtn.innerHTML = '<i class="fa-regular fa-circle-check"></i>';
         completeBtn.className = "action-btn complete";
-        completeBtn.title = "إنهاء الجولة الحالية يدوياً";
         completeBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             completeOneRound(task.id);
@@ -230,10 +298,10 @@ function updateTasksUI() {
             e.stopPropagation();
             deleteTask(task.id);
         });
-        actionsDiv.appendChild(completeBtn);
-        actionsDiv.appendChild(deleteBtn);
-        li.appendChild(taskTextSpan);
-        li.appendChild(actionsDiv);
+        actions.appendChild(completeBtn);
+        actions.appendChild(deleteBtn);
+        li.appendChild(span);
+        li.appendChild(actions);
         li.addEventListener('click', () => selectTask(task.id));
         pendingTaskList.appendChild(li);
     });
@@ -246,9 +314,13 @@ function updateTasksUI() {
         pendingTaskList.appendChild(emptyLi);
         currentTaskId = null;
         applyCurrentTaskToTimer();
-        startBtn.disabled = true;
+        if (startBtn) startBtn.disabled = true;
     } else {
-        startBtn.disabled = false;
+        if (startBtn) startBtn.disabled = false;
+        if (!currentTaskId || !tasks.find(t => t.id === currentTaskId)) {
+            currentTaskId = tasks[0].id;
+            applyCurrentTaskToTimer();
+        }
     }
 }
 
@@ -261,33 +333,27 @@ function updateCompletedUI() {
         const checkSpan = document.createElement('span');
         checkSpan.className = "check-circle";
         checkSpan.innerHTML = '<i class="fa-solid fa-check"></i>';
-        const taskInfo = document.createElement('span');
-        taskInfo.innerText = `${task.name} (${task.totalRounds} جولة) - ${task.completedDate}`;
+        const info = document.createElement('span');
+        info.innerText = `${task.name} (${task.totalRounds} جولة) - ${task.completedDate}`;
         li.appendChild(checkSpan);
-        li.appendChild(taskInfo);
+        li.appendChild(info);
         completedTaskList.appendChild(li);
     });
     completedTasksCountSpan.innerText = `${completedTasks.length} مهام`;
 }
 
 function selectTask(taskId) {
+    if (isRunning) stopTimer();
     currentTaskId = taskId;
-    if (currentMode === "focus") {
-        applyCurrentTaskToTimer();
-        if (isRunning) {
-            stopTimer();
-            startTimer();
-        }
-    } else {
-        // إذا كان في وضع استراحة، يمكن التبديل لكن الأفضل إيقاف المؤقت
-        if (isRunning) stopTimer();
+    if (currentMode !== "focus") {
         currentMode = "focus";
         document.querySelector('.timer-circle')?.classList.remove('break-mode');
-        applyCurrentTaskToTimer();
     }
+    applyCurrentTaskToTimer();
     updateTasksUI();
     saveData();
-    showSpeechMessage(`تم اختيار المهمة: ${tasks.find(t=>t.id===taskId)?.name}`);
+    const task = tasks.find(t => t.id === taskId);
+    if (task) showSpeechMessage(`تم اختيار المهمة: ${task.name}`);
 }
 
 function completeOneRound(taskId) {
@@ -299,7 +365,6 @@ function completeOneRound(taskId) {
         addXP(50);
         showSpeechMessage(`🎯 أتممت جولة في "${task.name}"! متبقي ${task.remainingRounds} جولة`);
         if (task.remainingRounds === 0) {
-            // إكمال المهمة
             const completedTask = {
                 id: task.id,
                 name: task.name,
@@ -313,7 +378,7 @@ function completeOneRound(taskId) {
                 currentTaskId = tasks.length > 0 ? tasks[0].id : null;
             }
             updateCompletedUI();
-            showSpeechMessage(`🎉 أكملت المهمة "${task.name}" بنجاح! 🎉`);
+            showSpeechMessage(`🎉 أكملت المهمة "${task.name}"! 🎉`);
             addXP(150);
         }
         updateTasksUI();
@@ -324,6 +389,7 @@ function completeOneRound(taskId) {
 }
 
 function deleteTask(taskId) {
+    if (isRunning) stopTimer();
     tasks = tasks.filter(t => t.id !== taskId);
     if (currentTaskId === taskId) {
         currentTaskId = tasks.length > 0 ? tasks[0].id : null;
@@ -349,8 +415,12 @@ function addTask(name, minutes, rounds) {
         remainingRounds: rounds
     };
     tasks.push(newTask);
-    if (!currentTaskId) {
+    if (!currentTaskId || tasks.length === 1) {
         currentTaskId = newTask.id;
+        if (currentMode !== "focus") {
+            currentMode = "focus";
+            document.querySelector('.timer-circle')?.classList.remove('break-mode');
+        }
         applyCurrentTaskToTimer();
     }
     updateTasksUI();
@@ -363,6 +433,10 @@ function addTask(name, minutes, rounds) {
 
 // ---------- دوال المؤقت ----------
 function startTimer() {
+    if (tasks.length === 0) {
+        showSpeechMessage("أضف مهمة أولاً");
+        return;
+    }
     if (timer) clearInterval(timer);
     isRunning = true;
     startBtn.innerText = "⏸ إيقاف";
@@ -372,6 +446,7 @@ function startTimer() {
             updateTimerDisplay();
         } else {
             clearInterval(timer);
+            timer = null;
             isRunning = false;
             startBtn.innerText = "ابدأ ▶";
             handleTimerEnd();
@@ -385,27 +460,16 @@ function stopTimer() {
         timer = null;
     }
     isRunning = false;
-    startBtn.innerText = "ابدأ ▶";
+    if (startBtn) startBtn.innerText = "ابدأ ▶";
 }
 
 function resetTimer() {
     stopTimer();
-    if (currentMode === "focus") {
-        const task = tasks.find(t => t.id === currentTaskId);
-        if (task) {
-            timeLeft = task.minutesPerSession * 60;
-            currentFocusSeconds = timeLeft;
-        } else {
-            timeLeft = 25 * 60;
-        }
-    } else {
-        timeLeft = 5 * 60;
-    }
-    updateTimerDisplay();
+    applyCurrentTaskToTimer();
 }
 
 function addExtraMinute() {
-    if (currentMode === "focus") {
+    if (currentMode === "focus" && timeLeft > 0) {
         timeLeft += 60;
         updateTimerDisplay();
         showSpeechMessage("➕ أضفت دقيقة إضافية");
@@ -413,25 +477,21 @@ function addExtraMinute() {
 }
 
 function skipToNext() {
+    stopTimer();
     if (currentMode === "focus") {
-        handleTimerEnd(); // سينهي الجولة الحالية
+        handleTimerEnd();
     } else {
-        // إنهاء الاستراحة مبكراً
-        if (timer) clearInterval(timer);
-        isRunning = false;
-        startBtn.innerText = "ابدأ ▶";
         currentMode = "focus";
         document.querySelector('.timer-circle')?.classList.remove('break-mode');
         applyCurrentTaskToTimer();
-        if (autoSession) startTimer();
         showSpeechMessage("انتهت الاستراحة مبكراً، نبدأ التركيز");
+        if (autoSession && tasks.length > 0 && currentTaskId) startTimer();
     }
 }
 
 function handleTimerEnd() {
     playBeep();
     if (currentMode === "focus") {
-        // انتهاء جولة تركيز
         if (currentTaskId) {
             const task = tasks.find(t => t.id === currentTaskId);
             if (task && task.remainingRounds > 0) {
@@ -440,7 +500,6 @@ function handleTimerEnd() {
                 addXP(50);
                 showSpeechMessage(`✅ جولة كاملة! متبقي ${task.remainingRounds} من ${task.totalRounds}`);
                 if (task.remainingRounds === 0) {
-                    // إكمال المهمة
                     const completedTask = {
                         id: task.id,
                         name: task.name,
@@ -456,46 +515,62 @@ function handleTimerEnd() {
                     updateCompletedUI();
                     showSpeechMessage(`🎉 أنهيت المهمة "${task.name}"! 🎉`);
                     addXP(150);
+                    updateTasksUI();
+                    saveData();
+                    currentMode = "focus";
+                    document.querySelector('.timer-circle')?.classList.remove('break-mode');
+                    applyCurrentTaskToTimer();
+                    stopTimer();
+                    return;
                 }
                 updateTasksUI();
                 saveData();
             }
         }
-        // بعد التركيز ننتقل إلى الاستراحة تلقائياً أو يدوياً حسب الإعداد
         if (autoBreak) {
             currentMode = "break";
             document.querySelector('.timer-circle')?.classList.add('break-mode');
-            timeLeft = 5 * 60;
-            if (timerLabel) timerLabel.innerText = "استراحة قصيرة";
-            if (sessionCounter) sessionCounter.innerText = "استراحة ☕";
+            const currentTask = tasks.find(t => t.id === currentTaskId);
+            let breakMinutes = 5;
+            if (currentTask) breakMinutes = getBreakDurationFromSession(currentTask.minutesPerSession || 25);
+            else if (tasks.length > 0) breakMinutes = getBreakDurationFromSession(tasks[0].minutesPerSession || 25);
+            timeLeft = breakMinutes * 60;
+            if (timerLabel) timerLabel.innerText = `استراحة ${breakMinutes} دقائق`;
+            if (sessionCounter) sessionCounter.innerText = `☕ استراحة`;
             updateTimerDisplay();
-            if (autoSession) startTimer();
-            else showSpeechMessage("استراحة قصيرة. استرخِ قليلاً");
+            if (autoSession && tasks.length > 0 && currentTaskId) {
+                startTimer();
+            } else {
+                showSpeechMessage(`استراحة ${breakMinutes} دقائق. استرخِ قليلاً`);
+            }
         } else {
             stopTimer();
-            currentMode = "break";
-            document.querySelector('.timer-circle')?.classList.add('break-mode');
-            timeLeft = 5 * 60;
-            if (timerLabel) timerLabel.innerText = "استراحة قصيرة";
-            if (sessionCounter) sessionCounter.innerText = "استراحة ☕";
-            updateTimerDisplay();
-            showSpeechMessage("انتهت الجولة، حان وقت الاستراحة");
+            showSpeechMessage("انتهت الجولة، اضغط بدء لمواصلة التركيز");
         }
     } else {
-        // انتهاء الاستراحة
         stopTimer();
         currentMode = "focus";
         document.querySelector('.timer-circle')?.classList.remove('break-mode');
         applyCurrentTaskToTimer();
         if (autoSession && tasks.length > 0 && currentTaskId) {
             startTimer();
+        } else {
+            showSpeechMessage("استراحة انتهت! اضغط بدء لبدء التركيز");
         }
-        showSpeechMessage("استراحة انتهت! لنكمل تركيزنا");
     }
     saveData();
 }
 
-// ---------- أحداث الواجهة والإعدادات ----------
+// ---------- إعدادات الواجهة ----------
+function initSidebar() {
+    if (sidebarToggle) {
+        sidebarToggle.addEventListener('click', () => {
+            const sidebar = document.querySelector('.sidebar');
+            if (sidebar) sidebar.classList.toggle('collapsed');
+        });
+    }
+}
+
 function initSettings() {
     if (autoBreakToggle) autoBreakToggle.addEventListener('change', (e) => {
         autoBreak = e.target.checked;
@@ -534,10 +609,7 @@ function initSettings() {
     if (resetBtn) resetBtn.addEventListener('click', resetTimer);
     if (taskSubmitBtn) {
         taskSubmitBtn.addEventListener('click', () => {
-            const name = taskNameInput.value;
-            const minutes = parseInt(taskMinInput.value) || 25;
-            const rounds = parseInt(taskRoundsInput.value) || 1;
-            addTask(name, minutes, rounds);
+            addTask(taskNameInput.value, parseInt(taskMinInput.value) || 25, parseInt(taskRoundsInput.value) || 1);
         });
     }
     if (cancelEditBtn) {
@@ -552,11 +624,11 @@ function initSettings() {
         if (taskNameInput.value.trim() !== "") cancelEditBtn?.classList.remove('hidden');
         else cancelEditBtn?.classList.add('hidden');
     });
-    // تبديل الأقسام (القائمة الجانبية)
+    // التنقل بين الأقسام
     document.querySelectorAll('.nav-item').forEach(item => {
         item.addEventListener('click', () => {
             const viewId = item.getAttribute('data-view');
-            document.querySelectorAll('.view-section').forEach(section => section.classList.remove('active'));
+            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
             if (viewId === 'view-timer') document.getElementById('view-timer')?.classList.add('active');
             if (viewId === 'view-history') document.getElementById('view-history')?.classList.add('active');
             if (viewId === 'view-settings') document.getElementById('view-settings')?.classList.add('active');
@@ -564,7 +636,7 @@ function initSettings() {
             item.classList.add('active');
         });
     });
-    // تخصيص الألوان والخلفيات (من الإعدادات الموجودة)
+    // تخصيص الألوان والخلفيات
     const colorDots = document.querySelectorAll('.color-dot');
     const bgBoxes = document.querySelectorAll('.bg-box');
     colorDots.forEach(dot => {
@@ -588,7 +660,6 @@ function initSettings() {
             localStorage.setItem('pomodoro_bg_panel', panelColor);
         });
     });
-    // استعادة الألوان المحفوظة
     const savedColor = localStorage.getItem('pomodoro_theme_color');
     if (savedColor) document.documentElement.style.setProperty('--theme-color', savedColor);
     const savedMain = localStorage.getItem('pomodoro_bg_main');
@@ -597,23 +668,7 @@ function initSettings() {
     if (savedPanel) document.documentElement.style.setProperty('--bg-panel', savedPanel);
 }
 
-// ---------- بدء التشغيل ----------
-document.addEventListener('DOMContentLoaded', () => {
-    loadData();
-    initSettings();
-    updateTasksUI();
-    updateCompletedUI();
-    applyCurrentTaskToTimer();
-    updateLevelAndXP();
-    updateStatsUI();
-    // إذا لم تكن هناك مهمة حالية ووجدت مهام، اختر الأولى
-    if (!currentTaskId && tasks.length) {
-        currentTaskId = tasks[0].id;
-        applyCurrentTaskToTimer();
-        updateTasksUI();
-    }
-    if (tasks.length === 0) startBtn.disabled = true;
-    else startBtn.disabled = false;
+function initPlantAnimation() {
     setInterval(() => {
         if (mainPlantDisplay) {
             let progress = 0;
@@ -630,4 +685,22 @@ document.addEventListener('DOMContentLoaded', () => {
             else mainPlantDisplay.innerText = "🌱";
         }
     }, 1000);
+}
+
+// ---------- بدء التشغيل ----------
+document.addEventListener('DOMContentLoaded', () => {
+    loadData();
+    initSidebar();
+    initSettings();
+    initPlantAnimation();
+    updateTasksUI();
+    updateCompletedUI();
+    applyCurrentTaskToTimer();
+    updateLevelAndXP();
+    if (!currentTaskId && tasks.length) {
+        currentTaskId = tasks[0].id;
+        applyCurrentTaskToTimer();
+        updateTasksUI();
+    }
+    if (startBtn) startBtn.disabled = (tasks.length === 0);
 });
